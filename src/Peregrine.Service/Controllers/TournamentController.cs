@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using Newtonsoft.Json.Linq;
 using Peregrine.Data;
 
 namespace Peregrine.Service.Controllers
 {
     public class TournamentController : ApiController
     {
-		[Route("tournament")]
-		public Tournament Post()
+		[Route("tournament", Name="Tournament.Post")]
+		public IHttpActionResult Post()
 		{
 			using(var dataContext = new DataContext())
 			{
@@ -24,14 +20,23 @@ namespace Peregrine.Service.Controllers
 				dataContext.Tournaments.Add(tournament);
 				dataContext.SaveChanges();
 
-				return tournament;
+				return CreatedAtRoute("Tournament.Get", new { key = tournament.Key }, tournament);
 			}
 		}
 
-		[Route("tournament/{key}")]
-		public JObject Get(Guid key)
+		[Route("tournament/{key}", Name = "Tournament.Get")]
+		public IHttpActionResult Get(Guid key)
 		{
-			throw new NotImplementedException();
+			using(var dataContext = new DataContext())
+			{
+				dataContext.Configuration.LazyLoadingEnabled = false;
+
+				var tournament = dataContext.Tournaments.FirstOrDefault(t => t.Key == key);
+				if(tournament == null)
+					return NotFound();
+
+				return Ok(tournament);
+			}
 		}
     }
 }

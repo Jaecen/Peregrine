@@ -47,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContext.cs" />
+    <Compile Include="Migrations\201311040545324_Create_Database.cs" />
+    <Compile Include="Migrations\201311040545324_Create_Database.Designer.cs">
+      <DependentUpon>201311040545324_Create_Database.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Tournament.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Match.cs" />
@@ -57,6 +62,11 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201311040545324_Create_Database.resx">
+      <DependentUpon>201311040545324_Create_Database.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

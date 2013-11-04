@@ -150,4 +150,5 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
-lib/packages
+lib/packages/
+src/Peregrine.Service/App_Data/

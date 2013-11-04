@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Routing;
+
 
 namespace Peregrine.Service
 {
@@ -18,6 +20,7 @@ namespace Peregrine.Service
 			//	routeTemplate: "api/{controller}/{id}",
 			//	defaults: new { id = RouteParameter.Optional }
 			//);
+
 		}
 	}
 }
