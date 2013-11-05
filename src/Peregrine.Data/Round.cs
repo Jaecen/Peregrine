@@ -9,7 +9,7 @@ namespace Peregrine.Data
 	public class Round
 	{
 		[JsonIgnore] public virtual int Id { get; set; }
-		public virtual int Ordinal { get; set; }
+		public virtual int Number { get; set; }
 		public virtual ICollection<Match> Matches { get; set; }
 	}
 }

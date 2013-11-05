@@ -25,9 +25,14 @@ namespace Peregrine.Service.Controllers
 
 				return Ok(new
 				{
-					Players = tournament
+					players = tournament
 						.Players
-						.ToArray()
+						.OrderBy(p => p.Name)
+						.Select(p => new
+						{
+							_link = Url.Link("Player.Get", new { key = tournament.Key, name = p.Name }),
+							name = p.Name,
+						}),
 				});
 			}
 		}
@@ -58,7 +63,11 @@ namespace Peregrine.Service.Controllers
 				tournament.Players.Add(player);
 				dataContext.SaveChanges();
 
-				return CreatedAtRoute("Player.Get", new { key = tournament.Key, name = player.Name }, player);
+				return CreatedAtRoute("Player.Get", new { key = tournament.Key, name = player.Name }, new
+				{
+					_link = Url.Link("Player.Get", new { key = tournament.Key, name = player.Name }),
+					name = player.Name,
+				});
 			}
 		}
 
@@ -82,7 +91,11 @@ namespace Peregrine.Service.Controllers
 				if(player == null)
 					return NotFound();
 
-				return Ok(player);
+				return Ok(new
+				{
+					_link = Url.Link("Player.Get", new { key = tournament.Key, name = player.Name }),
+					name = player.Name,
+				});
 			}
 		}
 

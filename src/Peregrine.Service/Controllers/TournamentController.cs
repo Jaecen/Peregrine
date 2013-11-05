@@ -20,7 +20,13 @@ namespace Peregrine.Service.Controllers
 				dataContext.Tournaments.Add(tournament);
 				dataContext.SaveChanges();
 
-				return CreatedAtRoute("Tournament.Get", new { key = tournament.Key }, tournament);
+				return CreatedAtRoute("Tournament.Get", new { key = tournament.Key }, new
+				{
+					_link = Url.Link("Tournament.Get", new { key = tournament.Key }),
+					key = tournament.Key,
+					players = new Player[0],
+					rounds = new Round[0],
+				});
 			}
 		}
 
@@ -29,13 +35,53 @@ namespace Peregrine.Service.Controllers
 		{
 			using(var dataContext = new DataContext())
 			{
-				dataContext.Configuration.LazyLoadingEnabled = false;
+				var tournament = dataContext
+					.Tournaments
+					.FirstOrDefault(t => t.Key == key);
 
-				var tournament = dataContext.Tournaments.FirstOrDefault(t => t.Key == key);
 				if(tournament == null)
 					return NotFound();
 
-				return Ok(tournament);
+				return Ok(new
+				{
+					_link = Url.Link("Tournament.Get", new { key = tournament.Key }),
+					key = tournament.Key,
+					players = tournament
+						.Players
+						.OrderBy(p => p.Name)
+						.Select(p => new
+						{
+							_link = Url.Link("Player.Get", new { key = tournament.Key, name = p.Name }),
+							name = p.Name,
+						})
+						.ToArray(),
+					rounds = tournament
+						.Rounds
+						.OrderBy(r => r.Number)
+						.Select(r => new
+						{
+							_link = Url.Link("Round.Get", new { key = tournament.Key, roundNumber = r.Number }),
+							matches = r
+								.Matches
+								.OrderBy(m => m.Number)
+								.Select(m => new
+								{
+									_link = Url.Link("Match.Get", new { key = tournament.Key, roundNumber = r.Number, matchNumber = m.Number }),
+									number = m.Number,
+									players = m
+										.Players
+										.Select(p => new
+										{
+											_link = Url.Link("Player.Get", new { key = tournament.Key, name = p.Name }),
+											name = p.Name,
+										})
+										.ToArray(),
+								})
+								.ToArray(),
+
+						})
+						.ToArray(),
+				});
 			}
 		}
     }

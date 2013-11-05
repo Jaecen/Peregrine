@@ -15,6 +15,13 @@ Swiss-pairing and ranking management.
 
 	Returns a 404 if no tournament with the provided key exists.
 
+###/tournament/*{key}*/players
+*	**GET** 
+
+	Returns a list of players in the tournament.
+
+	Returns a 404 if no tournament with the provided key exists.
+
 ###/tournament/*{key}*/player/*{name}*
 *	**GET** 
 
@@ -40,19 +47,63 @@ Swiss-pairing and ranking management.
 
 	Returns a 404 if no player with the provided name exists.
 
+###/tournament/*{key}*/rounds
+*	**GET**
+
+	Returns a list of rounds in the tournament.
+
+	Returns a 404 if no tournament with the provided key exists.
+
 ###/tournament/*{key}*/round/*{number}*
 *	**GET**
 
-	Returns a summary of the round.
+	Returns a summary of the round. The first round will continuously regenerated until results are entered.
 
-###/tournament/*{key}*/round/*{number}*/game/*{number}*
+	Returns a 404 if no tournament with the provided key exists.
+
+	Returns a 404 if no round with the provided number exists.
+
+###/tournament/*{key}*/round/*{number}*/*{player}*/win
+*	**POST**
+
+	Adds a win result in the round for the provided player. Results for a previous round can not be changed once a new round has started. Returns a summary of the match the player participated in.
+
+	Returns a 404 if no tournament with the provided key exists.
+
+	Returns a 404 if no round with the provided number exists.
+
+	Returns a 404 if no player with the provided name exists.
+
+###/tournament/*{key}*/round/*{number}*/*{player}*/draw
+*	**POST**
+
+	Adds a draw result in the round for the provided player. Only one draw result needs to be submitted for a game. Results for a previous round can not be changed once a new round has started. Returns a summary of the match the player participated in.
+
+	Returns a 404 if no tournament with the provided key exists.
+
+	Returns a 404 if no round with the provided number exists.
+
+	Returns a 404 if no player with the provided name exists.
+
+###/tournament/*{key}*/round/*{number}*/matches
 *	**GET**
 
-	Returns a summary of the game.
+	Returns a list of the matches for the given round.
 
-*	**PUT**
+	Returns a 404 if no tournament with the provided key exists.
 
-	Sets the results of the game. Results for a previous round can not be changed once a new round has started.
+	Returns a 404 if no round with the provided number exists.
+
+###/tournament/*{key}*/round/*{number}*/match/*{number}*
+*	**GET**
+
+	Returns a summary of the match.
+
+	Returns a 404 if no tournament with the provided key exists.
+
+	Returns a 404 if no round with the provided number exists.
+
+	Returns a 404 if no match with the provided number exists.
 
 ###/tournament/*{key}*/round/*{number}*/pairings
 *	**GET**

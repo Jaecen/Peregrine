@@ -115,12 +115,13 @@
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\MatchController.cs" />
     <Compile Include="Controllers\TournamentController.cs" />
     <Compile Include="Controllers\PairingsController.cs" />
     <Compile Include="Controllers\PlayerController.cs" />
     <Compile Include="Controllers\RoundController.cs" />
-    <Compile Include="Controllers\GameController.cs" />
     <Compile Include="Controllers\StandingsController.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
