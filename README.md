@@ -3,6 +3,15 @@
 Swiss-pairing and ranking management.
 
 ##API
+Part of the goal of this API is to explore HATEOAS in a JSON context. For the purposes of this API, discoverability boils down to two facts: what resources are related to the current resource and what HTTP methods are available on the current resource.
+
+To this end, each resource must meet the following requirements:
+
+*	Each response must contain a Link header containing all resources related to the requested resource.
+*	Each response must contain an Allow header containing all supported HTTP methods on the requested resource.
+*	Each resources must support an OPTIONS request.
+*	Each resource must provide a 406 Not Acceptable if the requested HTTP method is not supported.
+
 ###/tournament
 *	**POST**
 

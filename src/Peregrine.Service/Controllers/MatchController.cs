@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using Peregrine.Data;
 
 namespace Peregrine.Service.Controllers
 {
-	[RoutePrefix("tournament/{key}/round/{roundNumber}")]
+	[RoutePrefix("tournament/{key}/round/{roundNumber}/match/{matchNumber}")]
 	public class MatchController : ApiController
     {
 		public enum MatchResult
@@ -17,150 +13,39 @@ namespace Peregrine.Service.Controllers
 			Draw,
 		};
 
-		[Route("matches", Name = "Match.List")]
-		public IHttpActionResult GetList(Guid key, int roundNumber)
+		[Route(Name = "Match.Options")]
+		public virtual IHttpActionResult Options()
 		{
-			using(var dataContext = new DataContext())
-			{
-				var tournament = dataContext
-					.Tournaments
-					.FirstOrDefault(t => t.Key == key);
-
-				if(tournament == null)
-					return NotFound();
-
-				var round = tournament
-					.Rounds
-					.Where(r => r.Number == roundNumber)
-					.FirstOrDefault();
-
-				if(round == null)
-					return NotFound();
-
-				return Ok(new
-				{
-					matches = round
-						.Matches
-						.OrderBy(m => m.Number)
-						.Select(m => new
-						{
-							_link = Url.Link("Match.Get", new { key = tournament.Key, roundNumber = round.Number, matchNumber = m.Number }),
-							number = m.Number,
-							players = m
-								.Players
-								.OrderBy(p => p.Name)
-								.Select(p => new
-								{
-									_link = Url.Link("Player.Get", new { key = tournament.Key, name = p.Name }),
-									name = p.Name,
-								})
-								.ToArray(),
-							results = m
-								.Games
-								.OrderBy(g => g.Number)
-								.Select(g => new
-								{
-									number = g.Number,
-									winner = g.Winner == null ? null : new
-									{
-										_link = Url.Link("Player.Get", new { key = tournament.Key, name = g.Winner.Name }),
-										name = g.Winner.Name,
-									}
-								})
-								.ToArray(),
-						})	
-				});
-			}
+			return new ResourceActionResult(ControllerContext, Ok());
 		}
 
-		[Route("match/{matchNumber}", Name = "Match.Get")]
+		[Route(Name = "Match.Get")]
 		public IHttpActionResult Get(Guid key, int roundNumber, int matchNumber)
 		{
 			using(var dataContext = new DataContext())
 			{
-				var tournament = dataContext
-					.Tournaments
-					.FirstOrDefault(t => t.Key == key);
-
-				if(tournament == null)
-					return NotFound();
-
-				var round = tournament
-					.Rounds
-					.Where(r => r.Number == roundNumber)
-					.FirstOrDefault();
-
-				if(round == null)
-					return NotFound();
-
-				var match = round
-					.Matches
-					.Where(m => m.Number == matchNumber)
-					.FirstOrDefault();
+				var match = dataContext
+					.GetTournament(key)
+					.GetRound(roundNumber)
+					.GetMatch(matchNumber);
 
 				if(match == null)
 					return NotFound();
 
-				return Ok(new
-				{
-					_link = Url.Link("Match.Get", new { key = tournament.Key, roundNumber = round.Number, matchNumber = match.Number }),
-					number = match.Number,
-					players = match
-						.Players
-						.OrderBy(p => p.Name)
-						.Select(p => new
-						{
-							_link = Url.Link("Player.Get", new { key = tournament.Key, name = p.Name }),
-							name = p.Name,
-						})
-						.ToArray(),
-					results = match
-						.Games
-						.OrderBy(g => g.Number)
-						.Select(g => new
-						{
-							number = g.Number,
-							winner = g.Winner == null ? null : new
-							{
-								_link = Url.Link("Player.Get", new { key = tournament.Key, name = g.Winner.Name }),
-								name = g.Winner.Name,
-							}
-						})
-						.ToArray(),
-
-				});
+				return Ok(this.RenderDetail(match, key, roundNumber));
 			}
 		}
 
-		[Route("{name}/{result}", Name = "MatchResult.Put")]
+		[Route(Name = "MatchResult.Put")]
 		public IHttpActionResult Put(Guid key, int roundNumber, string name, MatchResult result)
 		{
 			using(var dataContext = new DataContext())
 			{
-				var tournament = dataContext
-					.Tournaments
-					.FirstOrDefault(t => t.Key == key);
-
-				if(tournament == null)
-					return NotFound();
-
-				var round = tournament
-					.Rounds
-					.Where(r => r.Number == roundNumber)
-					.FirstOrDefault();
-
-				if(round == null)
-					return NotFound();
-
-				var player = tournament
-					.Players
-					.Where(p => p.Name == name)
-					.FirstOrDefault();
-
-				var match = round
-					.Matches
-					.Where(m => m.Players.Contains(player))
-					.FirstOrDefault();
+				var tournament = dataContext.GetTournament(key);
+				var player = tournament.GetPlayer(name);
+				var match = tournament
+					.GetRound(roundNumber)
+					.GetMatch(player);
 
 				if(match == null)
 					return NotFound();
@@ -174,33 +59,7 @@ namespace Peregrine.Service.Controllers
 
 				dataContext.SaveChanges();
 
-				return Ok(new
-				{
-					_link = Url.Link("Match.Get", new { key = tournament.Key, roundNumber = round.Number, matchNumber = match.Number }),
-					number = match.Number,
-					players = match
-						.Players
-						.OrderBy(p => p.Name)
-						.Select(p => new
-						{
-							_link = Url.Link("Player.Get", new { key = tournament.Key, name = p.Name }),
-							name = p.Name,
-						})
-						.ToArray(),
-					results = match
-						.Games
-						.OrderBy(g => g.Number)
-						.Select(g => new
-						{
-							number = g.Number,
-							winner = g.Winner == null ? null : new
-							{
-								_link = Url.Link("Player.Get", new { key = tournament.Key, name = g.Winner.Name }),
-								name = g.Winner.Name,
-							}
-						})
-						.ToArray(),
-				});
+				return Ok(this.RenderDetail(match, key, roundNumber));
 			}
 		}
     }

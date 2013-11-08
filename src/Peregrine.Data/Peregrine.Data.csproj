@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContext.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Migrations\201311040545324_Create_Database.cs" />
     <Compile Include="Migrations\201311040545324_Create_Database.Designer.cs">
       <DependentUpon>201311040545324_Create_Database.cs</DependentUpon>
