@@ -8,6 +8,13 @@ namespace Peregrine.Service.Controllers
 	[RoutePrefix("tournament/{key}/rounds")]
 	public class RoundsController : ApiController
     {
+		readonly RoundManager RoundManager;
+
+		public RoundsController()
+		{
+			RoundManager = new RoundManager();
+		}
+	
 		[Route(Name = "Rounds.Options")]
 		public virtual IHttpActionResult Options()
 		{
@@ -27,7 +34,7 @@ namespace Peregrine.Service.Controllers
 					this.RenderDetail(
 						tournament
 							.Rounds
-							.DefaultIfEmpty(GenerateFirstRound(tournament)),
+							.DefaultIfEmpty(RoundManager.GenerateFirstRound(tournament)),
 						key
 					)
 				);

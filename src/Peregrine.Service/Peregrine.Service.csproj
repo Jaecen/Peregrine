@@ -132,6 +132,7 @@
     <Compile Include="HttpActionResultExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceActionResult.cs" />
+    <Compile Include="RoundManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
