@@ -113,6 +113,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataExtensions.cs" />
     <Compile Include="Services\ActionLinkRenderer.cs" />
     <Compile Include="Services\ActionLinkBuilder.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -128,7 +129,7 @@
     <Compile Include="Controllers\StandingsController.cs" />
     <Compile Include="Controllers\TournamentsController.cs" />
     <Compile Include="Services\EntityLinkRenderer.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="UtilityExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

@@ -7,7 +7,7 @@ using System.Web.Http;
 
 namespace Peregrine.Service.Controllers
 {
-    public class StandingsController : ApiController
-    {
-    }
+	public class StandingsController : ApiController
+	{
+	}
 }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Peregrine.Service
 {
-	public static class Extensions
+	public static class UtilityExtensions
 	{
 		public static IEnumerable<IEnumerable<T>> PartitionBy<T>(this IEnumerable<T> source, int partitionSize)
 		{

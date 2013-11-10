@@ -49,13 +49,16 @@ namespace Peregrine.Service.Controllers
 				if(tournament == null)
 					return NotFound();
 
+				// Can't add players after first round has started
+				if(tournament.HasStarted())
+					return BadRequest("Can not add players once a game result has been recorded.");
+
+				// Can't add a player with the same name as an existing one
 				if(tournament
 					.Players
 					.Where(p => p.Name == name)
 					.Any())
 					return Conflict();
-
-				//TODO: Prevent adding players after first round has started
 
 				var player = new Player
 				{

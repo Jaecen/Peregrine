@@ -51,12 +51,28 @@ namespace Peregrine.Service.Controllers
 				if(player == null)
 					return NotFound();
 
-				//TODO: Implement drop vs. delete
+				if(tournament.HasStarted())
+				{
+					// Drop if any game results have been recorded
+					player.Dropped = true;
+					dataContext.SaveChanges();
 
-				tournament.Players.Remove(player);
-				dataContext.SaveChanges();
-
-				return Ok();
+					return Ok(new
+					{
+						player = PlayerRenderer.RenderSummary(tournament, player, Url),
+						_actions = ActionLinkBuilder
+							.BuildActions(ControllerContext)
+							.Where(al => al.Name != "drop-player")			// Can't drop a dropped player
+							.Select(al => ActionLinkRenderer.Render(al))
+					});
+				}
+				else
+				{
+					// Delete if not results recorded
+					tournament.Players.Remove(player);
+					dataContext.SaveChanges();
+					return StatusCode(System.Net.HttpStatusCode.NoContent);
+				}
 			}
 		}
 	}
