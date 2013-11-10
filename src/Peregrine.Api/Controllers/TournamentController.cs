@@ -54,7 +54,7 @@ namespace Peregrine.Api.Controllers
 				dataContext.Tournaments.Remove(tournament);
 				dataContext.SaveChanges();
 
-				return Ok();
+				return StatusCode(HttpStatusCode.NoContent);
 			}
 		}
 	}

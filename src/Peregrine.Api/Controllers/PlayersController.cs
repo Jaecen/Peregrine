@@ -6,7 +6,7 @@ using Peregrine.Api.Services;
 
 namespace Peregrine.Api.Controllers
 {
-	[RoutePrefix("tournament/{key}/players")]
+	[RoutePrefix("tournament/{key}")]
 	public class PlayersController : ApiController
 	{
 		readonly PlayerRenderer PlayerRenderer;
@@ -20,7 +20,7 @@ namespace Peregrine.Api.Controllers
 			ActionLinkRenderer = new ActionLinkRenderer();
 		}
 
-		[Route(Name = "list-players")]
+		[Route("players", Name = "list-players")]
 		public IHttpActionResult Get(Guid key)
 		{
 			using(var dataContext = new DataContext())
@@ -40,7 +40,7 @@ namespace Peregrine.Api.Controllers
 			}
 		}
 
-		[Route("{name}", Name = "add-player")]
+		[Route("player/{name}", Name = "add-player")]
 		public IHttpActionResult Put(Guid key, string name)
 		{
 			using(var dataContext = new DataContext())

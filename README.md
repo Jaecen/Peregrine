@@ -5,22 +5,32 @@ Swiss-pairing and ranking management.
 ##API
 Part of the goal of this API is to explore HATEOAS in a JSON context. For the purposes of this API, discoverability boils down to two facts: what resources are related to the current resource and what HTTP methods are available on the current resource.
 
-To this end, each resource must meet the following requirements:
+To this end, the following conventions have been introduced:
 
-*	Each response must contain a Link header containing all resources related to the requested resource.
-*	Each response must contain an Allow header containing all supported HTTP methods on the requested resource.
-*	Each resources must support an OPTIONS request.
-*	Each resource must provide a 406 Not Acceptable if the requested HTTP method is not supported.
+*	Objects may have a _links property with an array of URI's for related resources. Each link has a rel property indicating the link's purpose.
+*	Objects may have a _actions property with an array of URI's and HTTP methods for acting on the current resource. Each action has a name indicating the action's purpose and a list of fields indicating tokens that can be replaced in the URL.
 
-###/tournament
+###/tournaments
+*	**GET**
+
+	Returns a list of tournaments. This is intended as an administrative function. 
+
 *	**POST**
 
-	Creates a new tournament. Returns a summary of the tournament with a "key" property. Use this value to access subresources of the tournament. This method will always succeed.
+	Creates a new tournament. Returns a summary of the tournament with a "key" property. Use this value to access subresources of the tournament.
 
 ###/tournament/*{key}*
 *	**GET**
 
 	Returns a summary of the tournament.
+
+	Returns a 404 if no tournament with the provided key exists.
+
+*	**DELETE**
+
+	Deletes the indicated tournament. There is no way to undo this operation.
+
+	Returns a 204 on success.
 
 	Returns a 404 if no tournament with the provided key exists.
 
@@ -42,11 +52,13 @@ To this end, each resource must meet the following requirements:
 
 *	**PUT**
 	
-	Adds a player to the tournament. Players can not be added after the first game result is entered.
+	Adds a player to the tournament.
 
-	Returns a 404 if no tournament with the provided key exists.
+	Returns a 400 if attempting to add a player after the first game result is entered.
 
 	Returns a 409 if a player with the provided name already exists.
+
+	Returns a 404 if no tournament with the provided key exists.
 
 *	**DELETE**
 
@@ -83,6 +95,8 @@ To this end, each resource must meet the following requirements:
 
 	Returns a 404 if no player with the provided name exists.
 
+	Returns a 404 if no there were no matches for the given player in the given round.
+
 ###/tournament/*{key}*/round/*{number}*/*{player}*/draw
 *	**POST**
 
@@ -93,6 +107,8 @@ To this end, each resource must meet the following requirements:
 	Returns a 404 if no round with the provided number exists.
 
 	Returns a 404 if no player with the provided name exists.
+
+	Returns a 404 if no there were no matches for the given player in the given round.
 
 ###/tournament/*{key}*/round/*{number}*/matches
 *	**GET**
@@ -117,11 +133,9 @@ To this end, each resource must meet the following requirements:
 ###/tournament/*{key}*/round/*{number}*/pairings
 *	**GET**
 
-	Returns the pairings for the round.
+	Returns the pairings for the provided round.
 
 ###/tournament/*{key}*/standings
 *	**GET**
 
 	Returns the current standings for the tournament.
-
-
