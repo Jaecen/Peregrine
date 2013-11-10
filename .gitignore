@@ -151,4 +151,4 @@ $RECYCLE.BIN/
 .DS_Store
 
 lib/packages/
-src/Peregrine.Service/App_Data/
+src/Peregrine.Api/App_Data/

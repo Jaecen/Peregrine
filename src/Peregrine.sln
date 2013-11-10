@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Service", "Peregrine.Service\Peregrine.Service.csproj", "{A68E3AE3-D40C-40FB-AE92-9A45E2DA64DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Api", "Peregrine.Api\Peregrine.Api.csproj", "{A68E3AE3-D40C-40FB-AE92-9A45E2DA64DF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{1DCE3AD1-3BFD-4D74-8B40-B25FD1B233AF}"
 	ProjectSection(SolutionItems) = preProject
