@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Service.Services;
 
 namespace Peregrine.Service.Controllers
 {
@@ -13,39 +15,48 @@ namespace Peregrine.Service.Controllers
 			Draw,
 		};
 
-		[Route(Name = "Match.Options")]
-		public virtual IHttpActionResult Options()
+		readonly MatchRenderer MatchRenderer;
+		readonly ActionLinkBuilder ActionLinkBuilder;
+		readonly ActionLinkRenderer ActionLinkRenderer;
+
+		public MatchController()
 		{
-			return new ResourceActionResult(ControllerContext, Ok());
+			MatchRenderer = new MatchRenderer();
+			ActionLinkBuilder = new ActionLinkBuilder();
+			ActionLinkRenderer = new ActionLinkRenderer();
 		}
 
-		[Route(Name = "Match.Get")]
+		[Route(Name = "get-match")]
 		public IHttpActionResult Get(Guid key, int roundNumber, int matchNumber)
 		{
 			using(var dataContext = new DataContext())
 			{
-				var match = dataContext
-					.GetTournament(key)
-					.GetRound(roundNumber)
-					.GetMatch(matchNumber);
+				var tournament = dataContext.GetTournament(key);
+				var round = tournament.GetRound(roundNumber);
+				var match = round.GetMatch(matchNumber);
 
 				if(match == null)
 					return NotFound();
 
-				return Ok(this.RenderDetail(match, key, roundNumber));
+				return Ok(new
+				{
+					match = MatchRenderer.RenderSummary(tournament, round, match, Url),
+					_actions = ActionLinkBuilder
+						.BuildActions(ControllerContext)
+						.Select(al => ActionLinkRenderer.Render(al)),
+				});
 			}
 		}
 
-		[Route(Name = "MatchResult.Put")]
-		public IHttpActionResult Put(Guid key, int roundNumber, string name, MatchResult result)
+		[Route(Name = "add-result")]
+		public IHttpActionResult Put(Guid key, int roundNumber, string playerName, MatchResult result)
 		{
 			using(var dataContext = new DataContext())
 			{
 				var tournament = dataContext.GetTournament(key);
-				var player = tournament.GetPlayer(name);
-				var match = tournament
-					.GetRound(roundNumber)
-					.GetMatch(player);
+				var player = tournament.GetPlayer(playerName);
+				var round = tournament.GetRound(roundNumber);
+				var match = round.GetMatch(player);
 
 				if(match == null)
 					return NotFound();
@@ -59,7 +70,13 @@ namespace Peregrine.Service.Controllers
 
 				dataContext.SaveChanges();
 
-				return Ok(this.RenderDetail(match, key, roundNumber));
+				return Ok(new
+				{
+					match = MatchRenderer.RenderSummary(tournament, round, match, Url),
+					_actions = ActionLinkBuilder
+						.BuildActions(ControllerContext)
+						.Select(al => ActionLinkRenderer.Render(al)),
+				});
 			}
 		}
     }

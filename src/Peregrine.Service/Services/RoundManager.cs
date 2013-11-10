@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Peregrine.Data;
 
-namespace Peregrine.Service
+namespace Peregrine.Service.Services
 {
 	public class RoundManager
 	{
 		public Round GenerateFirstRound(Tournament tournament)
 		{
 			// Generate initial order by hashing tournament key + name
+			// Deterministic, so you get the same result across calls.
 			return new Round
 			{
 				Number = 1,

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Peregrine.Service
 {
@@ -9,7 +8,6 @@ namespace Peregrine.Service
 	{
 		public static IEnumerable<IEnumerable<T>> PartitionBy<T>(this IEnumerable<T> source, int partitionSize)
 		{
-			//int i = 0;
 			return source
 				.Select((o, i) => new
 				{

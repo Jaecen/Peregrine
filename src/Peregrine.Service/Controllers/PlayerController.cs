@@ -2,74 +2,51 @@
 using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Service.Services;
 
 namespace Peregrine.Service.Controllers
 {
 	[RoutePrefix("tournament/{key}/player/{name}")]
-    public class PlayerController : ApiController
-    {
-		[Route(Name = "Player.Options")]
-		public virtual IHttpActionResult Options()
+	public class PlayerController : ApiController
+	{
+		readonly PlayerRenderer PlayerRenderer;
+		readonly ActionLinkBuilder ActionLinkBuilder;
+		readonly ActionLinkRenderer ActionLinkRenderer;
+
+		public PlayerController()
 		{
-			return new ResourceActionResult(ControllerContext, Ok());
-		}
-		
-		[Route(Name = "Player.Post")]
-		public IHttpActionResult Put(Guid key, string name)
-		{
-			using(var dataContext = new DataContext())
-			{
-				var tournament = dataContext.GetTournament(key);
-				if(tournament == null)
-					return NotFound();
-
-				if(tournament
-					.Players
-					.Where(p => p.Name == name)
-					.Any())
-					return Conflict();
-
-				var player = new Player
-				{
-					Name = name,
-				};
-
-				tournament.Players.Add(player);
-				dataContext.SaveChanges();
-
-				return CreatedAtRoute("Player.Get", new { key = tournament.Key, name = player.Name }, new
-				{
-					_link = Url.Link("Player.Get", new { key = tournament.Key, name = player.Name }),
-					name = player.Name,
-				});
-			}
+			PlayerRenderer = new PlayerRenderer();
+			ActionLinkBuilder = new ActionLinkBuilder();
+			ActionLinkRenderer = new ActionLinkRenderer();
 		}
 
-		[Route(Name = "Player.Get")]
+		[Route(Name = "get-player")]
 		public IHttpActionResult Get(Guid key, string name)
 		{
 			using(var dataContext = new DataContext())
 			{
-				var player = dataContext
-					.GetTournament(key)
-					.GetPlayer(name);
+				var tournament = dataContext.GetTournament(key);
+				var player = tournament.GetPlayer(name);
 
 				if(player == null)
 					return NotFound();
 
-				return Ok(this.RenderDetail(player, key));
+				return Ok(new
+				{
+					player = PlayerRenderer.RenderSummary(tournament, player, Url),
+					_actions = ActionLinkBuilder
+						.BuildActions(ControllerContext)
+						.Select(al => ActionLinkRenderer.Render(al))
+				});
 			}
 		}
 
-		[Route(Name = "Player.Delete")]
+		[Route(Name = "drop-player")]
 		public IHttpActionResult Delete(Guid key, string name)
 		{
 			using(var dataContext = new DataContext())
 			{
 				var tournament = dataContext.GetTournament(key);
-				if(tournament == null)
-					return NotFound();
-
 				var player = tournament.GetPlayer(name);
 				if(player == null)
 					return NotFound();
@@ -82,5 +59,5 @@ namespace Peregrine.Service.Controllers
 				return Ok();
 			}
 		}
-    }
+	}
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Service.Services;
 
 namespace Peregrine.Service.Controllers
 {
@@ -9,19 +10,19 @@ namespace Peregrine.Service.Controllers
 	public class RoundController : ApiController
 	{
 		readonly RoundManager RoundManager;
+		readonly RoundRenderer RoundRenderer;
+		readonly ActionLinkBuilder ActionLinkBuilder;
+		readonly ActionLinkRenderer ActionLinkRenderer;
 
 		public RoundController()
 		{
 			RoundManager = new RoundManager();
+			RoundRenderer = new RoundRenderer();
+			ActionLinkBuilder = new ActionLinkBuilder();
+			ActionLinkRenderer = new ActionLinkRenderer();
 		}
 
-		[Route(Name = "Round.Options")]
-		public virtual IHttpActionResult Options()
-		{
-			return new ResourceActionResult(ControllerContext, Ok());
-		}
-
-		[Route(Name = "Round.Get")]
+		[Route(Name = "get-round")]
 		public IHttpActionResult Get(Guid key, int roundNumber)
 		{
 			using(var dataContext = new DataContext())
@@ -37,10 +38,15 @@ namespace Peregrine.Service.Controllers
 					else
 						return NotFound();
 
-				return Ok(this.RenderDetail(round, key));
+				return Ok(new
+				{
+					rounds = RoundRenderer.RenderSummary(tournament, round, Url),
+					_actions = ActionLinkBuilder
+						.BuildActions(ControllerContext)
+						.Select(al => ActionLinkRenderer.Render(al)),
+				});
+				
 			}
 		}
-
-
 	}
 }

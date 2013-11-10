@@ -1,19 +1,26 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Service.Services;
 
 namespace Peregrine.Service.Controllers
 {
 	[RoutePrefix("tournament/{key}/players")]
 	public class PlayersController : ApiController
 	{
-		[Route(Name = "Players.Options")]
-		public virtual IHttpActionResult Options()
+		readonly PlayerRenderer PlayerRenderer;
+		readonly ActionLinkBuilder ActionLinkBuilder;
+		readonly ActionLinkRenderer ActionLinkRenderer;
+
+		public PlayersController()
 		{
-			return new ResourceActionResult(ControllerContext, Ok());
+			PlayerRenderer = new PlayerRenderer();
+			ActionLinkBuilder = new ActionLinkBuilder();
+			ActionLinkRenderer = new ActionLinkRenderer();
 		}
 
-		[Route(Name = "Players.Get")]
+		[Route(Name = "list-players")]
 		public IHttpActionResult Get(Guid key)
 		{
 			using(var dataContext = new DataContext())
@@ -22,7 +29,53 @@ namespace Peregrine.Service.Controllers
 				if(tournament == null)
 					return NotFound();
 
-				return Ok(this.RenderDetail(tournament.Players, key));
+				return Ok(new
+				{
+					players = tournament.Players
+						.Select(player => PlayerRenderer.RenderSummary(tournament, player, Url)),
+					_actions = ActionLinkBuilder
+						.BuildActions(ControllerContext)
+						.Select(al => ActionLinkRenderer.Render(al)),
+				});
+			}
+		}
+
+		[Route("{name}", Name = "add-player")]
+		public IHttpActionResult Put(Guid key, string name)
+		{
+			using(var dataContext = new DataContext())
+			{
+				var tournament = dataContext.GetTournament(key);
+				if(tournament == null)
+					return NotFound();
+
+				if(tournament
+					.Players
+					.Where(p => p.Name == name)
+					.Any())
+					return Conflict();
+
+				//TODO: Prevent adding players after first round has started
+
+				var player = new Player
+				{
+					Name = name,
+				};
+
+				tournament.Players.Add(player);
+				dataContext.SaveChanges();
+
+				return CreatedAtRoute(
+					"get-player",
+					new { key = tournament.Key, name = player.Name },
+					new
+					{
+						player = PlayerRenderer.RenderSummary(tournament, player, Url),
+						_actions = ActionLinkBuilder
+							.BuildActions(ControllerContext)
+							.Select(al => ActionLinkRenderer.Render(al))
+					}
+				);
 			}
 		}
 	}

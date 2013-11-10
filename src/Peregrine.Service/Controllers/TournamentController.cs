@@ -1,78 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using System.Linq;
 using Peregrine.Data;
+using Peregrine.Service.Model;
+using Peregrine.Service.Services;
+using System.Net;
 
 namespace Peregrine.Service.Controllers
 {
-	[RoutePrefix("tournament")]
+	[RoutePrefix("tournament/{key}")]
 	public class TournamentController : ApiController
-    {
-		[Route(Name = "Player.Options")]
-		public virtual IHttpActionResult Options()
+	{
+		readonly ActionLinkBuilder ActionLinkBuilder;
+		readonly ActionLinkRenderer ActionLinkRenderer;
+		readonly TournamentRenderer TournamentRenderer;
+
+		public TournamentController()
 		{
-			return new ResourceActionResult(ControllerContext, Ok());
+			ActionLinkBuilder = new ActionLinkBuilder();
+			ActionLinkRenderer = new ActionLinkRenderer();
+			TournamentRenderer = new TournamentRenderer();
 		}
 
-		[Route(Name="Tournament.Post")]
-		public IHttpActionResult Post()
-		{
-			using(var dataContext = new DataContext())
-			{
-				var tournament = new Tournament
-				{
-					Key = Guid.NewGuid(),
-				};
-
-				dataContext.Tournaments.Add(tournament);
-				dataContext.SaveChanges();
-			
-				return CreatedAtRoute(
-						"Tournament.Get", 
-						new { key = tournament.Key }, 
-						this.RenderSummary(tournament)
-					)
-					.AsResource(
-						ControllerContext,
-						new Dictionary<string, Uri>
-						{
-							{ "players", new Uri(Url.Link("Players.Get", new { key = tournament.Key })) },
-							{ "rounds", new Uri(Url.Link("Rounds.Get", new { key = tournament.Key })) },
-						}
-					);
-			}
-		}
-
-		[Route("tournament/{key}", Name = "Tournament.Get")]
+		[Route(Name = "get-tournament")]
 		public IHttpActionResult Get(Guid key)
 		{
 			using(var dataContext = new DataContext())
 			{
 				var tournament = dataContext.GetTournament(key);
 				if(tournament == null)
-					return NotFound()
-						.AsResource(
-							ControllerContext,
-							new Dictionary<string, Uri>
-							{
-								{ "players", new Uri(Url.Link("Players.Get", new { key = tournament.Key })) },
-								{ "rounds", new Uri(Url.Link("Rounds.Get", new { key = tournament.Key })) },
-							}
-						);
+					return NotFound();
 
-
-				return Ok(
-						this.RenderSummary(tournament)
-					)
-					.AsResource(
-						ControllerContext,
-						new Dictionary<string, Uri>
-						{
-							{ "players", new Uri(Url.Link("Players.Get", new { key = tournament.Key })) },
-							{ "rounds", new Uri(Url.Link("Rounds.Get", new { key = tournament.Key })) },
-						}
-					);
+				return Ok(new
+				{
+					tournament = TournamentRenderer.RenderSummary(tournament, Url),
+					_actions = ActionLinkBuilder
+						.BuildActions(ControllerContext)
+						.Select(al => ActionLinkRenderer.Render(al))
+				});
 			}
 		}
-    }
+
+		[Route(Name = "delete-tournament")]
+		public IHttpActionResult Delete(Guid key)
+		{
+			using(var dataContext = new DataContext())
+			{
+				var tournament = dataContext.GetTournament(key);
+				if(tournament == null)
+					return NotFound();
+
+				dataContext.Tournaments.Remove(tournament);
+				dataContext.SaveChanges();
+
+				return Ok();
+			}
+		}
+	}
 }
