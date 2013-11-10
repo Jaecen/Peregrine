@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Controllers;
@@ -21,10 +22,14 @@ namespace Peregrine.Service.Services
 				{
 					Api = ad,
 					RouteName = ad.ActionDescriptor.GetCustomAttributes<RouteAttribute>().Select(ra => ra.Name).FirstOrDefault(),
-					q = controllerContext.ControllerDescriptor.Configuration.Services.GetActionSelector().GetActionMapping(controllerContext.ControllerDescriptor).SelectMany(g => g).ToArray(),
-					Params = ad.ParameterDescriptions,
+					Params = ad.ParameterDescriptions.Where(pd => !controllerContext.RouteData.Values.ContainsKey(pd.Name)).Select(pd => pd.Name),
 				})
-				.Select(o => new ActionLink(o.RouteName, o.Api.HttpMethod.Method, controllerContext.RequestContext.Url.Link(o.RouteName, null)))
+				.Select(o => new ActionLink(
+					o.RouteName,
+					o.Api.HttpMethod.Method,
+					controllerContext.RequestContext.Url.Link(o.RouteName, o.Params.ToDictionary<string, string, object>(param => param, param => String.Format("!{0}!", param))),
+					o.Params)
+				)
 				.ToArray();
 		}
 	}

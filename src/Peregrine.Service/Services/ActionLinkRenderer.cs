@@ -1,4 +1,5 @@
-﻿using Peregrine.Service.Model;
+﻿using System.Linq;
+using Peregrine.Service.Model;
 
 namespace Peregrine.Service.Services
 {
@@ -11,6 +12,10 @@ namespace Peregrine.Service.Services
 				name = actionLink.Name,
 				method = actionLink.Method,
 				href = actionLink.Href,
+				@params = actionLink.Parameters.Select(param => new
+				{
+					name = param,
+				})
 			};
 		}
 	}
