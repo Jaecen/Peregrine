@@ -59,6 +59,10 @@
     <Compile Include="Migrations\201311050721538_Rename_Number_to_Ordinal.Designer.cs">
       <DependentUpon>201311050721538_Rename_Number_to_Ordinal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201311110627149_Add_Player_Dropped_Flag.cs" />
+    <Compile Include="Migrations\201311110627149_Add_Player_Dropped_Flag.Designer.cs">
+      <DependentUpon>201311110627149_Add_Player_Dropped_Flag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Tournament.cs" />
     <Compile Include="Game.cs" />
@@ -77,6 +81,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201311050721538_Rename_Number_to_Ordinal.resx">
       <DependentUpon>201311050721538_Rename_Number_to_Ordinal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201311110627149_Add_Player_Dropped_Flag.resx">
+      <DependentUpon>201311110627149_Add_Player_Dropped_Flag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
