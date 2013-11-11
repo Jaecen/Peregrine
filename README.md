@@ -41,6 +41,20 @@ To this end, the following conventions have been introduced:
 
 	Returns a 404 if no tournament with the provided key exists.
 
+###/tournament/*{key}*/players/*{name}*
+
+*	**POST**
+	
+	Adds a player to the tournament.
+
+	*Note: This action is subject to change.* Once a standard is defined for posting data to resources, this is likely to change.
+
+	Returns a 400 if attempting to add a player after the first game result is entered.
+
+	Returns a 409 if a player with the provided name already exists.
+
+	Returns a 404 if no tournament with the provided key exists.
+
 ###/tournament/*{key}*/player/*{name}*
 *	**GET** 
 
@@ -49,16 +63,6 @@ To this end, the following conventions have been introduced:
 	Returns a 404 if no tournament with the provided key exists.
 
 	Returns a 404 if no player with the provided name exists.
-
-*	**PUT**
-	
-	Adds a player to the tournament.
-
-	Returns a 400 if attempting to add a player after the first game result is entered.
-
-	Returns a 409 if a player with the provided name already exists.
-
-	Returns a 404 if no tournament with the provided key exists.
 
 *	**DELETE**
 

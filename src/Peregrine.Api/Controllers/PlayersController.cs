@@ -40,8 +40,8 @@ namespace Peregrine.Api.Controllers
 			}
 		}
 
-		[Route("player/{name}", Name = "add-player")]
-		public IHttpActionResult Put(Guid key, string name)
+		[Route("players/{name}", Name = "add-player")]
+		public IHttpActionResult Post(Guid key, string name)
 		{
 			using(var dataContext = new DataContext())
 			{
