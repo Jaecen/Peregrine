@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
 
-namespace Peregrine.Api
+namespace Peregrine.Web
 {
 	public static class WebApiConfig
 	{

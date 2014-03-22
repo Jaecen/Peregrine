@@ -4,9 +4,9 @@ using System.Net;
 using System.Web.Http;
 using Peregrine.Data;
 
-namespace Peregrine.Api.Controllers
+namespace Peregrine.Web.Controllers
 {
-	[RoutePrefix("tournaments/{tournamentKey}")]
+	[RoutePrefix("api/tournaments/{tournamentKey}")]
 	public class TournamentController : ApiController
 	{
 		[Route(Name = "tournament-get")]

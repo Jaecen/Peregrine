@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Http;
 
-namespace Peregrine.Api.Controllers
+namespace Peregrine.Web.Controllers
 {
 	public class RoundsController : ApiController
 	{

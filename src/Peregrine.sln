@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{1DCE3A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Data", "Peregrine.Data\Peregrine.Data.csproj", "{F189834C-A485-4DF1-B424-994E16EE999F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Api", "Peregrine.Api\Peregrine.Api.csproj", "{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Web", "Peregrine.Web\Peregrine.Web.csproj", "{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
