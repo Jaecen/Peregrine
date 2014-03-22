@@ -44,7 +44,10 @@ namespace Peregrine.Web.Controllers
 					new { tournamentKey = tournament.Key },
 					new
 					{
-						key = tournament.Key
+						tournament = new
+						{
+							key = tournament.Key,
+						}
 					});
 			}
 		}
