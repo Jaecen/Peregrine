@@ -6,14 +6,14 @@ namespace Peregrine.Data.Migrations
     using System.Data.Entity.Migrations.Infrastructure;
     using System.Resources;
     
-    [GeneratedCode("EntityFramework.Migrations", "6.0.1-21010")]
+    [GeneratedCode("EntityFramework.Migrations", "6.1.0-30225")]
     public sealed partial class Create_Database : IMigrationMetadata
     {
         private readonly ResourceManager Resources = new ResourceManager(typeof(Create_Database));
         
         string IMigrationMetadata.Id
         {
-            get { return "201311040545324_Create_Database"; }
+            get { return "201403221947501_Create_Database"; }
         }
         
         string IMigrationMetadata.Source

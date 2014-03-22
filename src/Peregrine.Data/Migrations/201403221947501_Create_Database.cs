@@ -12,7 +12,7 @@ namespace Peregrine.Data.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Ordinal = c.Int(nullable: false),
+                        Number = c.Int(nullable: false),
                         Winner_Id = c.Int(),
                         Match_Id = c.Int(),
                     })
@@ -28,6 +28,7 @@ namespace Peregrine.Data.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Name = c.String(),
+                        Dropped = c.Boolean(nullable: false),
                         Match_Id = c.Int(),
                         Tournament_Id = c.Int(),
                     })
@@ -42,6 +43,7 @@ namespace Peregrine.Data.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        Number = c.Int(nullable: false),
                         Round_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
@@ -53,7 +55,7 @@ namespace Peregrine.Data.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Ordinal = c.Int(nullable: false),
+                        Number = c.Int(nullable: false),
                         Tournament_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
@@ -66,6 +68,8 @@ namespace Peregrine.Data.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Key = c.Guid(nullable: false),
+                        Name = c.String(),
+                        Seed = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -80,8 +84,8 @@ namespace Peregrine.Data.Migrations
             DropForeignKey("dbo.Games", "Match_Id", "dbo.Matches");
             DropForeignKey("dbo.Games", "Winner_Id", "dbo.Players");
             DropIndex("dbo.Rounds", new[] { "Tournament_Id" });
-            DropIndex("dbo.Players", new[] { "Tournament_Id" });
             DropIndex("dbo.Matches", new[] { "Round_Id" });
+            DropIndex("dbo.Players", new[] { "Tournament_Id" });
             DropIndex("dbo.Players", new[] { "Match_Id" });
             DropIndex("dbo.Games", new[] { "Match_Id" });
             DropIndex("dbo.Games", new[] { "Winner_Id" });

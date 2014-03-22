@@ -2,78 +2,125 @@
 using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
-using Peregrine.Api.Services;
 
 namespace Peregrine.Api.Controllers
 {
-	[RoutePrefix("tournament/{key}/player/{name}")]
+	[RoutePrefix("tournaments/{tournamentKey}/players/{playerName}")]
 	public class PlayerController : ApiController
 	{
-		readonly PlayerRenderer PlayerRenderer;
-		readonly ActionLinkBuilder ActionLinkBuilder;
-		readonly ActionLinkRenderer ActionLinkRenderer;
-
-		public PlayerController()
-		{
-			PlayerRenderer = new PlayerRenderer();
-			ActionLinkBuilder = new ActionLinkBuilder();
-			ActionLinkRenderer = new ActionLinkRenderer();
-		}
-
-		[Route(Name = "get-player")]
-		public IHttpActionResult Get(Guid key, string name)
+		[Route]
+		public IHttpActionResult Get(Guid tournamentKey, string playerName)
 		{
 			using(var dataContext = new DataContext())
 			{
-				var tournament = dataContext.GetTournament(key);
-				var player = tournament.GetPlayer(name);
+				var player = dataContext
+					.GetTournament(tournamentKey)
+					.GetPlayer(playerName);
 
 				if(player == null)
 					return NotFound();
 
-				return Ok(new
-				{
-					player = PlayerRenderer.RenderSummary(tournament, player, Url),
-					_actions = ActionLinkBuilder
-						.BuildActions(ControllerContext)
-						.Select(al => ActionLinkRenderer.Render(al))
-				});
+				return Ok(Render(player));
 			}
 		}
 
-		[Route(Name = "drop-player")]
-		public IHttpActionResult Delete(Guid key, string name)
+		[Route]
+		public IHttpActionResult Put(Guid tournamentKey, string playerName)
 		{
 			using(var dataContext = new DataContext())
 			{
-				var tournament = dataContext.GetTournament(key);
-				var player = tournament.GetPlayer(name);
+				var tournament = dataContext
+					.GetTournament(tournamentKey);
+
+				if(tournament == null)
+					return NotFound();
+
+				var tournamentHasResults = tournament
+					.Rounds
+					.Where(round => round
+						.Matches
+						.Any()
+					)
+					.Any();
+
+				if(tournamentHasResults)
+					return StatusCode(System.Net.HttpStatusCode.MethodNotAllowed);
+
+				var player = tournament
+					.GetPlayer(playerName);
+
+				if(player != null)
+					return Conflict();
+
+				player = dataContext
+					.Players
+					.Add(new Player
+					{
+						Name = playerName,
+					});
+
+				tournament.Players.Add(player);
+
+				dataContext.SaveChanges();
+
+				return Ok(Render(player));
+			}
+		}
+
+		[Route]
+		public IHttpActionResult Delete(Guid tournamentKey, string playerName)
+		{
+			using(var dataContext = new DataContext())
+			{
+				var tournament = dataContext
+					.GetTournament(tournamentKey);
+
+				if(tournament == null)
+					return NotFound();
+
+				var player = tournament
+					.GetPlayer(playerName);
+
 				if(player == null)
 					return NotFound();
 
-				if(tournament.HasStarted())
+				var tournamentHasResults = tournament
+					.Rounds
+					.Where(round => round
+						.Matches
+						.Any()
+					)
+					.Any();
+
+				if(tournamentHasResults)
 				{
-					// Drop if any game results have been recorded
+					// Drop
 					player.Dropped = true;
 					dataContext.SaveChanges();
 
-					return Ok(new
-					{
-						player = PlayerRenderer.RenderSummary(tournament, player, Url),
-						_actions = ActionLinkBuilder
-							.BuildActions(ControllerContext)
-							.Where(al => al.Name != "drop-player")			// Can't drop a dropped player
-							.Select(al => ActionLinkRenderer.Render(al))
-					});
+					return Ok(Render(player));
 				}
 				else
 				{
-					// Delete if not results recorded
-					tournament.Players.Remove(player);
+					// Delete
+					dataContext.Players.Remove(player);
 					dataContext.SaveChanges();
+
 					return StatusCode(System.Net.HttpStatusCode.NoContent);
 				}
 			}
+		}
+
+		object Render(Player player)
+		{
+			return new
+			{
+				player = new
+				{
+					name = player.Name,
+					dropped = player.Dropped,
+				}
+			};
 		}
 	}
 }

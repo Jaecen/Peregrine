@@ -2,83 +2,32 @@
 using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
-using Peregrine.Api.Services;
 
 namespace Peregrine.Api.Controllers
 {
-	[RoutePrefix("tournament/{key}")]
+	[RoutePrefix("tournaments/{tournamentKey}/players")]
 	public class PlayersController : ApiController
 	{
-		readonly PlayerRenderer PlayerRenderer;
-		readonly ActionLinkBuilder ActionLinkBuilder;
-		readonly ActionLinkRenderer ActionLinkRenderer;
-
-		public PlayersController()
-		{
-			PlayerRenderer = new PlayerRenderer();
-			ActionLinkBuilder = new ActionLinkBuilder();
-			ActionLinkRenderer = new ActionLinkRenderer();
-		}
-
-		[Route("players", Name = "list-players")]
-		public IHttpActionResult Get(Guid key)
+		[Route]
+		public IHttpActionResult Get(Guid tournamentKey)
 		{
 			using(var dataContext = new DataContext())
 			{
-				var tournament = dataContext.GetTournament(key);
+				var tournament = dataContext
+					.GetTournament(tournamentKey);
+
 				if(tournament == null)
 					return NotFound();
+
+				var playerNames = tournament
+					.Players
+					.Select(player => player.Name)
+					.ToArray();
 
 				return Ok(new
-				{
-					players = tournament.Players
-						.Select(player => PlayerRenderer.RenderSummary(tournament, player, Url)),
-					_actions = ActionLinkBuilder
-						.BuildActions(ControllerContext)
-						.Select(al => ActionLinkRenderer.Render(al)),
-				});
-			}
-		}
-
-		[Route("players/{name}", Name = "add-player")]
-		public IHttpActionResult Post(Guid key, string name)
-		{
-			using(var dataContext = new DataContext())
-			{
-				var tournament = dataContext.GetTournament(key);
-				if(tournament == null)
-					return NotFound();
-
-				// Can't add players after first round has started
-				if(tournament.HasStarted())
-					return BadRequest("Can not add players once a game result has been recorded.");
-
-				// Can't add a player with the same name as an existing one
-				if(tournament
-					.Players
-					.Where(p => p.Name == name)
-					.Any())
-					return Conflict();
-
-				var player = new Player
-				{
-					Name = name,
-				};
-
-				tournament.Players.Add(player);
-				dataContext.SaveChanges();
-
-				return CreatedAtRoute(
-					"get-player",
-					new { key = tournament.Key, name = player.Name },
-					new
 					{
-						player = PlayerRenderer.RenderSummary(tournament, player, Url),
-						_actions = ActionLinkBuilder
-							.BuildActions(ControllerContext)
-							.Select(al => ActionLinkRenderer.Render(al))
-					}
-				);
+						names = playerNames,
+					});
 			}
 		}
 	}

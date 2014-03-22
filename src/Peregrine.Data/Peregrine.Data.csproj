@@ -30,14 +30,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\..\lib\packages\EntityFramework.6.0.1\lib\net45\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\..\lib\packages\EntityFramework.6.0.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\lib\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -51,17 +54,9 @@
   <ItemGroup>
     <Compile Include="DataContext.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Migrations\201311040545324_Create_Database.cs" />
-    <Compile Include="Migrations\201311040545324_Create_Database.Designer.cs">
-      <DependentUpon>201311040545324_Create_Database.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201311050721538_Rename_Number_to_Ordinal.cs" />
-    <Compile Include="Migrations\201311050721538_Rename_Number_to_Ordinal.Designer.cs">
-      <DependentUpon>201311050721538_Rename_Number_to_Ordinal.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201311110627149_Add_Player_Dropped_Flag.cs" />
-    <Compile Include="Migrations\201311110627149_Add_Player_Dropped_Flag.Designer.cs">
-      <DependentUpon>201311110627149_Add_Player_Dropped_Flag.cs</DependentUpon>
+    <Compile Include="Migrations\201403221947501_Create_Database.cs" />
+    <Compile Include="Migrations\201403221947501_Create_Database.Designer.cs">
+      <DependentUpon>201403221947501_Create_Database.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Tournament.cs" />
@@ -76,14 +71,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201311040545324_Create_Database.resx">
-      <DependentUpon>201311040545324_Create_Database.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201311050721538_Rename_Number_to_Ordinal.resx">
-      <DependentUpon>201311050721538_Rename_Number_to_Ordinal.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201311110627149_Add_Player_Dropped_Flag.resx">
-      <DependentUpon>201311110627149_Add_Player_Dropped_Flag.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201403221947501_Create_Database.resx">
+      <DependentUpon>201403221947501_Create_Database.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Api", "Peregrine.Api\Peregrine.Api.csproj", "{A68E3AE3-D40C-40FB-AE92-9A45E2DA64DF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{1DCE3AD1-3BFD-4D74-8B40-B25FD1B233AF}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
@@ -12,20 +10,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{1DCE3A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Data", "Peregrine.Data\Peregrine.Data.csproj", "{F189834C-A485-4DF1-B424-994E16EE999F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Api", "Peregrine.Api\Peregrine.Api.csproj", "{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A68E3AE3-D40C-40FB-AE92-9A45E2DA64DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A68E3AE3-D40C-40FB-AE92-9A45E2DA64DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A68E3AE3-D40C-40FB-AE92-9A45E2DA64DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A68E3AE3-D40C-40FB-AE92-9A45E2DA64DF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F189834C-A485-4DF1-B424-994E16EE999F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F189834C-A485-4DF1-B424-994E16EE999F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F189834C-A485-4DF1-B424-994E16EE999F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F189834C-A485-4DF1-B424-994E16EE999F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
