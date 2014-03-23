@@ -25,23 +25,49 @@ angular.module('peregrineUi', [
 			.otherwise({ redirectTo: '/' });
 	});
 
+//modules
+angular.module('peregrineUi.resources', [
+]);
+
 angular.module('peregrineUi.controllers', [
-	
+	'peregrineUi.resources'
 ]);
 
 angular.module('peregrineUi.directives', [
-
 ]);
 
-//setup controllers
+//resources
+angular
+.module('peregrineUi.resources')
+.factory('tournamentResource', [
+	'$resource',
+	function ($resource) {
+		return $resource('/api/tournaments/:tournamentKey', { tournamentKey: '@key' }, {
+			create: {
+				method: 'post', transformResponse: function (data) {
+					return JSON.parse(data).tournament;
+				}
+			}
+		});
+	}
+])
 
+angular
+.module('peregrineUi.resources')
+.factory('playerResource', [
+	'$resource',
+	function ($resource) {
+		return $resource('/api/tournaments/:tournamentKey/players/:name', { tournamentKey: '@key', playerName: '@name' });
+	}
+])
+
+//controllers
 angular
 .module('peregrineUi.controllers')
 .controller('mainController', [
-	'$scope', '$resource',
-	function ($scope, $resource) {
-		var Tournament = $resource('/api/tournaments/:tournamentKey', { tournamentKey: '@key' });
-		$scope.tournamentKeys = Tournament.get();
+	'$scope', '$resource', 'tournamentResource',
+	function ($scope, $resource, tournamentResource) {
+		$scope.tournamentKeys = tournamentResource.get();
 	}
 ]);
 
@@ -50,28 +76,15 @@ angular
 .controller('roundController',[
 	'$scope', '$route', '$routeParams', '$http',
 	function ($scope, $route, $routeParams, $http) {
-		$scope.$roundNumber = $routeParams.roundNumber;
-		$scope.$tournamentKey = $routeParams.tournamentKey;
-		if ($routeParams.tournamentKey && $routeParams.roundNumber) {
-			//get existing tournament
-			var url = '/api/tournaments/' + encodeURIComponent($routeParams.tournamentKey) + '/rounds/' + encodeURIComponent($routeParams.roundNumber) + '/pairings';
-			$http.get(url)
-				.success(function (data, status, headers, config) {
-					$scope.error = '';
-					console.log(data);
-				})
-				.error(function (data, status, headers, config) {
-					$scope.error = 'Sorry We were unable to get the pairings.';
-				});
-		}
+		
 	}
 ]);
 
 angular
 .module('peregrineUi.controllers')
 .controller('tournamentController',[
-	'$scope', '$routeParams', '$http', '$resource',
-	function ($scope, $routeParams, $http, $resource) {
+	'$scope', '$routeParams', '$http', '$resource', 'tournamentResource', 'playerResource',
+	function ($scope, $routeParams, $http, $resource, tournamentResource, playerResource) {
 		$scope.players = [];
 		$scope.error = '';
 
@@ -84,35 +97,33 @@ angular
 		if ($routeParams.tournamentKey) {
 			//get existing tournament
 			var url = '/api/tournaments/' + encodeURIComponent($routeParams.tournamentKey);
-			$http.get(url)
-				.success(function (data, status, headers, config) {
+			tournamentResource.get(
+				{ tournamentKey: $routeParams.tournamentKey },
+				function (data) {
 					$scope.error = '';
 					$scope.tournament = data.tournament;
 					//get players
-					var playersLink = url + '/players';
-					$http.get(playersLink)
-					.success(function (data, status, headers, config) {
-						$scope.error = '';
-						$scope.players = data.names;
-					})
-					.error(function (data, status, headers, config) {
-						$scope.error = 'Sorry =( We failed to load your players.';
-					})
-					$scope.roundOneLink = getRoundLink($scope.tournament.key, 1);
-				})
-				.error(function (data, status, headers, config) {
+					playerResource.get({ tournamentKey: $routeParams.tournamentKey }, //switch to .query for a list rather than a .get for one item.
+						function (data) {
+							$scope.error = '';
+							$scope.players = data.names;
+						},
+						function (data) {
+							$scope.error = 'Sorry =( We failed to load your players.';
+						});
+				},
+				function (data) {
 					$scope.error = 'Sorry =( We were unable to find your tournament.';
 				});
 		}
 		else {
 			//create a tournament
-			$http.post('/api/tournaments')
-				.success(function (data, status, headers, config) {
+			$scope.tournament = tournamentResource.create(
+				{},
+				function (value) {
 					$scope.error = '';
-					$scope.tournament = data.tournament;
-					$scope.roundOneLink = getRoundLink($scope.tournament.key, 1);
-				})
-				.error(function (data, status, headers, config) {
+				}, 
+				function () {
 					$scope.error = 'We were unable to create a tournament.';
 				});
 		}
@@ -178,10 +189,6 @@ function comparePlayer(playerOne, playerTwo) {
 	if (playerOne.name > playerTwo.name)
 		return 1;
 	return 0;
-}
-
-function getRoundLink(tournamentCode, roundNumber) {
-	return '#/Tournament/' + encodeURIComponent(tournamentCode) + '/Round/' + roundNumber;
 }
 
 //click to edit
