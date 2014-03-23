@@ -44,9 +44,7 @@ angular
 	function ($resource) {
 		return $resource('/api/tournaments/:tournamentKey', { tournamentKey: '@key' }, {
 			create: {
-				method: 'post', transformResponse: function (data) {
-					return JSON.parse(data).tournament;
-				}
+				method: 'post'
 			}
 		});
 	}
@@ -57,7 +55,11 @@ angular
 .factory('playerResource', [
 	'$resource',
 	function ($resource) {
-		return $resource('/api/tournaments/:tournamentKey/players/:name', { tournamentKey: '@key', playerName: '@name' });
+		return $resource('/api/tournaments/:tournamentKey/players/:playerName', {playerName: '@name' }, {
+			save: {
+				method: 'put'
+			}
+		});
 	}
 ])
 
@@ -67,7 +69,7 @@ angular
 .controller('mainController', [
 	'$scope', '$resource', 'tournamentResource',
 	function ($scope, $resource, tournamentResource) {
-		$scope.tournamentKeys = tournamentResource.get();
+		$scope.tournaments = tournamentResource.query();
 	}
 ]);
 
@@ -96,23 +98,22 @@ angular
 
 		if ($routeParams.tournamentKey) {
 			//get existing tournament
-			var url = '/api/tournaments/' + encodeURIComponent($routeParams.tournamentKey);
 			tournamentResource.get(
 				{ tournamentKey: $routeParams.tournamentKey },
-				function (data) {
+				function (tournament) {
 					$scope.error = '';
-					$scope.tournament = data.tournament;
+					$scope.tournament = tournament;
 					//get players
-					playerResource.get({ tournamentKey: $routeParams.tournamentKey }, //switch to .query for a list rather than a .get for one item.
-						function (data) {
+					playerResource.query({ tournamentKey: tournament.key },
+						function (players) {
 							$scope.error = '';
-							$scope.players = data.names;
+							$scope.players = players;
 						},
-						function (data) {
+						function (players) {
 							$scope.error = 'Sorry =( We failed to load your players.';
 						});
 				},
-				function (data) {
+				function () {
 					$scope.error = 'Sorry =( We were unable to find your tournament.';
 				});
 		}
@@ -120,7 +121,7 @@ angular
 			//create a tournament
 			$scope.tournament = tournamentResource.create(
 				{},
-				function (value) {
+				function () {
 					$scope.error = '';
 				}, 
 				function () {
@@ -128,20 +129,28 @@ angular
 				});
 		}
 
-		$scope.addPlayer = function (playerName) {
-			if (playerName) {
-				$scope.newPlayerName = playerName;
+		$scope.addPlayer = function (player) {
+			if (player) {
+				$scope.newPlayer = player;
 			}
-			if ($scope.newPlayerName && $scope.newPlayerName.length > 0 && $scope.tournament.key) {
-				var url = '/api/tournaments/' + encodeURIComponent($scope.tournament.key) + '/players/' + encodeURIComponent($scope.newPlayerName);
-				$http.put(url)
-					.success(function (data, status, headers, config) {
+			if ($scope.newPlayer.name && $scope.newPlayer.name.length > 0 && $scope.tournament.key) {
+				playerResource.save(
+					{ tournamentKey: $scope.tournament.key },
+					$scope.newPlayer,
+					function () {
 						$scope.error = '';
-						var newPlayer = data.player;
-						$scope.players.push(newPlayer.name);
-						$scope.newPlayerName = '';
-					})
-					.error(function (data, status, headers, config) {
+						//get players
+						playerResource.query({ tournamentKey: $scope.tournament.key },
+							function (players) {
+								$scope.error = '';
+								$scope.players = players;
+							},
+							function (players) {
+								$scope.error = 'Sorry =( We failed to load your players.';
+							});
+						$scope.newPlayer = {};
+					},
+					function () {
 						if (status === 409) {
 							$scope.error = 'Sorry a player with the same name already exists.'
 						}
@@ -152,23 +161,23 @@ angular
 			}
 		};
 
-		$scope.deletePlayer = function (playerName) {
-			var deletePlayerLink = '/api/tournaments/' + $scope.tournament.key + '/players/' + playerName;
-			$http.delete(deletePlayerLink)
-				.success(function (data, status) {
-					var otherPlayers = $scope.players.reduce(function (everyoneElse, deletedPlayer) {
-						if (deletedPlayer === playerName) {
-							return everyoneElse;
-						}
-						else {
-							return everyoneElse.concat(deletedPlayer);
-						}
-					}, []);
-
-					$scope.players = otherPlayers;
-				})
-				.error(function (data, status) {
-					console.log(status);
+		$scope.deletePlayer = function (player) {
+			playerResource.delete(
+				{ tournamentKey: $scope.tournament.key, playerName: player.name },
+				function () {
+					$scope.error = '';
+					//get players
+					playerResource.query({ tournamentKey: $scope.tournament.key },
+						function (players) {
+							$scope.error = '';
+							$scope.players = players;
+						},
+						function (players) {
+							$scope.error = 'Sorry =( We failed to load your players.';
+						});
+				},
+				function () {
+					$scope.error = 'We were unable to delete the player!';
 				});
 		};
 
@@ -191,7 +200,7 @@ function comparePlayer(playerOne, playerTwo) {
 	return 0;
 }
 
-//click to edit
+//click to edit item list
 angular
 .module('peregrineUi.directives')
 .directive('itemEditor', function () {
@@ -200,6 +209,7 @@ angular
 		replace: true,
 		templateUrl: '/DirectiveTemplates/ItemEditor.html?1=1',
 		scope: {
+			itemAttribute: '=itemValue',
 			itemIndex: '=itemIndex',
 			itemList: '=itemList',
 			itemDeleteCallback: '=itemDeleteCallback',
@@ -207,15 +217,16 @@ angular
 		},
 		link: function ($scope, $element) {
 			$scope.item = $scope.itemList[$scope.itemIndex];
+			$scope.itemValue = $scope.item[$scope.itemAttribute];
 
 			$scope.view = {
-				editableValue: $scope.item,
+				editableValue: $scope.itemValue,
 				editorEnabled: false
 			};
 
 			$scope.enableEditor = function () {
 				$scope.view.editorEnabled = true;
-				$scope.view.editableValue = $scope.item;
+				$scope.view.editableValue = $scope.itemValue;
 				setTimeout(function () {
 					$element.find('.editable-value').focus().select();
 				}, 2);
@@ -225,9 +236,9 @@ angular
 				$scope.view.editorEnabled = false;
 			};
 
-			$scope.save = function () {
-				$scope.newItem = {}; //remove this
-				$scope.newItem = $scope.view.editableValue;
+			$scope.saveItem = function () {
+				$scope.newItem = {};
+				$scope.newItem[$scope.itemAttribute] = $scope.view.editableValue;
 				$scope.itemEditCallback($scope.newItem, $scope.item);
 				$scope.disableEditor();
 			};

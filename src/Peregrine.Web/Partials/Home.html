@@ -18,9 +18,9 @@
 </div>
 <h3>Tournaments</h3>
 <ul>
-	<li data-ng-repeat="key in tournamentKeys.keys">
-		<a href="#/Tournament/{{key}}">
-			{{key}}
+	<li data-ng-repeat="tournament in tournaments">
+		<a href="#/Tournament/{{tournament.key}}">
+			{{tournament.key}}
 		</a>
 	</li>
 </ul>
