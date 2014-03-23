@@ -17,7 +17,7 @@ namespace Peregrine.Web.Controllers
 		}
 		
 		[Route("{result:regex(^(draw|win)$)}/{count}")]
-		public IHttpActionResult Post(Guid tournamentKey, int roundNumber, string playerName, string result, int count)
+		public IHttpActionResult Put(Guid tournamentKey, int roundNumber, string playerName, string result, int count)
 		{
 			using(var dataContext = new DataContext())
 			{
@@ -96,13 +96,7 @@ namespace Peregrine.Web.Controllers
 
 				dataContext.SaveChanges();
 
-				return Ok(new
-					{
-						players = match
-							.Players
-							.Select(p => p.Name)
-							.ToArray()
-					});
+				return Ok(RoundManager.RenderRound(round, roundState));
 			}
 		}
 	}

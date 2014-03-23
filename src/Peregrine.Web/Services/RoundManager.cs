@@ -44,11 +44,13 @@ namespace Peregrine.Web.Services
 			if(requestedRound == null)
 				return RoundState.Projected;
 
+			// A round is completed when all matches have at least two wins or are called because of time.
+			// Since we don't track called games, we just check for at least one completed game in each match.
 			var requestedRoundIsCompleted = requestedRound
 				.Matches
 				.All(match => match
 					.Games
-					.Count() >= Tournament.MinGamesPerRound
+					.Count() >= 1
 				);
 
 			var nextRoundHasResults = tournament
@@ -109,7 +111,7 @@ namespace Peregrine.Web.Services
 				.Zip(odds,
 					(left, right) => new Match
 					{
-						Games = new Game[0],
+						Games = new List<Game>(),
 						Players = new[] 
 							{ 
 								left, 
@@ -140,6 +142,30 @@ namespace Peregrine.Web.Services
 				.ToArray();
 
 			return pairings;
+		}
+
+		public object RenderRound(Round round, RoundState roundState)
+		{
+			return new
+			{
+				number = round.Number,
+				completed = roundState == RoundState.Completed || roundState == RoundState.Finalized,
+				matches = round
+					.Matches
+					.Select(m => new
+					{
+						games = m.Games.Count(),
+						players = m.Players
+							.Select(p => new
+							{
+								name = p.Name,
+								wins = m.Games.Where(g => g.Winner == p).Count(),
+								losses = m.Games.Where(g => g.Winner != p && g.Winner != null).Count(),
+								draws = m.Games.Where(g => g.Winner == null).Count(),
+							})
+					})
+					.ToArray()
+			};
 		}
 	}
 }

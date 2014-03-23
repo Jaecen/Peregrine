@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,10 @@ namespace Peregrine.Data
 		{
 			return dataContext
 				.Tournaments
+				.Include(t => t.Players)
+				.Include(t => t.Rounds)
+				.Include("Rounds.Matches")
+				.Include("Rounds.Matches.Games")
 				.FirstOrDefault(t => t.Key == tournamentKey);
 		}
 
@@ -22,6 +27,7 @@ namespace Peregrine.Data
 
 			return tournament
 				.Rounds
+				
 				.Where(r => r.Number == roundNumber)
 				.FirstOrDefault();
 		}

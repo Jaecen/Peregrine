@@ -45,25 +45,7 @@ namespace Peregrine.Web.Controllers
 						.Where(r => r.Number == roundNumber)
 						.FirstOrDefault();
 
-				return Ok(new
-					{
-						number = round.Number,
-						completed = roundState == RoundState.Completed || roundState == RoundState.Finalized,
-						matches = round
-							.Matches
-							.Select(m => new
-							{
-								games = m.Games.Count(),
-								players = m.Players
-									.Select(p => new
-									{
-										name = p.Name,
-										wins = m.Games.Where(g => g.Winner == p).Count(),
-										losses = m.Games.Where(g => g.Winner != p && g.Winner != null).Count(),
-										draws = m.Games.Where(g => g.Winner == null).Count(),
-									})
-							})
-					});
+				return Ok(RoundManager.RenderRound(round, roundState));
 			}
 		}
 	}

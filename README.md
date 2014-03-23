@@ -82,23 +82,10 @@ Swiss-pairing and ranking management.
 
 	Returns a 404 if no round with the provided number exists.
 
-###/tournaments/*{key}*/rounds/*{number}*/*{player}*/win
-*	**POST**
+###/tournaments/*{key}*/rounds/*{number}*/*{player}*/win/{count}
+*	**PUT**
 
-	Adds a win result in the round for the provided player. Results for a previous round can not be changed once a new round has started. Returns a summary of the match the player participated in.
-
-	Returns a 404 if no tournament with the provided key exists.
-
-	Returns a 404 if no round with the provided number exists.
-
-	Returns a 404 if no player with the provided name exists.
-
-	Returns a 404 if no there were no matches for the given player in the given round.
-
-###/tournaments/*{key}*/rounds/*{number}*/*{player}*/draw
-*	**POST**
-
-	Adds a draw result in the round for the provided player. Only one draw result needs to be submitted for a game. Draw results are recorded against both players in the match. Results for a previous round can not be changed once a new round has started. Returns a summary of the match the player participated in.
+	Sets the win results in the round for the provided player. Results for a previous round can not be changed once a new round has started. Returns a summary of the match the player participated in.
 
 	Returns a 404 if no tournament with the provided key exists.
 
@@ -108,30 +95,18 @@ Swiss-pairing and ranking management.
 
 	Returns a 404 if no there were no matches for the given player in the given round.
 
-###/tournaments/*{key}*/rounds/*{number}*/matches
-*	**GET**
+###/tournaments/*{key}*/rounds/*{number}*/*{player}*/draw/{count}
+*	**PUT**
 
-	Returns a list of the matches for the given round.
-
-	Returns a 404 if no tournament with the provided key exists.
-
-	Returns a 404 if no round with the provided number exists.
-
-###/tournaments/*{key}*/rounds/*{number}*/match/*{number}*
-*	**GET**
-
-	Returns a summary of the match.
+	Set the draw results in the round for the match the provided player was in. A draw result only needs to submitted for one player in the match. Draw results are recorded against both players in the match. Results for a previous round can not be changed once a new round has started. Returns a summary of the match the player participated in.
 
 	Returns a 404 if no tournament with the provided key exists.
 
 	Returns a 404 if no round with the provided number exists.
 
-	Returns a 404 if no match with the provided number exists.
+	Returns a 404 if no player with the provided name exists.
 
-###/tournaments/*{key}*/rounds/*{number}*/pairings
-*	**GET**
-
-	Returns the pairings for the provided round.
+	Returns a 404 if no there were no matches for the given player in the given round.
 
 ###/tournaments/*{key}*/standings
 *	**GET**
