@@ -1,0 +1,24 @@
+﻿header
+{
+    background: #124678;
+    color: #fff;
+}
+.mainContent
+{
+    padding: 16px 0px;
+}
+.itemList
+{
+    padding: 0px;
+    list-style: none;
+}
+.itemList .item
+{
+    margin: 8px 0px;
+}
+
+.inputPlaceholder 
+{
+    width: 100%;
+    background: #eee;
+}

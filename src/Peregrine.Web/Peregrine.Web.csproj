@@ -82,7 +82,19 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DirectiveTemplates\itemEditor.html" />
     <Content Include="Global.asax" />
+    <Content Include="index.html" />
+    <Content Include="Partials\Home.html" />
+    <Content Include="Partials\PlayerDetail.html" />
+    <Content Include="Partials\Round.html" />
+    <Content Include="Partials\TournamentDetail.html" />
+    <Content Include="Scripts\PeregrineUi.js" />
+    <Content Include="Styles\bootstrap-theme.css" />
+    <Content Include="Styles\bootstrap-theme.min.css" />
+    <Content Include="Styles\bootstrap.css" />
+    <Content Include="Styles\bootstrap.min.css" />
+    <Content Include="Styles\Style.css" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

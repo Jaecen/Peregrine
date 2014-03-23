@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="peregrineUi">
+<head>
+    <title>Welcome to Peregrine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="Styles/bootstrap.css" rel="stylesheet" />
+    <link href="Styles/bootstrap-theme.css" rel="stylesheet" />
+    <link href="Styles/Style.css" rel="stylesheet" />
+</head>
+<body>
+        <header>
+            <div class="container">
+                <h1><a href="/">Peregrine</a></h1>
+            </div>
+        </header>
+        <div class="mainContent">
+            <div class="container">
+                <!--<div>
+                    <a href="#/">Home</a> |
+                    <a href="#/Player/Detail/1">Player One</a> |
+                    <a href="#/Tournament/Detail/2">Tournament Two</a>
+                </div>-->
+                <div ng-view></div>
+            </div>
+        </div>
+        <footer>
+            <div class="container">
+                &copy; 2013. All rights reserved. Especially the right to make snarky comments in tiny text.
+            </div>
+        </footer>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-resource.min.js"></script>
+    <script src="/Scripts/PeregrineUi.js"></script>
+</body>
+</html>

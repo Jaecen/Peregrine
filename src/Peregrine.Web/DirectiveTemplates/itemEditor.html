@@ -1,0 +1,20 @@
+﻿<div class="item-editor">
+    <div data-ng-hide="view.editorEnabled" class="input-group input-group-lg">
+        <span class="form-control inputPlaceholder" data-ng-click="enableEditor()">
+            {{item}}
+        </span>
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button" data-ng-click="enableEditor()">Edit</button>
+            <button class="btn btn-default" type="button" data-ng-click="deleteItem()">Delete</button>
+        </span>
+    </div>
+    <form data-ng-submit="save()">
+        <div data-ng-show="view.editorEnabled" class="input-group input-group-lg">
+            <input type="text" class="form-control editable-value" data-ng-model="view.editableValue">
+            <span class="input-group-btn">
+                <input class="btn btn-primary" type="submit" value="Save" />
+            </span>
+        </div>
+    </form>
+
+</div>

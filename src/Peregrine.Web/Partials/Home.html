@@ -1,0 +1,28 @@
+﻿<p class="lead">
+    Use peregrine to setup your swiss pairing tournament.
+</p>
+<div class="row">
+    <div class="col-lg-6">
+        <h3>New tournament</h3>
+        <a href="#/Tournament" class="btn btn-primary btn-lg">Get Started</a>
+    </div>
+    <div class="col-lg-6">
+        <h3>Find a tournament code</h3>
+        <div class="input-group input-group-lg">
+            <input type="text" class="form-control">
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="button">Go</button>
+            </span>
+        </div>
+    </div>
+</div>
+<h3>Tournaments</h3>
+<ul>
+	<li data-ng-repeat="key in tournamentKeys.keys">
+		<a href="#/Tournament/{{key}}">
+			{{key}}
+		</a>
+	</li>
+</ul>
+
+
