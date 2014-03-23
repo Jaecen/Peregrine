@@ -24,10 +24,7 @@ namespace Peregrine.Web.Controllers
 					.Select(player => player.Name)
 					.ToArray();
 
-				return Ok(new
-					{
-						names = playerNames,
-					});
+				return Ok(playerNames);
 			}
 		}
 	}

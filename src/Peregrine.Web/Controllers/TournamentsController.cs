@@ -18,10 +18,7 @@ namespace Peregrine.Web.Controllers
 					.Select(tournament => tournament.Key)
 					.ToArray();
 
-				return Ok(new
-					{
-						keys = tournamentKeys,
-					});
+				return Ok(tournamentKeys);
 			}
 		}
 
@@ -44,10 +41,7 @@ namespace Peregrine.Web.Controllers
 					new { tournamentKey = tournament.Key },
 					new
 					{
-						tournament = new
-						{
-							key = tournament.Key,
-						}
+						key = tournament.Key,
 					});
 			}
 		}

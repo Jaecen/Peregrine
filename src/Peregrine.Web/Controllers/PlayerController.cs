@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Web.Http;
 using Peregrine.Data;
 
@@ -106,7 +108,10 @@ namespace Peregrine.Web.Controllers
 					dataContext.Players.Remove(player);
 					dataContext.SaveChanges();
 
-					return StatusCode(System.Net.HttpStatusCode.NoContent);
+					return ResponseMessage(new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.NoContent)
+						{
+							Content = new StringContent(String.Empty, Encoding.UTF8, "application/json")
+						});
 				}
 			}
 		}
@@ -115,11 +120,8 @@ namespace Peregrine.Web.Controllers
 		{
 			return new
 			{
-				player = new
-				{
-					name = player.Name,
-					dropped = player.Dropped,
-				}
+				name = player.Name,
+				dropped = player.Dropped,
 			};
 		}
 	}

@@ -21,16 +21,7 @@ namespace Peregrine.Web.Controllers
 
 				return Ok(new
 					{
-						tournament = new
-						{
-							key = tournament.Key,
-							players = tournament
-								.Players
-								.Select(player => player.Name),
-							rounds = tournament
-								.Rounds
-								.Select(round => round.Number),
-						}
+						key = tournament.Key,
 					});
 			}
 		}

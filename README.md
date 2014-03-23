@@ -98,7 +98,7 @@ Swiss-pairing and ranking management.
 ###/tournaments/*{key}*/rounds/*{number}*/*{player}*/draw
 *	**POST**
 
-	Adds a draw result in the round for the provided player. Only one draw result needs to be submitted for a game. Results for a previous round can not be changed once a new round has started. Returns a summary of the match the player participated in.
+	Adds a draw result in the round for the provided player. Only one draw result needs to be submitted for a game. Draw results are recorded against both players in the match. Results for a previous round can not be changed once a new round has started. Returns a summary of the match the player participated in.
 
 	Returns a 404 if no tournament with the provided key exists.
 
