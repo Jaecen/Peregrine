@@ -10,7 +10,7 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments/{tournamentKey}/players/{playerName}")]
 	public class PlayerController : ApiController
 	{
-		[Route]
+		[Route(Name="player-get")]
 		public IHttpActionResult Get(Guid tournamentKey, string playerName)
 		{
 			using(var dataContext = new DataContext())
@@ -65,7 +65,11 @@ namespace Peregrine.Web.Controllers
 
 				dataContext.SaveChanges();
 
-				return Ok(Render(player));
+				return CreatedAtRoute(
+					"player-get",
+ 					new { tournamentKey = tournamentKey, playerName = playerName},
+					Render(player)
+				);
 			}
 		}
 

@@ -70,9 +70,11 @@ namespace Peregrine.Web.Services
 		{
 			var rng = new Random(tournament.Seed);
 
+			IEnumerable<Player> players;
 			if(roundNumber == 1)
 			{
-				var players = tournament
+				// Completely random
+				players = tournament
 					.Players
 					.Where(player => !player.Dropped)
 					.Select(player => new
@@ -83,29 +85,61 @@ namespace Peregrine.Web.Services
 					.OrderBy(o => o.Order)
 					.Select(o => o.Player)
 					.ToArray();
-
-				var pairs = players
-					.Where((player, index) => index % 2 == 0)
-					.Zip(
-						players
-							.Where((player, index) => index % 2 == 1),
-						(left, right) => new Match
-						{
-							Players = new[] 
-								{ 
-									left, 
-									right
-								},
-						}
-					)
-					.ToArray();
-
-				return pairs;
 			}
+			else
+			{
+				// Take previous round, sort by match points, random within same number of points.
+				// Odd numbers pair up to the next highest match points
+				throw new NotImplementedException();
+			}
+				
+			var evens = players
+				.Where((player, index) => index % 2 == 0)
+				.ToArray();
 
-			// Take previous round, sort by match points, random within same number of points.
-			// Odd numbers pair up to the next highest match points
-			throw new NotImplementedException();
+			var odds = players
+				.Where((player, index) => index % 2 == 1)
+				.ToArray();
+
+			var byes = evens
+				.Skip(odds.Count())
+				.ToArray();
+			
+			var pairings = evens
+				.Zip(odds,
+					(left, right) => new Match
+					{
+						Games = new Game[0],
+						Players = new[] 
+							{ 
+								left, 
+								right,
+							},
+					}
+				)
+				.Concat(byes
+					.Select(player => new Match
+					{
+						// A bye gives two game wins
+						Games = new[]
+							{
+								new Game
+								{
+									Winner = player,
+								},
+								new Game
+								{
+									Winner = player,
+								},
+							},
+						Players = new[] 
+							{ 
+								player, 
+							},
+					}))
+				.ToArray();
+
+			return pairings;
 		}
 	}
 }

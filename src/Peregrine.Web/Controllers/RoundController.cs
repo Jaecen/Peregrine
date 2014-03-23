@@ -10,7 +10,7 @@ namespace Peregrine.Web.Controllers
 	public class RoundController : ApiController
 	{
 		readonly RoundManager RoundManager;
-		
+
 		public RoundController()
 		{
 			RoundManager = new RoundManager();
@@ -48,13 +48,21 @@ namespace Peregrine.Web.Controllers
 				return Ok(new
 					{
 						number = round.Number,
+						completed = roundState == RoundState.Completed || roundState == RoundState.Finalized,
 						matches = round
 							.Matches
-							.Select(m => m
-								.Players
-								.Select(p => p.Name)
-								.ToArray()
-							)
+							.Select(m => new
+							{
+								games = m.Games.Count(),
+								players = m.Players
+									.Select(p => new
+									{
+										name = p.Name,
+										wins = m.Games.Where(g => g.Winner == p).Count(),
+										losses = m.Games.Where(g => g.Winner != p && g.Winner != null).Count(),
+										draws = m.Games.Where(g => g.Winner == null).Count(),
+									})
+							})
 					});
 			}
 		}

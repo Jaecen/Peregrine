@@ -15,9 +15,9 @@ namespace Peregrine.Web.Controllers
 		{
 			RoundManager = new RoundManager();
 		}
-
-		[Route("win/{count}")]
-		public IHttpActionResult Post(Guid tournamentKey, int roundNumber, string playerName, int count)
+		
+		[Route("{result:regex(^(draw|win)$)}/{count}")]
+		public IHttpActionResult Post(Guid tournamentKey, int roundNumber, string playerName, string result, int count)
 		{
 			using(var dataContext = new DataContext())
 			{
@@ -33,6 +33,14 @@ namespace Peregrine.Web.Controllers
 				if(player == null)
 					return NotFound();
 
+				Player winningPlayer;
+				if(result == "win")
+					winningPlayer = player;
+				else if(result == "draw")
+					winningPlayer = null;
+				else
+					return BadRequest("result must be either 'win' or 'draw'");
+
 				var roundState = RoundManager.DetermineRoundState(tournament, roundNumber);
 				if(roundState == RoundState.Invalid)
 					return NotFound();
@@ -42,12 +50,10 @@ namespace Peregrine.Web.Controllers
 					return StatusCode(System.Net.HttpStatusCode.MethodNotAllowed);
 
 				var round = tournament
-					.Rounds
-					.Where(r => r.Number == roundNumber)
-					.FirstOrDefault()
+					.GetRound(roundNumber)
 					?? new Round
 					{
-						Number= roundNumber,
+						Number = roundNumber,
 						Matches = RoundManager.CreateMatches(tournament, roundNumber)
 					};
 
@@ -59,17 +65,21 @@ namespace Peregrine.Web.Controllers
 
 				// Committed and Completed rounds accept new results.
 				// Find the match for this player
-				var match = tournament
-					.GetRound(roundNumber)
+				var match = round
 					.GetMatch(player);
 
 				if(match == null)
 					return NotFound();
 
+				// Can't change results of byes
+				if(match.Players.Count() == 1)
+					return StatusCode(System.Net.HttpStatusCode.MethodNotAllowed);
+
 				// Clear all the winning games for this player
+				// Null for winner means a draw
 				var existingGames = match
 					.Games
-					.Where(game => game.Winner == player)
+					.Where(game => game.Winner == winningPlayer)
 					.ToArray();
 
 				foreach(var game in existingGames)
@@ -80,9 +90,9 @@ namespace Peregrine.Web.Controllers
 					match
 						.Games
 						.Add(new Game
-							{
-								Winner = player,
-							});
+						{
+							Winner = winningPlayer,
+						});
 
 				dataContext.SaveChanges();
 
@@ -95,85 +105,5 @@ namespace Peregrine.Web.Controllers
 					});
 			}
 		}
-
-		//[Route("draw/{count}")]
-		//public IHttpActionResult Post(Guid tournamentKey, int roundNumber, string playerName, int count)
-		//{
-		//	using(var dataContext = new DataContext())
-		//	{
-		//		var tournament = dataContext
-		//			.GetTournament(tournamentKey);
-
-		//		if(tournament == null)
-		//			return NotFound();
-
-		//		var player = tournament
-		//			.GetPlayer(playerName);
-
-		//		if(player == null)
-		//			return NotFound();
-
-		//		var roundState = RoundManager.DetermineRoundState(tournament, roundNumber);
-		//		if(roundState == RoundState.Invalid)
-		//			return NotFound();
-
-		//		// Can't add results to finalized rounds
-		//		if(roundState == RoundState.Finalized)
-		//			return StatusCode(System.Net.HttpStatusCode.MethodNotAllowed);
-
-		//		var round = tournament
-		//			.Rounds
-		//			.Where(r => r.Number == roundNumber)
-		//			.FirstOrDefault()
-		//			?? new Round
-		//			{
-		//				Number = roundNumber,
-		//				Matches = RoundManager.CreateMatches(tournament, roundNumber)
-		//			};
-
-		//		if(roundState == RoundState.Projected)
-		//		{
-		//			// Add the new round to the tournament.
-		//			tournament.Rounds.Add(round);
-		//		}
-
-		//		// Committed and Completed rounds accept new results.
-		//		// Find the match for this player
-		//		var match = tournament
-		//			.GetRound(roundNumber)
-		//			.GetMatch(player);
-
-		//		if(match == null)
-		//			return NotFound();
-
-		//		// Clear all the winning games for this player
-		//		var existingGames = match
-		//			.Games
-		//			.Where(game => game. == player)
-		//			.ToArray();
-
-		//		foreach(var game in existingGames)
-		//			match.Games.Remove(game);
-
-		//		// Add new winning games
-		//		for(int draws = 0; draws < count; draws++)
-		//			match
-		//				.Games
-		//				.Add(new Game
-		//				{
-		//					Winner = player,
-		//				});
-
-		//		dataContext.SaveChanges();
-
-		//		return Ok(new
-		//		{
-		//			players = match
-		//				.Players
-		//				.Select(p => p.Name)
-		//				.ToArray()
-		//		});
-		//	}
-		//}
 	}
 }
