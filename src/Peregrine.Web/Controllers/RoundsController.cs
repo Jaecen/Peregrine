@@ -29,8 +29,11 @@ namespace Peregrine.Web.Controllers
 
 				var roundNumbers = tournament
 					.Rounds
-					.Select(round => round.Number)
-					.OrderBy(number => number)
+					.Select(round => new
+						{
+							number = round.Number
+						})
+					.OrderBy(round => round.number)
 					.ToArray();
 
 				var lastRoundNumber = tournament
@@ -44,7 +47,7 @@ namespace Peregrine.Web.Controllers
 
 				if(nextRoundState != RoundState.Invalid)
 					roundNumbers = roundNumbers
-						.Concat(new[] { lastRoundNumber + 1 })
+						.Concat(new[] { new { number = lastRoundNumber + 1 }})
 						.ToArray();
 					
 				return Ok(roundNumbers);

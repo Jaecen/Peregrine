@@ -15,7 +15,11 @@ namespace Peregrine.Web.Controllers
 			{
 				var tournamentKeys = dataContext
 					.Tournaments
-					.Select(tournament => tournament.Key)
+					.Select(tournament =>
+						new
+						{
+							key = tournament.Key,
+						})
 					.ToArray();
 
 				return Ok(tournamentKeys);

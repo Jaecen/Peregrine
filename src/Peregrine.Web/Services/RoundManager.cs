@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Peregrine.Data;
 
 namespace Peregrine.Web.Services
@@ -17,6 +16,13 @@ namespace Peregrine.Web.Services
 
 	class RoundManager
 	{
+		// Rounds have five states: projected, committed, and completed, finalized, and invalid
+		// - A round is finalized when it's been completed and a result entered for the next round
+		// - A round is completed when all matches have the minimum number of results
+		// - A round is committed when the first result is submitted. A result can't be submitted until the previous round is completed.
+		// - A round is projected when the previous round is completed by no results have been submitted.
+		// - A round is invalid if it's more than one greater than the last completed round number
+		// When a round becomes committed, it's written to the database and can't be changed. All matches must have a result submitted to move forward.
 		public RoundState DetermineRoundState(Tournament tournament, int roundNumber)
 		{
 			if(roundNumber < 0)

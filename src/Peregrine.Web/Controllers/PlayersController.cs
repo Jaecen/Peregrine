@@ -21,7 +21,10 @@ namespace Peregrine.Web.Controllers
 
 				var playerNames = tournament
 					.Players
-					.Select(player => player.Name)
+					.Select(player => new
+						{
+							name = player.Name
+						})
 					.ToArray();
 
 				return Ok(playerNames);
