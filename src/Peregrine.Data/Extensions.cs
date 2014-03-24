@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Peregrine.Data
 {
@@ -27,9 +25,50 @@ namespace Peregrine.Data
 
 			return tournament
 				.Rounds
-				
 				.Where(r => r.Number == roundNumber)
 				.FirstOrDefault();
+		}
+
+		public static IEnumerable<Match> GetPlayerMatches(this Tournament tournament, Player player)
+		{
+			if(tournament == null)
+				return null;
+
+			if(player == null)
+				return null;
+
+			return tournament
+				.Rounds
+				.SelectMany(round => round.Matches)
+				.Where(match => match.Players.Contains(player));
+		}
+
+		public static IEnumerable<Game> GetPlayerGames(this Tournament tournament, Player player)
+		{
+			if(tournament == null)
+				return null;
+
+			if(player == null)
+				return null;
+
+			return tournament
+				.GetPlayerMatches(player)
+				.SelectMany(match => match.Games);
+		}
+
+		public static IEnumerable<Player> GetPlayerOpponents(this Tournament tournament, Player player)
+		{
+			if(tournament == null)
+				return null;
+
+			if(player == null)
+				return null;
+
+			return tournament
+				.GetPlayerMatches(player)
+				.SelectMany(match => match.Players)
+				.Except(new[] { player })
+				.Distinct();
 		}
 
 		public static Match GetMatch(this Round round, int matchNumber)

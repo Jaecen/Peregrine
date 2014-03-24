@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Services;
@@ -34,8 +32,27 @@ namespace Peregrine.Web.Controllers
 					{
 						name = player.Name,
 						matchPoints = StatsManager.GetMatchPoints(tournament, player),
+						matchWinPercentage = StatsManager.GetMatchWinPercentage(tournament, player),
+						opponentsMatchWinPercentage = StatsManager.GetOpponentsMatchWinPercentage(tournament, player),
+						gamePoints = StatsManager.GetGamePoints(tournament, player),
+						gameWinPercentage = StatsManager.GetGameWinPercentage(tournament, player),
+						opponentsGameWinPercentage = StatsManager.GetOpponentsGameWinPercentage(tournament, player),
 					})
 					.OrderByDescending(o => o.matchPoints)
+					.ThenByDescending(o => o.opponentsMatchWinPercentage)
+					.ThenByDescending(o => o.gameWinPercentage)
+					.ThenByDescending(o => o.opponentsGameWinPercentage)
+					.Select((o, rank) => new
+					{
+						rank,
+						o.name,
+						o.matchPoints,
+						o.matchWinPercentage,
+						o.opponentsMatchWinPercentage,
+						o.gamePoints,
+						o.gameWinPercentage,
+						o.opponentsGameWinPercentage,
+					})
 					.ToArray();
 
 				return Ok(standings);

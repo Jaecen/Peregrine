@@ -1,39 +1,105 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Peregrine.Data;
 
 namespace Peregrine.Web.Services
 {
 	class StatsManager
 	{
-		const int GameWin = 3;
-		const int GameDraw = 1;
-		const int GameLoss = 0;
 		const int MatchWin = 3;
 		const int MatchDraw = 1;
 		const int MatchLoss = 0;
+		const int GameWin = 3;
+		const int GameDraw = 1;
+		const int GameLoss = 0;
 
-		public int GetGamePoints(Tournament tournament, Player player)
+		class PlayerStats
 		{
-			throw new NotImplementedException();
+			public readonly int Wins;
+			public readonly int Losses;
+			public readonly int Draws;
+
+			public PlayerStats(int wins, int losses, int draws)
+			{
+				Wins = wins;
+				Losses = losses;
+				Draws = draws;
+			}
 		}
 
 		public int GetMatchPoints(Tournament tournament, Player player)
 		{
 			return tournament
-				.Rounds
-				.SelectMany(round => round.Matches)
-				.Where(match => match.Players.Contains(player))
-				.Select(match => new
-					{
-						Wins = match.Games.Where(game => game.Winner == player).Count(),
-						Losses = match.Games.Where(game => game.Winner != player && game.Winner != null).Count(),
-						Draws = match.Games.Where(game => game.Winner == player).Count(),
-					})
-				.Select(o => o.Wins > o.Losses ? MatchWin : o.Wins == o.Losses ? MatchDraw : MatchLoss)
+				.GetPlayerMatches(player)
+				.Select(match => new PlayerStats(
+					wins: match.Games.Where(game => game.Winner == player).Count(),
+					losses: match.Games.Where(game => game.Winner != player && game.Winner != null).Count(),
+					draws: match.Games.Where(game => game.Winner == player).Count()
+				))
+				.Select(stats => stats.Wins > stats.Losses
+					? MatchWin
+					: stats.Wins == stats.Losses
+						? MatchDraw
+						: MatchLoss)
 				.Sum();
+		}
+
+		public int GetGamePoints(Tournament tournament, Player player)
+		{
+			return tournament
+				.GetPlayerGames(player)
+				.Select(game => new PlayerStats(
+					wins: game.Winner == player ? 1 : 0,
+					losses: game.Winner != player && game.Winner != null ? 1 : 0,
+					draws: game.Winner == null ? 1 : 0
+				))
+				.Aggregate(0, (sum, stats) => sum + (stats.Wins * GameWin + stats.Draws * GameDraw + stats.Losses * GameLoss));
+		}
+
+		public decimal GetMatchWinPercentage(Tournament tournament, Player player)
+		{
+			var achieved = GetMatchPoints(tournament, player);
+
+			var maximum = tournament
+				.GetPlayerMatches(player)
+				.Count() * MatchWin;
+
+			var rawPercentage = achieved / (decimal)maximum;
+
+			// Match win percentage is capped at 0.33 on the low end
+			return Math.Max(0.33m, rawPercentage);
+		}
+
+		public decimal GetGameWinPercentage(Tournament tournament, Player player)
+		{
+			var achieved = GetGamePoints(tournament, player);
+
+			var maximum = tournament
+				.GetPlayerGames(player)
+				.Count() * GameWin;
+
+			var rawPercentage = achieved / (decimal)maximum;
+
+			// Game win percentage is capped at 0.33 on the low end
+			return Math.Max(0.33m, rawPercentage);
+		}
+
+		public decimal GetOpponentsMatchWinPercentage(Tournament tournament, Player player)
+		{
+			var opponents = tournament.GetPlayerOpponents(player);
+
+			return opponents
+				.Select(opponent => GetMatchWinPercentage(tournament, opponent))
+				.Average();
+		}
+
+		public decimal GetOpponentsGameWinPercentage(Tournament tournament, Player player)
+		{
+			var opponents = tournament.GetPlayerOpponents(player);
+
+			return opponents
+				.Select(opponent => GetGameWinPercentage(tournament, opponent))
+				.Average();
 		}
 	}
 }
