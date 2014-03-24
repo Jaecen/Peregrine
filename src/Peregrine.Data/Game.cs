@@ -1,6 +1,7 @@
 ﻿
 namespace Peregrine.Data
 {
+	[System.Diagnostics.DebuggerDisplay("Game {Id}")]
 	public class Game
 	{
 		public virtual int Id { get; set; }

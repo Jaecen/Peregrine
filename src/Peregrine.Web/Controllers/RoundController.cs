@@ -27,6 +27,9 @@ namespace Peregrine.Web.Controllers
 				if(tournament == null)
 					return NotFound();
 
+				if(roundNumber > RoundManager.GetMaxRoundsForTournament(tournament))
+					return NotFound();
+
 				var roundState = RoundManager.DetermineRoundState(tournament, roundNumber);
 
 				if(roundState == RoundState.Invalid)

@@ -2,6 +2,7 @@
 
 namespace Peregrine.Data
 {
+	[System.Diagnostics.DebuggerDisplay("Round {Number}")]
 	public class Round
 	{
 		public virtual int Id { get; set; }

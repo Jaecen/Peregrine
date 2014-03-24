@@ -38,14 +38,14 @@ namespace Peregrine.Web.Controllers
 
 				var lastRoundNumber = tournament
 					.Rounds
-					.OrderBy(number => number)
 					.Select(round => round.Number)
+					.OrderBy(number => number)
 					.DefaultIfEmpty(0)
 					.LastOrDefault();
 
 				var nextRoundState = RoundManager.DetermineRoundState(tournament, lastRoundNumber + 1);
 
-				if(nextRoundState != RoundState.Invalid)
+				if(nextRoundState != RoundState.Invalid && lastRoundNumber < RoundManager.GetMaxRoundsForTournament(tournament))
 					roundNumbers = roundNumbers
 						.Concat(new[] { new { number = lastRoundNumber + 1 }})
 						.ToArray();

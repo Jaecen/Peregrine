@@ -2,6 +2,7 @@
 
 namespace Peregrine.Data
 {
+	[System.Diagnostics.DebuggerDisplay("Match {Id}")]
 	public class Match
 	{
 		public virtual int Id { get; set; }

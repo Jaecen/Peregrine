@@ -14,5 +14,20 @@ namespace Peregrine.Data
 		public virtual IDbSet<Player> Players { get; set; }
 		public virtual IDbSet<Round> Rounds { get; set; }
 		public virtual IDbSet<Match> Matches { get; set; }
+
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+		{
+			modelBuilder.Entity<Match>()
+				.HasMany(c => c.Players)
+				.WithMany()                 // Note the empty WithMany()
+				.Map(x =>
+				{
+					x.MapLeftKey("MatchId");
+					x.MapRightKey("PlayerId");
+					x.ToTable("Match_Players");
+				});
+
+			base.OnModelCreating(modelBuilder);
+		}
 	}
 }

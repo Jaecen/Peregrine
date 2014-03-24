@@ -58,6 +58,10 @@
     <Compile Include="Migrations\201403221947501_Create_Database.Designer.cs">
       <DependentUpon>201403221947501_Create_Database.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201403240100230_Fix_Match_Players_Many_To_Many.cs" />
+    <Compile Include="Migrations\201403240100230_Fix_Match_Players_Many_To_Many.Designer.cs">
+      <DependentUpon>201403240100230_Fix_Match_Players_Many_To_Many.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Tournament.cs" />
     <Compile Include="Game.cs" />
@@ -73,6 +77,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201403221947501_Create_Database.resx">
       <DependentUpon>201403221947501_Create_Database.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201403240100230_Fix_Match_Players_Many_To_Many.resx">
+      <DependentUpon>201403240100230_Fix_Match_Players_Many_To_Many.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

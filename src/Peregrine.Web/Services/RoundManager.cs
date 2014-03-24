@@ -16,6 +16,13 @@ namespace Peregrine.Web.Services
 
 	class RoundManager
 	{
+		readonly StatsManager StatsManager;
+
+		public RoundManager()
+		{
+			StatsManager = new StatsManager();
+		}
+
 		// Rounds have five states: projected, committed, and completed, finalized, and invalid
 		// - A round is finalized when it's been completed and a result entered for the next round
 		// - A round is completed when all matches have the minimum number of results
@@ -33,7 +40,7 @@ namespace Peregrine.Web.Services
 
 			var previousRoundState = DetermineRoundState(tournament, roundNumber - 1);
 
-			if(previousRoundState != RoundState.Completed)
+			if(previousRoundState != RoundState.Completed && previousRoundState != RoundState.Finalized)
 				return RoundState.Invalid;
 
 			var requestedRound = tournament
@@ -70,41 +77,51 @@ namespace Peregrine.Web.Services
 
 		public ICollection<Match> CreateMatches(Tournament tournament, int roundNumber)
 		{
-			var rng = new Random(tournament.Seed);
+			var seed = tournament.Seed ^ roundNumber;
+			var rng = new Random(seed);
 
-			IEnumerable<Player> players;
-			if(roundNumber == 1)
-			{
-				// Completely random
-				players = tournament
-					.Players
-					.Where(player => !player.Dropped)
-					.Select(player => new
-					{
-						Player = player,
-						Order = rng.Next(),
-					})
-					.OrderBy(o => o.Order)
-					.Select(o => o.Player)
-					.ToArray();
-			}
-			else
-			{
-				// Take previous round, sort by match points, random within same number of points.
-				// Odd numbers pair up to the next highest match points
-				throw new NotImplementedException();
-			}
-				
-			var evens = players
+			// Take previous round, sort by match points, random within same number of points.
+			// Odd numbers pair up to the next highest match points (hence sort descending)
+			var players = tournament
+				.Players
+				.Where(player => !player.Dropped)
+				.Select(player => new
+				{
+					Player = player,
+					MatchPoints = StatsManager.GetMatchPoints(tournament, player),
+					Randomizer = rng.Next(),
+				})
+				.ToArray();
+
+			// Lowest scoring player who has not had a bye gets it
+			// Assumes player list is still ordered by match points descending
+			var byes = players
+				.OrderBy(o => o.MatchPoints)
+				.ThenBy(o => o.Randomizer)
+				.Select(o => o.Player)
+				.Where(player => players.Count() % 2 != 0)
+				.Where(player => tournament
+					.Rounds
+					.SelectMany(round => round.Matches)
+					.Where(match => match.Players.Contains(player))
+					.All(match => match.Players.Count > 1)
+				)
+				.Take(1)
+				.ToArray();
+
+			var pairingPlayers = players
+				.OrderByDescending(o => o.MatchPoints)
+				.ThenBy(o => o.Randomizer)
+				.Select(o => o.Player)
+				.Except(byes)
+				.ToArray();
+
+			var evens = pairingPlayers
 				.Where((player, index) => index % 2 == 0)
 				.ToArray();
 
-			var odds = players
+			var odds = pairingPlayers
 				.Where((player, index) => index % 2 == 1)
-				.ToArray();
-
-			var byes = evens
-				.Skip(odds.Count())
 				.ToArray();
 			
 			var pairings = evens
@@ -166,6 +183,15 @@ namespace Peregrine.Web.Services
 					})
 					.ToArray()
 			};
+		}
+
+		public int GetMaxRoundsForTournament(Tournament tournament)
+		{
+			var playerCount = tournament.Players.Count();
+			var roundCount = Math.Ceiling(Math.Log(playerCount, 2));
+			
+			// No less than one round
+			return (int)Math.Max(1, roundCount);
 		}
 	}
 }

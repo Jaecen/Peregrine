@@ -41,6 +41,9 @@ namespace Peregrine.Web.Controllers
 				else
 					return BadRequest("result must be either 'win' or 'draw'");
 
+				if(roundNumber > RoundManager.GetMaxRoundsForTournament(tournament))
+					return NotFound();
+
 				var roundState = RoundManager.DetermineRoundState(tournament, roundNumber);
 				if(roundState == RoundState.Invalid)
 					return NotFound();
@@ -95,6 +98,8 @@ namespace Peregrine.Web.Controllers
 						});
 
 				dataContext.SaveChanges();
+
+				roundState = RoundManager.DetermineRoundState(tournament, roundNumber);
 
 				return Ok(RoundManager.RenderRound(round, roundState));
 			}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Peregrine.Data
 {
+	[System.Diagnostics.DebuggerDisplay("Tournament {Key}")]
 	public class Tournament
 	{
 		public virtual int Id { get; set; }
