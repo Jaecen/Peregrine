@@ -87,7 +87,7 @@
     <Content Include="index.html" />
     <Content Include="Partials\Home.html" />
     <Content Include="Partials\PlayerDetail.html" />
-    <Content Include="Partials\Round.html" />
+    <Content Include="Partials\RoundDetail.html" />
     <Content Include="Partials\TournamentDetail.html" />
     <Content Include="Scripts\PeregrineUi.js" />
     <Content Include="Styles\bootstrap-theme.css" />

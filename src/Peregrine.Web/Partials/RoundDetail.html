@@ -1,0 +1,35 @@
+﻿<div ng-if="error.length > 0" class="alert alert-danger">
+	{{error}}
+</div>
+<div class="round-area" data-ng-show="round">
+	<h2>Round {{round.number}}</h2>
+	<ul class="itemList matches">
+		<li data-ng-repeat="match in round.matches" class="item row">
+			<div class="players clearfix">
+				<div class="player-col">
+					<div class="player-wrap">
+						<div class="player form-inline clearfix" data-ng-repeat="player in match.players">
+							<form class="player-form" data-ng-submit="updatePlayer(player)">
+								<div class="input-group input-group-lg ">
+									<span class="player-name input-group-addon">{{player.name}}</span>
+									<input type="text" class="form-control" data-ng-model="player.wins" />
+									<span class="input-group-btn">
+										<button class="btn btn-default drop-button" data-ng-click="dropPlayer(player)">Drop</button>
+									</span>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="draws-col">
+					<div class="draws-wrap">
+						<div class="input-group-vertical input-group-lg">
+							<div class="input-group-addon">Draws</div>
+							<input type="text" class="form-control input-group-btn" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>

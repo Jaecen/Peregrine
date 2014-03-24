@@ -20,7 +20,7 @@ angular.module('peregrineUi', [
 			})
 			.when('/Tournament/:tournamentKey/Round/:roundNumber', {
 				controller: 'roundController',
-				templateUrl: 'Partials/Round.html'
+				templateUrl: 'Partials/RoundDetail.html'
 			})
 			.otherwise({ redirectTo: '/' });
 	});
@@ -55,7 +55,20 @@ angular
 .factory('playerResource', [
 	'$resource',
 	function ($resource) {
-		return $resource('/api/tournaments/:tournamentKey/players/:playerName', {playerName: '@name' }, {
+		return $resource('/api/tournaments/:tournamentKey/players/:playerName', { playerName: '@name' }, {
+			save: {
+				method: 'put'
+			}
+		});
+	}
+])
+
+angular
+.module('peregrineUi.resources')
+.factory('roundResource', [
+	'$resource',
+	function ($resource) {
+		return $resource('/api/tournaments/:tournamentKey/rounds/:roundNumber', { roundNumber: '@number' }, {
 			save: {
 				method: 'put'
 			}
@@ -76,9 +89,20 @@ angular
 angular
 .module('peregrineUi.controllers')
 .controller('roundController',[
-	'$scope', '$route', '$routeParams', '$http',
-	function ($scope, $route, $routeParams, $http) {
-		
+	'$scope', '$route', '$routeParams', '$http', 'roundResource',
+	function ($scope, $route, $routeParams, $http, roundResource) {
+		$scope.error = '';
+		if (!$routeParams.tournamentKey) {
+			$scope.error = 'Whoa there! Wheres your tournament key? Put your browser in reverse and take another run at it.';
+		}
+		roundResource.get({ tournamentKey: $routeParams.tournamentKey, roundNumber: $routeParams.roundNumber }, 
+			function (round) {
+				$scope.error = '';
+				$scope.round = round;
+			},
+			function () {
+				$scope.error = 'We couldn\'t get your round';
+			});
 	}
 ]);
 
@@ -87,7 +111,7 @@ angular
 .controller('tournamentController',[
 	'$scope', '$routeParams', '$http', '$resource', 'tournamentResource', 'playerResource',
 	function ($scope, $routeParams, $http, $resource, tournamentResource, playerResource) {
-		$scope.players = [];
+		$scope.players = []; //necessary?
 		$scope.error = '';
 
 		$scope.$watch('players', function (newValue) {
