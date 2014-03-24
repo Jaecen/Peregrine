@@ -29,7 +29,7 @@ namespace Peregrine.Data
 				.FirstOrDefault();
 		}
 
-		public static IEnumerable<Match> GetPlayerMatches(this Tournament tournament, Player player)
+		public static IEnumerable<Match> GetPlayerMatches(this Tournament tournament, Player player, int? roundNumber = null)
 		{
 			if(tournament == null)
 				return null;
@@ -39,11 +39,12 @@ namespace Peregrine.Data
 
 			return tournament
 				.Rounds
+				.Where(round => roundNumber == null || round.Number <= roundNumber)
 				.SelectMany(round => round.Matches)
 				.Where(match => match.Players.Contains(player));
 		}
 
-		public static IEnumerable<Game> GetPlayerGames(this Tournament tournament, Player player)
+		public static IEnumerable<Game> GetPlayerGames(this Tournament tournament, Player player, int? roundNumber = null)
 		{
 			if(tournament == null)
 				return null;
@@ -52,11 +53,11 @@ namespace Peregrine.Data
 				return null;
 
 			return tournament
-				.GetPlayerMatches(player)
+				.GetPlayerMatches(player, roundNumber)
 				.SelectMany(match => match.Games);
 		}
 
-		public static IEnumerable<Player> GetPlayerOpponents(this Tournament tournament, Player player)
+		public static IEnumerable<Player> GetPlayerOpponents(this Tournament tournament, Player player, int? roundNumber = null)
 		{
 			if(tournament == null)
 				return null;
@@ -65,7 +66,7 @@ namespace Peregrine.Data
 				return null;
 
 			return tournament
-				.GetPlayerMatches(player)
+				.GetPlayerMatches(player, roundNumber)
 				.SelectMany(match => match.Players)
 				.Except(new[] { player })
 				.Distinct();

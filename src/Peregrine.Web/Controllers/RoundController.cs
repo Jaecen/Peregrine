@@ -6,7 +6,7 @@ using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
-	[RoutePrefix("api/tournaments/{tournamentKey}/rounds/{roundNumber}")]
+	[RoutePrefix("api/tournaments/{tournamentKey}/rounds/{roundNumber:min(1)}")]
 	public class RoundController : ApiController
 	{
 		readonly RoundManager RoundManager;

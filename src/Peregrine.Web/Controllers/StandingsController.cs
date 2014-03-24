@@ -6,18 +6,18 @@ using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
-	[RoutePrefix("api/tournaments/{tournamentKey}/standings")]
 	public class StandingsController : ApiController
 	{
-		readonly StatsProvider StatsManager;
+		readonly StatsProvider StatsProvider;
 
 		public StandingsController()
 		{
-			StatsManager = new StatsProvider();
+			StatsProvider = new StatsProvider();
 		}
 
-		[Route]
-		public IHttpActionResult Get(Guid tournamentKey)
+		[Route("api/tournaments/{tournamentKey}/standings")]
+		[Route("api/tournaments/{tournamentKey}/round/{roundNumber:min(1)}/standings")]
+		public IHttpActionResult Get(Guid tournamentKey, int? roundNumber = null)
 		{
 			using(var dataContext = new DataContext())
 			{
@@ -26,17 +26,20 @@ namespace Peregrine.Web.Controllers
 				if(tournament == null)
 					return NotFound();
 
+				if(roundNumber.HasValue && tournament.GetRound(roundNumber.Value) == null)
+					return NotFound();
+
 				var standings = tournament
 					.Players
 					.Select(player => new
 					{
 						name = player.Name,
-						matchPoints = StatsManager.GetMatchPoints(tournament, player),
-						matchWinPercentage = StatsManager.GetMatchWinPercentage(tournament, player),
-						opponentsMatchWinPercentage = StatsManager.GetOpponentsMatchWinPercentage(tournament, player),
-						gamePoints = StatsManager.GetGamePoints(tournament, player),
-						gameWinPercentage = StatsManager.GetGameWinPercentage(tournament, player),
-						opponentsGameWinPercentage = StatsManager.GetOpponentsGameWinPercentage(tournament, player),
+						matchPoints = StatsProvider.GetMatchPoints(tournament, player, roundNumber),
+						matchWinPercentage = StatsProvider.GetMatchWinPercentage(tournament, player, roundNumber),
+						opponentsMatchWinPercentage = StatsProvider.GetOpponentsMatchWinPercentage(tournament, player, roundNumber),
+						gamePoints = StatsProvider.GetGamePoints(tournament, player, roundNumber),
+						gameWinPercentage = StatsProvider.GetGameWinPercentage(tournament, player, roundNumber),
+						opponentsGameWinPercentage = StatsProvider.GetOpponentsGameWinPercentage(tournament, player, roundNumber),
 					})
 					.OrderByDescending(o => o.matchPoints)
 					.ThenByDescending(o => o.opponentsMatchWinPercentage)
@@ -44,7 +47,7 @@ namespace Peregrine.Web.Controllers
 					.ThenByDescending(o => o.opponentsGameWinPercentage)
 					.Select((o, rank) => new
 					{
-						rank,
+						rank = rank + 1,
 						o.name,
 						o.matchPoints,
 						o.matchWinPercentage,

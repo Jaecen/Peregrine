@@ -27,10 +27,10 @@ namespace Peregrine.Web.Services
 			}
 		}
 
-		public int GetMatchPoints(Tournament tournament, Player player)
+		public int GetMatchPoints(Tournament tournament, Player player, int? roundNumber = null)
 		{
 			return tournament
-				.GetPlayerMatches(player)
+				.GetPlayerMatches(player, roundNumber)
 				.Select(match => new PlayerStats(
 					wins: match.Games.Where(game => game.Winner == player).Count(),
 					losses: match.Games.Where(game => game.Winner != player && game.Winner != null).Count(),
@@ -44,10 +44,10 @@ namespace Peregrine.Web.Services
 				.Sum();
 		}
 
-		public int GetGamePoints(Tournament tournament, Player player)
+		public int GetGamePoints(Tournament tournament, Player player, int? roundNumber = null)
 		{
 			return tournament
-				.GetPlayerGames(player)
+				.GetPlayerGames(player, roundNumber)
 				.Select(game => new PlayerStats(
 					wins: game.Winner == player ? 1 : 0,
 					losses: game.Winner != player && game.Winner != null ? 1 : 0,
@@ -56,12 +56,12 @@ namespace Peregrine.Web.Services
 				.Aggregate(0, (sum, stats) => sum + (stats.Wins * GameWin + stats.Draws * GameDraw + stats.Losses * GameLoss));
 		}
 
-		public decimal GetMatchWinPercentage(Tournament tournament, Player player)
+		public decimal GetMatchWinPercentage(Tournament tournament, Player player, int? roundNumber = null)
 		{
-			var achieved = GetMatchPoints(tournament, player);
+			var achieved = GetMatchPoints(tournament, player, roundNumber);
 
 			var maximum = tournament
-				.GetPlayerMatches(player)
+				.GetPlayerMatches(player, roundNumber)
 				.Count() * MatchWin;
 
 			var rawPercentage = achieved / (decimal)maximum;
@@ -70,12 +70,12 @@ namespace Peregrine.Web.Services
 			return Math.Max(0.33m, rawPercentage);
 		}
 
-		public decimal GetGameWinPercentage(Tournament tournament, Player player)
+		public decimal GetGameWinPercentage(Tournament tournament, Player player, int? roundNumber = null)
 		{
-			var achieved = GetGamePoints(tournament, player);
+			var achieved = GetGamePoints(tournament, player, roundNumber);
 
 			var maximum = tournament
-				.GetPlayerGames(player)
+				.GetPlayerGames(player, roundNumber)
 				.Count() * GameWin;
 
 			var rawPercentage = achieved / (decimal)maximum;
@@ -84,21 +84,23 @@ namespace Peregrine.Web.Services
 			return Math.Max(0.33m, rawPercentage);
 		}
 
-		public decimal GetOpponentsMatchWinPercentage(Tournament tournament, Player player)
+		public decimal GetOpponentsMatchWinPercentage(Tournament tournament, Player player, int? roundNumber = null)
 		{
-			var opponents = tournament.GetPlayerOpponents(player);
+			var opponents = tournament.GetPlayerOpponents(player, roundNumber);
 
 			return opponents
-				.Select(opponent => GetMatchWinPercentage(tournament, opponent))
+				.Select(opponent => GetMatchWinPercentage(tournament, opponent, roundNumber))
+				.DefaultIfEmpty(0)
 				.Average();
 		}
 
-		public decimal GetOpponentsGameWinPercentage(Tournament tournament, Player player)
+		public decimal GetOpponentsGameWinPercentage(Tournament tournament, Player player, int? roundNumber = null)
 		{
-			var opponents = tournament.GetPlayerOpponents(player);
+			var opponents = tournament.GetPlayerOpponents(player, roundNumber);
 
 			return opponents
-				.Select(opponent => GetGameWinPercentage(tournament, opponent))
+				.Select(opponent => GetGameWinPercentage(tournament, opponent, roundNumber))
+				.DefaultIfEmpty(0)
 				.Average();
 		}
 	}

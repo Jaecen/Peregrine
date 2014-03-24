@@ -16,11 +16,11 @@ namespace Peregrine.Web.Services
 
 	class RoundManager
 	{
-		readonly StatsProvider StatsManager;
+		readonly StatsProvider StatsProvider;
 
 		public RoundManager()
 		{
-			StatsManager = new StatsProvider();
+			StatsProvider = new StatsProvider();
 		}
 
 		// Rounds have five states: projected, committed, and completed, finalized, and invalid
@@ -88,7 +88,7 @@ namespace Peregrine.Web.Services
 				.Select(player => new
 				{
 					Player = player,
-					MatchPoints = StatsManager.GetMatchPoints(tournament, player),
+					MatchPoints = StatsProvider.GetMatchPoints(tournament, player),
 					Randomizer = rng.Next(),
 				})
 				.ToArray();

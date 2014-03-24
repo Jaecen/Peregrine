@@ -112,3 +112,8 @@ Swiss-pairing and ranking management.
 *	**GET**
 
 	Returns the current standings for the tournament.
+
+###/tournaments/*{key}*/rount/*{number}*/standings
+*	**GET**
+
+	Returns the standings at the specified round.
