@@ -64,6 +64,9 @@ namespace Peregrine.Web.Services
 				.GetPlayerMatches(player, roundNumber)
 				.Count() * MatchWin;
 
+			if(maximum == 0)
+				return 0.33m;
+
 			var rawPercentage = achieved / (decimal)maximum;
 
 			// Match win percentage is capped at 0.33 on the low end
@@ -77,6 +80,9 @@ namespace Peregrine.Web.Services
 			var maximum = tournament
 				.GetPlayerGames(player, roundNumber)
 				.Count() * GameWin;
+
+			if(maximum == 0)
+				return 0.33m;
 
 			var rawPercentage = achieved / (decimal)maximum;
 
