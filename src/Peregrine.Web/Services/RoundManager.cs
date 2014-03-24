@@ -16,11 +16,11 @@ namespace Peregrine.Web.Services
 
 	class RoundManager
 	{
-		readonly StatsManager StatsManager;
+		readonly StatsProvider StatsManager;
 
 		public RoundManager()
 		{
-			StatsManager = new StatsManager();
+			StatsManager = new StatsProvider();
 		}
 
 		// Rounds have five states: projected, committed, and completed, finalized, and invalid

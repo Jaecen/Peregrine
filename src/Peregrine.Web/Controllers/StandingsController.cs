@@ -9,11 +9,11 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments/{tournamentKey}/standings")]
 	public class StandingsController : ApiController
 	{
-		readonly StatsManager StatsManager;
+		readonly StatsProvider StatsManager;
 
 		public StandingsController()
 		{
-			StatsManager = new StatsManager();
+			StatsManager = new StatsProvider();
 		}
 
 		[Route]
