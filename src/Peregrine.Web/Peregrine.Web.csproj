@@ -88,8 +88,11 @@
     <Content Include="Partials\Home.html" />
     <Content Include="Partials\PlayerDetail.html" />
     <Content Include="Partials\RoundDetail.html" />
+    <Content Include="Partials\Standings.html" />
     <Content Include="Partials\TournamentDetail.html" />
     <Content Include="Scripts\PeregrineUi.js" />
+    <Content Include="Scripts\Controllers\StandingsController.js" />
+    <Content Include="Scripts\Resources\StandingsResource.js" />
     <Content Include="Styles\bootstrap-theme.css" />
     <Content Include="Styles\bootstrap-theme.min.css" />
     <Content Include="Styles\bootstrap.css" />

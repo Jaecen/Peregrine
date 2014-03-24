@@ -22,6 +22,10 @@ angular.module('peregrineUi', [
 				controller: 'roundController',
 				templateUrl: 'Partials/RoundDetail.html'
 			})
+			.when('/Tournament/:tournamentKey/Standings', {
+				controller: 'standingsController',
+				templateUrl: 'Partials/Standings.html'
+			})
 			.otherwise({ redirectTo: '/' });
 	});
 
