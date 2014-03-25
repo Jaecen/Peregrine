@@ -80,6 +80,19 @@ angular
 	}
 ])
 
+angular
+.module('peregrineUi.resources')
+.factory('outcomeResource', [
+	'$resource',
+	function ($resource) {
+		return $resource('/api/tournaments/:tournamentKey/rounds/:roundNumber/:playerName/:outcome/:number', null, {
+			save: {
+				method: 'put'
+			}
+		});
+	}
+])
+
 //controllers
 angular
 .module('peregrineUi.controllers')
@@ -93,20 +106,55 @@ angular
 angular
 .module('peregrineUi.controllers')
 .controller('roundController',[
-	'$scope', '$route', '$routeParams', '$http', 'roundResource',
-	function ($scope, $route, $routeParams, $http, roundResource) {
+	'$scope', '$route', '$routeParams', '$http', 'roundResource', 'outcomeResource', 'playerResource',
+	function ($scope, $route, $routeParams, $http, roundResource, outcomeResource, playerResource) {
 		$scope.error = '';
-		if (!$routeParams.tournamentKey) {
-			$scope.error = 'Whoa there! Wheres your tournament key? Put your browser in reverse and take another run at it.';
-		}
-		roundResource.get({ tournamentKey: $routeParams.tournamentKey, roundNumber: $routeParams.roundNumber }, 
-			function (round) {
+		$scope.updateRound = function () {
+			roundResource.get({ tournamentKey: $routeParams.tournamentKey, roundNumber: $routeParams.roundNumber },
+			function success(round) {
 				$scope.error = '';
 				$scope.round = round;
 			},
-			function () {
+			function error() {
 				$scope.error = 'We couldn\'t get your round';
 			});
+		};
+		$scope.updatePlayerOutcome = function (player, outcome) {
+			var outcomePlural = outcome + 's';
+			if (isNaN(Number(player[outcomePlural])) || player[outcomePlural] === "") {
+				return;
+			}
+			outcomeResource.save(
+				{
+					tournamentKey: $routeParams.tournamentKey,
+					roundNumber: $routeParams.roundNumber,
+					playerName: player.name,
+					outcome: outcome,
+					number: player[outcomePlural]
+				},
+				{},
+				function success() {
+					$scope.error = '';
+				},
+				function error() {
+					$scope.error = 'We were unable to save your match data.';
+				});
+		}
+		$scope.dropPlayer = function (player) {
+			playerResource.delete(
+				{
+					tournamentKey: $routeParams.tournamentKey,
+					playerName: player.name
+				},
+				function success() {
+					$scope.error = '';
+					$scope.updateRound();
+				},
+				function error() {
+					$scope.error = 'We were unable to save your match data.';
+				});
+		}
+		$scope.updateRound();
 	}
 ]);
 
@@ -128,20 +176,20 @@ angular
 			//get existing tournament
 			tournamentResource.get(
 				{ tournamentKey: $routeParams.tournamentKey },
-				function (tournament) {
+				function success(tournament) {
 					$scope.error = '';
 					$scope.tournament = tournament;
 					//get players
 					playerResource.query({ tournamentKey: tournament.key },
-						function (players) {
+						function success(players) {
 							$scope.error = '';
 							$scope.players = players;
 						},
-						function (players) {
+						function error() {
 							$scope.error = 'Sorry =( We failed to load your players.';
 						});
 				},
-				function () {
+				function error() {
 					$scope.error = 'Sorry =( We were unable to find your tournament.';
 				});
 		}
@@ -169,11 +217,11 @@ angular
 						$scope.error = '';
 						//get players
 						playerResource.query({ tournamentKey: $scope.tournament.key },
-							function (players) {
+							function success(players) {
 								$scope.error = '';
 								$scope.players = players;
 							},
-							function (players) {
+							function error(players) {
 								$scope.error = 'Sorry =( We failed to load your players.';
 							});
 						$scope.newPlayer = {};
@@ -196,11 +244,11 @@ angular
 					$scope.error = '';
 					//get players
 					playerResource.query({ tournamentKey: $scope.tournament.key },
-						function (players) {
+						function success(players) {
 							$scope.error = '';
 							$scope.players = players;
 						},
-						function (players) {
+						function error(players) {
 							$scope.error = 'Sorry =( We failed to load your players.';
 						});
 				},

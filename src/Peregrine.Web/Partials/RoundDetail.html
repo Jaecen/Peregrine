@@ -9,10 +9,10 @@
 				<div class="player-col">
 					<div class="player-wrap">
 						<div class="player form-inline clearfix" data-ng-repeat="player in match.players">
-							<form class="player-form" data-ng-submit="updatePlayer(player)">
-								<div class="input-group input-group-lg ">
+							<form class="player-form">
+								<div class="input-group input-group-sm">
 									<span class="player-name input-group-addon">{{player.name}}</span>
-									<input type="text" class="form-control" data-ng-model="player.wins" />
+									<input type="text" class="form-control" data-ng-model="player.wins" data-ng-change="updatePlayerOutcome(player, 'win')" />
 									<span class="input-group-btn">
 										<button class="btn btn-default drop-button" data-ng-click="dropPlayer(player)">Drop</button>
 									</span>
@@ -23,9 +23,9 @@
 				</div>
 				<div class="draws-col">
 					<div class="draws-wrap">
-						<div class="input-group-vertical input-group-lg">
+						<div class="input-group-vertical input-group-sm">
 							<div class="input-group-addon">Draws</div>
-							<input type="text" class="form-control input-group-btn" />
+							<input type="text" class="form-control input-group-btn" data-ng-model="match.players[0].draws" data-ng-change="updatePlayerOutcome(match.players[0], 'draw')" />
 						</div>
 					</div>
 				</div>
