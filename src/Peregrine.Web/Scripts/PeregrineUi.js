@@ -135,6 +135,7 @@ angular
 				{},
 				function success() {
 					$scope.error = '';
+					$scope.updateRound();
 				},
 				function error() {
 					$scope.error = 'We were unable to save your match data.';
