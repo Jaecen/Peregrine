@@ -154,6 +154,18 @@ angular
 					$scope.error = 'We were unable to save your match data.';
 				});
 		}
+		roundResource.query(
+			{
+				tournamentKey: $routeParams.tournamentKey
+			},
+			function success(rounds) {
+				$scope.error = '';
+				$scope.isAnotherRound = rounds.length > $scope.round.number;
+			},
+			function error() {
+				$scope.error = 'We couldn\'t tell if there is another round or not.';
+			});
+
 		$scope.updateRound();
 	}
 ]);

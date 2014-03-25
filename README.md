@@ -113,7 +113,12 @@ Swiss-pairing and ranking management.
 
 	Returns the current standings for the tournament.
 
-###/tournaments/*{key}*/rount/*{number}*/standings
+###/tournaments/*{key}*/rounds/*{number}*/standings
 *	**GET**
 
 	Returns the standings at the specified round.
+	
+##ToDo/Questions
+*	Change draw and win to their plural form in the API on the MatchResultController
+*	Add a dropped attribute to the player object on a match so we can indicate it and disable the player
+*	When we drop a player and the round as already got results recorded should we automatically add two wins to the opponent?

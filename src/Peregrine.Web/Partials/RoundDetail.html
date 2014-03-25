@@ -32,4 +32,8 @@
 			</div>
 		</li>
 	</ul>
+	<div class="action-bar">
+		<button data-ng-disabled="!round.completed" data-ng-if="isAnotherRound" href="#/Tournament/{{tournament.key}}/Round/{{round.number + 1}}" class="btn btn-primary btn-lg">Start Next Round</button>
+		<button data-ng-disabled="!round.completed" data-ng-if="!isAnotherRound" href="#/Tournament/{{tournament.key}}/Standings" class="btn btn-primary btn-lg">Finish The Tournament</button>
+	</div>
 </div>
