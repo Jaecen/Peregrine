@@ -223,15 +223,15 @@ angular
 				});
 		}
 
-		$scope.addPlayer = function (player) {
-			if (player) {
-				$scope.newPlayer = player;
+		$scope.addPlayer = function (newplayer) {
+			if (!newplayer) {
+				newplayer = $scope.newPlayer;
 			}
-			if ($scope.newPlayer.name && $scope.newPlayer.name.length > 0 && $scope.tournament.key) {
+			if (newplayer.name && newplayer.name.length > 0 && $scope.tournament.key) {
 				playerResource.save(
 					{ tournamentKey: $scope.tournament.key },
-					$scope.newPlayer,
-					function () {
+					newplayer,
+					function success() {
 						$scope.error = '';
 						//get players
 						playerResource.query({ tournamentKey: $scope.tournament.key },
@@ -244,8 +244,8 @@ angular
 							});
 						$scope.newPlayer = {};
 					},
-					function () {
-						if (status === 409) {
+					function error(response) {
+						if (response && response.status === 409) {
 							$scope.error = 'Sorry a player with the same name already exists.'
 						}
 						else {
