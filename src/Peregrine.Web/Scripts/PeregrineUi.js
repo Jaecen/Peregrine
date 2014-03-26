@@ -106,14 +106,26 @@ angular
 angular
 .module('peregrineUi.controllers')
 .controller('roundController',[
-	'$scope', '$route', '$routeParams', '$http', 'roundResource', 'outcomeResource', 'playerResource',
-	function ($scope, $route, $routeParams, $http, roundResource, outcomeResource, playerResource) {
+	'$scope', '$route', '$routeParams', '$http', '$location', 'roundResource', 'outcomeResource', 'playerResource',
+	function ($scope, $route, $routeParams, $http, $location, roundResource, outcomeResource, playerResource) {
 		$scope.error = '';
+		$scope.tournamentKey = $routeParams.tournamentKey;
 		$scope.updateRound = function () {
 			roundResource.get({ tournamentKey: $routeParams.tournamentKey, roundNumber: $routeParams.roundNumber },
 			function success(round) {
 				$scope.error = '';
 				$scope.round = round;
+				roundResource.query(
+				{
+					tournamentKey: $routeParams.tournamentKey
+				},
+				function success(rounds) {
+					$scope.error = '';
+					$scope.isAnotherRound = rounds.length > $scope.round.number;
+				},
+				function error() {
+					$scope.error = 'We couldn\'t tell if there is another round or not.';
+				});
 			},
 			function error() {
 				$scope.error = 'We couldn\'t get your round';
@@ -155,19 +167,12 @@ angular
 					$scope.error = 'We were unable to save your match data.';
 				});
 		}
-		roundResource.query(
-			{
-				tournamentKey: $routeParams.tournamentKey
-			},
-			function success(rounds) {
-				$scope.error = '';
-				$scope.isAnotherRound = rounds.length > $scope.round.number;
-			},
-			function error() {
-				$scope.error = 'We couldn\'t tell if there is another round or not.';
-			});
+		$scope.go = function (path) {
+			$location.path(path);
+		};
 
 		$scope.updateRound();
+		
 	}
 ]);
 
