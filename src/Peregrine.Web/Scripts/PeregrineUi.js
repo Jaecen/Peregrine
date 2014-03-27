@@ -3,7 +3,8 @@ angular.module('peregrineUi', [
 	'ngRoute',
 	'ngResource',
 	'peregrineUi.controllers',
-	'peregrineUi.directives'
+	'peregrineUi.directives',
+    'ui.bootstrap'
 ]).config(function ($routeProvider, $locationProvider) {
 		$routeProvider
 			.when('/', {
@@ -39,6 +40,7 @@ angular.module('peregrineUi.controllers', [
 
 angular.module('peregrineUi.directives', [
 ]);
+
 
 //resources
 angular
@@ -132,8 +134,8 @@ angular
 			});
 		};
 		$scope.updatePlayerOutcome = function (player, outcome) {
-			var outcomePlural = outcome + 's';
-			if (isNaN(Number(player[outcomePlural])) || player[outcomePlural] === "") {
+			var apiOutcome = ((outcome === 'wins') ? 'win' : 'draw');
+			if (isNaN(Number(player[outcome])) || player[outcome] === "") {
 				return;
 			}
 			outcomeResource.save(
@@ -141,8 +143,8 @@ angular
 					tournamentKey: $routeParams.tournamentKey,
 					roundNumber: $routeParams.roundNumber,
 					playerName: player.name,
-					outcome: outcome,
-					number: player[outcomePlural]
+					outcome: apiOutcome,
+					number: player[outcome]
 				},
 				{},
 				function success() {
@@ -154,18 +156,20 @@ angular
 				});
 		}
 		$scope.dropPlayer = function (player) {
-			playerResource.delete(
-				{
-					tournamentKey: $routeParams.tournamentKey,
-					playerName: player.name
-				},
-				function success() {
-					$scope.error = '';
-					$scope.updateRound();
-				},
-				function error() {
-					$scope.error = 'We were unable to save your match data.';
-				});
+			if (confirm('Seriously?')){
+				playerResource.delete(
+					{
+						tournamentKey: $routeParams.tournamentKey,
+						playerName: player.name
+					},
+					function success() {
+						$scope.error = '';
+						$scope.updateRound();
+					},
+					function error() {
+						$scope.error = 'We were unable to save your match data.';
+					});
+		    }
 		}
 		$scope.go = function (path) {
 			$location.path(path);
@@ -294,6 +298,8 @@ function comparePlayer(playerOne, playerTwo) {
 	return 0;
 }
 
+//directives
+
 //click to edit item list
 angular
 .module('peregrineUi.directives')
@@ -341,5 +347,33 @@ angular
 				$scope.itemDeleteCallback($scope.item);
 			};
 		}
+	};
+});
+
+//click to edit item list
+angular
+.module('peregrineUi.directives')
+.directive('upDown', function () {
+	return {
+		restrict: 'A',
+		replace: true,
+		templateUrl: '/DirectiveTemplates/UpDown.html?1=1',
+		scope: {
+			item: '=upDown',
+			attribute: '=upDownAttribute',
+			updateFunction: '=upDownChange'
+		},
+		link: function ($scope, element, attrs) {
+			$scope.value = $scope.item[$scope.attribute];
+			$scope.increment = function () {
+				$scope.item[$scope.attribute]++;
+				$scope.updateFunction($scope.item, $scope.attribute);
+			};
+
+			$scope.decrement = function () {
+				$scope.item[$scope.attribute]--;
+				$scope.updateFunction($scope.item, $scope.attribute);
+			};
+		}	
 	};
 });

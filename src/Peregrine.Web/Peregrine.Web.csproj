@@ -82,6 +82,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DirectiveTemplates\upDown.html" />
     <Content Include="DirectiveTemplates\itemEditor.html" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />

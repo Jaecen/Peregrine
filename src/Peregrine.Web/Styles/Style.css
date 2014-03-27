@@ -34,19 +34,28 @@
 	border: solid 1px #ccc;
 	border-radius: 4px;
 }
-.player-col{
-	float: left;
-	width: 80%;
-}
-.draws-col{
-	float: right;
-	width: 20%;
-}
+
 .player, .draws-wrap{
 	padding: 8px;
 }
-.player-wrap{
-	border-right: solid 1px #ccc;
+
+@media (min-width: 768px){
+	.player-wrap{
+		border-right: solid 1px #ccc;
+	}
+	.player-col{
+		float: left;
+		width: 79%;
+	}
+	.draws-col{
+		float: right;
+		width: 21%;
+	}
+}
+@media (max-width: 768px){
+	.player-wrap{
+		border-bottom: solid 1px #ccc;
+	}
 }
 .player{
 	border-top: solid 1px #ccc;
@@ -54,7 +63,9 @@
 .player:first-child{
 	border-top: none 0;
 }
-
+.player-name label{
+	line-height: 32px;
+}
 /* adding vertical input groups to bootstrap */
 .input-group-vertical .input-group-addon{
 	border: 1px solid #CCC;
@@ -71,4 +82,12 @@
 .input-group-vertical .btn:first-child, .input-group-vertical input[type='text']:first-child, .input-group-vertical .input-group-addon:first-child{
 	border-top-right-radius: 4px;
 	border-top-left-radius: 4px;
+}
+
+.up-down-value{
+	width: 42px;
+	display: inline-block;
+}
+.draws-wrap label, .draws-wrap .up-down-control{
+	display: inline-block;
 }
