@@ -38,6 +38,9 @@ namespace Peregrine.Web.Services
 			if(roundNumber == 0)
 				return RoundState.Completed;
 
+			if(tournament.Players.Count < 2)
+				return RoundState.Invalid;
+
 			var previousRoundState = DetermineRoundState(tournament, roundNumber - 1);
 
 			if(previousRoundState != RoundState.Completed && previousRoundState != RoundState.Finalized)
@@ -80,87 +83,112 @@ namespace Peregrine.Web.Services
 			var seed = tournament.Seed ^ roundNumber;
 			var rng = new Random(seed);
 
-			// Take previous round, sort by match points, random within same number of points.
-			// Odd numbers pair up to the next highest match points (hence sort descending)
-			var players = tournament
-				.Players
-				.Where(player => !player.Dropped)
-				.Select(player => new
-				{
-					Player = player,
-					MatchPoints = StatsProvider.GetMatchPoints(tournament, player),
-					Randomizer = rng.Next(),
-				})
+			var tournamentRounds = tournament
+				.Rounds
+				.SelectMany(round => round.Matches)
 				.ToArray();
 
-			// Lowest scoring player who has not had a bye gets it
-			// Assumes player list is still ordered by match points descending
-			var byes = players
+			// Group players by match points.
+			// Randomize within each group.
+			var playerPool = tournament
+				.Players
+				.Select(player => new
+					{
+						Player = player,
+						Randomizer = rng.Next(),
+						MatchPoints = StatsProvider.GetMatchPoints(tournament, player),
+						HadBye = tournamentRounds
+							.Where(match => match.Players.Contains(player))
+							.Where(match => match.Players.Count == 1)
+							.Any(),
+						Opponents = tournamentRounds
+							.Where(match => match.Players.Contains(player))
+							.SelectMany(match => match.Players.Except(new[] { player }))
+							.ToArray()
+					})
 				.OrderBy(o => o.MatchPoints)
 				.ThenBy(o => o.Randomizer)
-				.Select(o => o.Player)
-				.Where(player => players.Count() % 2 != 0)
-				.Where(player => tournament
-					.Rounds
-					.SelectMany(round => round.Matches)
-					.Where(match => match.Players.Contains(player))
-					.All(match => match.Players.Count > 1)
-				)
-				.Take(1)
-				.ToArray();
+				.ToArray()
+				.AsEnumerable();
 
-			var pairingPlayers = players
-				.OrderByDescending(o => o.MatchPoints)
-				.ThenBy(o => o.Randomizer)
-				.Select(o => o.Player)
-				.Except(byes)
-				.ToArray();
+			var matches = Enumerable.Empty<Match>();
 
-			var evens = pairingPlayers
-				.Where((player, index) => index % 2 == 0)
-				.ToArray();
+			// If there is an odd number of players, from the bottom up, take the first player 
+			// that hasn't had a bye and remove them from the pool.
+			if(playerPool.Count() % 2 == 1)
+			{
+				var byePlayer = playerPool
+					.Reverse()
+					.Where(o => !o.HadBye)
+					.Take(1);
 
-			var odds = pairingPlayers
-				.Where((player, index) => index % 2 == 1)
-				.ToArray();
-			
-			var pairings = evens
-				.Zip(odds,
-					(left, right) => new Match
-					{
-						Games = new List<Game>(),
-						Players = new[] 
-							{ 
-								left, 
-								right,
-							}
-							.OrderBy(player => player.Name)
-							.ToArray(),
-					}
-				)
-				.Concat(byes
-					.Select(player => new Match
-					{
-						// A bye gives two game wins
-						Games = new[]
+				matches = matches
+					.Concat(byePlayer
+						.Select(o => new Match
+						{
+							// A bye gives two game wins
+							Games = new[]
+								{
+									new Game
+									{
+										Winner = o.Player,
+									},
+									new Game
+									{
+										Winner = o.Player,
+									},
+								},
+							Players = new[] 
+								{ 
+									o.Player,
+								},
+						})
+					);
+
+				playerPool = playerPool.Except(byePlayer);
+			}
+
+			// Start at the top and take the next player in order. If they've never had a match, 
+			// place both in a pairing and remove them from the pool. If they have had a match,
+			// take the next lowest player. Repeat until an unplayed opponent is found.
+			while(playerPool.Any())
+			{
+				var left = playerPool
+					.First();
+
+				var right = playerPool
+					.Skip(1)
+					.SkipWhile(o => left
+						.Opponents
+						.Contains(o.Player)
+					)
+					.FirstOrDefault()
+					?? playerPool
+						.Skip(1)
+						.First();
+
+				matches = matches
+					.Concat(new[]
+						{
+							new Match
 							{
-								new Game
-								{
-									Winner = player,
-								},
-								new Game
-								{
-									Winner = player,
-								},
-							},
-						Players = new[] 
-							{ 
-								player, 
-							},
-					}))
-				.ToArray();
+								Games = new List<Game>(),
+								Players = new[] 
+									{ 
+										left.Player, 
+										right.Player,
+									}
+									.OrderBy(player => player.Name)
+									.ToArray(),
+							}
+						}
+					);
 
-			return pairings;
+				playerPool = playerPool
+					.Except(new[] { left, right });
+			}
+
+			return matches.ToArray();
 		}
 
 		public object RenderRound(Round round, RoundState roundState)
@@ -194,7 +222,7 @@ namespace Peregrine.Web.Services
 		{
 			var playerCount = tournament.Players.Count();
 			var roundCount = Math.Ceiling(Math.Log(playerCount, 2));
-			
+
 			// No less than one round
 			return (int)Math.Max(1, roundCount);
 		}
