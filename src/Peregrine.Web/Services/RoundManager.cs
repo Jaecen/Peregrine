@@ -181,6 +181,7 @@ namespace Peregrine.Web.Services
 								wins = m.Games.Where(g => g.Winner == p).Count(),
 								losses = m.Games.Where(g => g.Winner != p && g.Winner != null).Count(),
 								draws = m.Games.Where(g => g.Winner == null).Count(),
+								dropped = p.Dropped,
 							})
 					})
 					.ToArray()
