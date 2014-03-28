@@ -16,7 +16,7 @@ namespace Peregrine.Web.Controllers
 			RoundManager = new RoundManager();
 		}
 		
-		[Route("{result:regex(^(draw|win)$)}/{count}")]
+		[Route("{result:regex(^(draws|wins)$)}/{count}")]
 		public IHttpActionResult Put(Guid tournamentKey, int roundNumber, string playerName, string result, int count)
 		{
 			using(var dataContext = new DataContext())
@@ -34,12 +34,12 @@ namespace Peregrine.Web.Controllers
 					return NotFound();
 
 				Player winningPlayer;
-				if(result == "win")
+				if(result == "wins")
 					winningPlayer = player;
-				else if(result == "draw")
+				else if(result == "draws")
 					winningPlayer = null;
 				else
-					return BadRequest("result must be either 'win' or 'draw'");
+					return BadRequest("result must be either 'wins' or 'draws'");
 
 				if(roundNumber > RoundManager.GetMaxRoundsForTournament(tournament))
 					return NotFound();

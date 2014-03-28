@@ -134,7 +134,7 @@ angular
 			});
 		};
 		$scope.updatePlayerOutcome = function (player, outcome) {
-			var apiOutcome = ((outcome === 'wins') ? 'win' : 'draw');
+			var apiOutcome = ((outcome === 'wins') ? 'wins' : 'draws');
 			if (isNaN(Number(player[outcome])) || player[outcome] === "") {
 				return;
 			}
