@@ -29,6 +29,8 @@ namespace Peregrine.Web.Controllers
 		[Route]
 		public IHttpActionResult Post()
 		{
+			var rng = new Random();
+
 			using(var dataContext = new DataContext())
 			{
 				var tournament = dataContext
@@ -36,6 +38,7 @@ namespace Peregrine.Web.Controllers
 					.Add(new Tournament
 					{
 						Key = Guid.NewGuid(),
+						Seed = rng.Next(),
 					});
 
 				dataContext.SaveChanges();
