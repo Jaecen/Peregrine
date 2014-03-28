@@ -133,7 +133,9 @@ namespace Peregrine.Web.Services
 							{ 
 								left, 
 								right,
-							},
+							}
+							.OrderBy(player => player.Name)
+							.ToArray(),
 					}
 				)
 				.Concat(byes
