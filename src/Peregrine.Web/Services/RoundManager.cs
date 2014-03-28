@@ -166,7 +166,9 @@ namespace Peregrine.Web.Services
 			return new
 			{
 				number = round.Number,
+				started = roundState == RoundState.Committed,
 				completed = roundState == RoundState.Completed || roundState == RoundState.Finalized,
+				final = roundState == RoundState.Finalized,
 				matches = round
 					.Matches
 					.Select(m => new

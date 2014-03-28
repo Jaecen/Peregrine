@@ -31,7 +31,15 @@ namespace Peregrine.Web.Controllers
 					.Rounds
 					.Select(round => new
 						{
-							number = round.Number
+							Number = round.Number,
+							State = RoundManager.DetermineRoundState(tournament, round.Number),
+						})
+					.Select(o => new
+						{
+							number = o.Number,
+							started = o.State == RoundState.Committed,
+							completed = o.State == RoundState.Completed || o.State == RoundState.Finalized,
+							final = o.State == RoundState.Finalized,
 						})
 					.OrderBy(round => round.number)
 					.ToArray();
@@ -47,7 +55,16 @@ namespace Peregrine.Web.Controllers
 
 				if(nextRoundState != RoundState.Invalid && lastRoundNumber < RoundManager.GetMaxRoundsForTournament(tournament))
 					roundNumbers = roundNumbers
-						.Concat(new[] { new { number = lastRoundNumber + 1 }})
+						.Concat(new[] 
+							{ 
+								new 
+								{ 
+									number = lastRoundNumber + 1,
+									started = false,
+									completed = false,
+									final = false,
+								}
+							})
 						.ToArray();
 					
 				return Ok(roundNumbers);
