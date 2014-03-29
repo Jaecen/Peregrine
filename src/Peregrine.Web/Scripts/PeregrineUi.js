@@ -101,7 +101,16 @@ angular
 .controller('mainController', [
 	'$scope', '$resource', 'tournamentResource',
 	function ($scope, $resource, tournamentResource) {
-		$scope.tournaments = tournamentResource.query();
+		$scope.error = '';
+		tournamentResource.query(
+			{},
+			function success(tournaments) {
+				$scope.tournaments = tournaments;
+				$scope.error = '';
+			},
+			function error() {
+				$scope.error = 'We were unable to retrieve the tournament list';
+			});
 	}
 ]);
 
@@ -187,6 +196,7 @@ angular
 	function ($scope, $routeParams, $http, $resource, tournamentResource, playerResource) {
 		$scope.players = []; //necessary?
 		$scope.error = '';
+		$scope.newPlayer = {};
 
 		$scope.$watch('players', function (newValue) {
 			if (newValue) {

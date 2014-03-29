@@ -17,7 +17,11 @@
     </div>
 </div>
 <h3>Tournaments</h3>
-<ul>
+<div ng-if="error.length > 0" class="alert alert-danger">
+	{{error}}
+</div>
+<div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
+<ul data-ng-if="tournaments">
 	<li data-ng-repeat="tournament in tournaments">
 		<a href="#/Tournament/{{tournament.key}}">
 			{{tournament.key}}

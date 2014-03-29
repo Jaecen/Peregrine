@@ -1,7 +1,8 @@
 ﻿<div ng-if="error.length > 0" class="alert alert-danger">
 	{{error}}
 </div>
-<div class="round-area" data-ng-show="round">
+<div data-ng-hide="round" class="alert alert-info">loading...</div>
+<div class="round-area" data-ng-if="round">
 	<h2>Round {{round.number}}</h2>
 	<div class="itemList matches">
 		<div data-ng-repeat="match in round.matches" class="item row">

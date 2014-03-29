@@ -1,7 +1,8 @@
 ﻿<div ng-if="error.length > 0" class="alert alert-danger">
 	{{error}}
 </div>
-<div class="tournament-area" data-ng-show="tournament">
+<div data-ng-hide="tournament" class="alert alert-info">loading...</div>
+<div class="tournament-area" data-ng-if="tournament">
 	<h2>Tournament Details</h2>
 	<ul class="itemList">
 		<li class="item">
