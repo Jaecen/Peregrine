@@ -10,16 +10,16 @@
 					<div class="player-wrap">
 						<div class="player form-inline clearfix" data-ng-repeat="player in match.players">
 							<form class="player-form">
-								<div class="row">
-									<div class="player-name col-xs-3">
-										<label>{{player.name}}</label>
+								
+									<div class="player-name-bar">
+										<label class="player-name">{{player.name}}</label>
 									</div>
-									<div class="col-xs-9 text-right">
+									<div class="player-actions-bar">
 										<label class="player-wins">Wins:</label>
 										<span data-up-down="player" data-up-down-attribute="'wins'" data-up-down-change="updatePlayerOutcome" />
 										<button class="btn btn-default drop-button" data-ng-click="dropPlayer(player)">Drop</button>
 									</div>
-								</div>
+								
 							</form>
 						</div>
 					</div>
