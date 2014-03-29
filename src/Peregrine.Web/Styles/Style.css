@@ -1,33 +1,35 @@
-﻿header
-{
-    background: #124678;
-    color: #fff;
-}
-.mainContent
-{
-    padding: 16px 0;
-}
-.itemList
-{
-    padding: 0;
-    list-style: none;
-}
-.itemList .item
-{
-    margin: 8px 0;
+﻿header {
+	background: #124678;
+	color: #fff;
 }
 
-.inputPlaceholder 
-{
-    width: 100%;
-    background: #eee;
+	header a, header a:hover {
+		color: #fff;
+	}
+
+.mainContent {
+	padding: 16px 0;
 }
-.addPlayerForm{
+
+.itemList {
+	padding: 0;
+	list-style: none;
+}
+
+	.itemList .item {
+		margin: 8px 0;
+	}
+
+.inputPlaceholder {
+	width: 100%;
+}
+
+.addPlayerForm {
 	margin-bottom: 8px;
 }
 
 /* rounds */
-.matches .item{
+.matches .item {
 	border-radius: 4px;
 	margin: 8px 0;
 	border: solid 1px #124678;
@@ -35,58 +37,72 @@
 	background: #d4e9f9;
 }
 
-.player-name-bar, .player-actions-bar, .draws-wrap{
+.player-name-bar, .player-actions-bar, .draws-wrap {
 	padding: 8px;
 }
 
-.player-wrap .player:nth-child(even){
+.player-wrap .player:nth-child(even) {
 	background: #beddf5;
 }
-@media (min-width: 768px){
-	.player-wrap{
+
+@media (min-width: 768px) {
+	.player-wrap {
 		border-right: solid 1px #a8d1f1;
 	}
-	.player-col{
+
+	.player-col {
 		float: left;
 		width: 79%;
 	}
-	.draws-col{
+
+	.draws-col {
 		float: right;
 		width: 21%;
 	}
-	.player-name-bar, .player-actions-bar{
+
+	.player-name-bar, .player-actions-bar {
 		float: left;
 		width: 50%;
 	}
-	.player-name-bar{
+
+	.player-name-bar {
 		border-right: solid 1px #a8d1f1;
 	}
 }
-@media (max-width: 768px){
-	.player-wrap{
+
+@media (max-width: 768px) {
+	.player-wrap {
 		border-bottom: solid 1px #a8d1f1;
 	}
-	.player-actions-bar{
+
+	.player-actions-bar {
 		border-top: solid 1px #a8d1f1;
 	}
 }
-.player{
+
+.player {
 	border-top: solid 1px #a8d1f1;
 }
-.player:first-child{
-	border-top: none 0;
-}
-.player-name{
+
+	.player:first-child {
+		border-top: none 0;
+	}
+
+.player-name {
 	line-height: 20px;
 	padding: 6px 0;
 	margin-bottom: 2px;
 }
 
 
-.up-down-value{
+.up-down-value {
 	width: 42px;
 	display: inline-block;
 }
-.draws-wrap label, .draws-wrap .up-down-control{
+
+.draws-wrap label, .draws-wrap .up-down-control {
 	display: inline-block;
+}
+.form-control[disabled]{
+	cursor: default;
 }

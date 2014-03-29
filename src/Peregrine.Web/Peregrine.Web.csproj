@@ -85,7 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DirectiveTemplates\upDown.html" />
-    <Content Include="DirectiveTemplates\itemEditor.html" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="Partials\Home.html" />
@@ -141,6 +140,10 @@
       <Project>{f189834c-a485-4df1-b424-994e16ee999f}</Project>
       <Name>Peregrine.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\swissperegrine - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\swissperegrine - Web Deploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

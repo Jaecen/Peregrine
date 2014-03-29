@@ -278,15 +278,6 @@ angular
 					$scope.error = 'We were unable to delete the player!';
 				});
 		};
-
-		//you cannot really update a player in the api so we'll add a new one and delete the old one.
-		$scope.updatePlayer = function (newPlayer, oldPlayer) {
-			//got a bug here. if the add fails the delete still happens. The check below fixes the worst problem. It would probably be best to add a real update method to the api and add real keys to the players.
-			if (newPlayer != oldPlayer) {
-				$scope.addPlayer(newPlayer);
-				$scope.deletePlayer(oldPlayer);
-			}
-		};
 	}
 ]);
 
@@ -300,57 +291,6 @@ function comparePlayer(playerOne, playerTwo) {
 
 //directives
 
-//click to edit item list
-angular
-.module('peregrineUi.directives')
-.directive('itemEditor', function () {
-	return {
-		restrict: 'A',
-		replace: true,
-		templateUrl: '/DirectiveTemplates/ItemEditor.html?1=1',
-		scope: {
-			itemAttribute: '=itemValue',
-			itemIndex: '=itemIndex',
-			itemList: '=itemList',
-			itemDeleteCallback: '=itemDeleteCallback',
-			itemEditCallback: '=itemEditCallback'
-		},
-		link: function ($scope, $element) {
-			$scope.item = $scope.itemList[$scope.itemIndex];
-			$scope.itemValue = $scope.item[$scope.itemAttribute];
-
-			$scope.view = {
-				editableValue: $scope.itemValue,
-				editorEnabled: false
-			};
-
-			$scope.enableEditor = function () {
-				$scope.view.editorEnabled = true;
-				$scope.view.editableValue = $scope.itemValue;
-				setTimeout(function () {
-					$element.find('.editable-value').focus().select();
-				}, 2);
-			};
-
-			$scope.disableEditor = function () {
-				$scope.view.editorEnabled = false;
-			};
-
-			$scope.saveItem = function () {
-				$scope.newItem = {};
-				$scope.newItem[$scope.itemAttribute] = $scope.view.editableValue;
-				$scope.itemEditCallback($scope.newItem, $scope.item);
-				$scope.disableEditor();
-			};
-
-			$scope.deleteItem = function () {
-				$scope.itemDeleteCallback($scope.item);
-			};
-		}
-	};
-});
-
-//click to edit item list
 angular
 .module('peregrineUi.directives')
 .directive('upDown', function () {

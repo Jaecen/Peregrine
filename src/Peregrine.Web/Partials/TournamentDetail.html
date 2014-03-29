@@ -5,14 +5,14 @@
 	<h2>Tournament Details</h2>
 	<ul class="itemList">
 		<li class="item">
-			<div class="input-group input-group-lg">
-				<span class="input-group-addon">Tournament Name</span>
+			<div class="form-group">
+				<label class="tournament-name">Tournament Name</label>
 				<input type="text" class="form-control" value="Not currently supported in the api." disabled="disabled">
 			</div>
 		</li>
 		<li class="item">
-			<div class="input-group input-group-lg">
-				<span class="input-group-addon">Tournament Code</span>
+			<div class="form-group">
+				<label class="tournament-code">Tournament Code</label>
 				<input type="text" class="form-control" data-ng-model="tournament.key">
 			</div>
 		</li>
@@ -20,17 +20,16 @@
 	<h2>Players</h2>
 	<ul class="itemList">
 		<li data-ng-repeat="player in players" class="item">
-			<div data-item-editor
-				 data-item-value="'name'"
-				 data-item-index="$index"
-				 data-item-list="players"
-				 data-item-delete-callback="deletePlayer"
-				 data-item-edit-callback="updatePlayer">
+			<div class="input-group">
+				<input type="text" class="form-control" data-ng-model="player.name" disabled="disabled">
+				<span class="input-group-btn">
+					<button class="btn btn-default" data-ng-click="deletePlayer(player)">Delete</button>
+				</span>
 			</div>
 		</li>
 	</ul>
 	<form class="addPlayerForm" data-ng-submit="addPlayer()">
-		<div class="input-group input-group-lg ">
+		<div class="input-group">
 			<input type="text" class="form-control item-adder-input" data-ng-model="newPlayer.name">
 			<span class="input-group-btn">
 				<input type="submit" class="btn btn-primary" value="Add Player" />
