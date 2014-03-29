@@ -24,7 +24,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="draws-col">
+				<div class="draws-col" data-ng-if="match.players.length > 1">
 					<div class="draws-wrap form-inline">
 						<label>Draws:</label>
 						<span data-up-down="match.players[0]" data-up-down-attribute="'draws'" data-up-down-change="updatePlayerOutcome" />
