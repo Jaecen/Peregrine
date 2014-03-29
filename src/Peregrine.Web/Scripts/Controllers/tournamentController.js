@@ -46,6 +46,13 @@
 				});
 		}
 
+		$scope.updateTournament = function() {
+			$scope.tournament.$save({}, function() {
+				console.log('refreshing');
+				$scope.tournament.$get();
+			});
+		}
+
 		$scope.addPlayer = function(newplayer) {
 			if(!newplayer) {
 				newplayer = $scope.newPlayer;

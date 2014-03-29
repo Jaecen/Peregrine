@@ -124,6 +124,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\TournamentRequestBody.cs" />
+    <Compile Include="Models\TournamentResponseBody.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\RoundManager.cs" />
     <Compile Include="Services\StatsProvider.cs" />
@@ -141,7 +143,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Images\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Peregrine.Data\Peregrine.Data.csproj">

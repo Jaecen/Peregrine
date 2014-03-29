@@ -24,7 +24,7 @@
 <ul data-ng-if="tournaments">
 	<li data-ng-repeat="tournament in tournaments">
 		<a href="#/Tournament/{{tournament.key}}">
-			{{tournament.key}}
+			{{ tournament.name || tournament.key }}
 		</a>
 	</li>
 </ul>

@@ -6,6 +6,9 @@
 		return $resource('/api/tournaments/:tournamentKey', { tournamentKey: '@key' }, {
 			create: {
 				method: 'post'
+			},
+			save: {
+				method: 'put'
 			}
 		});
 	}

@@ -4,17 +4,21 @@
 <div data-ng-hide="tournament" class="alert alert-info">loading...</div>
 <div class="tournament-area" data-ng-if="tournament">
 	<h2>Tournament Details</h2>
+
 	<ul class="itemList">
 		<li class="item">
-			<div class="form-group">
-				<label class="tournament-name">Tournament Name</label>
-				<input type="text" class="form-control" value="Not currently supported in the api." disabled="disabled">
+			<label class="tournament-name">Tournament Name</label>
+			<div class="input-group">
+				<input type="text" class="form-control" data-ng-model="tournament.name" />
+				<span class="input-group-btn">
+					<button class="btn btn-default" data-ng-click="updateTournament(tournament)">Update</button>
+				</span>
 			</div>
 		</li>
 		<li class="item">
-			<div class="form-group">
+			<div class="input-group">
 				<label class="tournament-code">Tournament Code</label>
-				<input type="text" class="form-control" data-ng-model="tournament.key">
+				<input type="text" class="form-control" data-ng-model="tournament.key" readonly="readonly" />
 			</div>
 		</li>
 	</ul>

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Web.Models;
 
 namespace Peregrine.Web.Controllers
 {
@@ -19,10 +19,27 @@ namespace Peregrine.Web.Controllers
 				if(tournament == null)
 					return NotFound();
 
-				return Ok(new
-					{
-						key = tournament.Key,
-					});
+				return Ok(new TournamentResponseBody(tournament));
+			}
+		}
+
+		[Route]
+		public IHttpActionResult Put(Guid tournamentKey, [FromBody] TournamentRequestBody requestBody)
+		{
+			if(requestBody == null)
+				return BadRequest("No request body provided.");
+
+			using(var dataContext = new DataContext())
+			{
+				var tournament = dataContext.GetTournament(tournamentKey);
+
+				if(tournament == null)
+					return NotFound();
+
+				tournament.Name = requestBody.name;
+				dataContext.SaveChanges();
+
+				return Ok(new TournamentResponseBody(tournament));
 			}
 		}
 

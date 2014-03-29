@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Web.Models;
 
 namespace Peregrine.Web.Controllers
 {
@@ -15,21 +16,18 @@ namespace Peregrine.Web.Controllers
 			{
 				var tournamentKeys = dataContext
 					.Tournaments
-					.Select(tournament =>
-						new
-						{
-							key = tournament.Key,
-						})
-					.ToArray();
+					.ToArray()
+					.Select(tournament => new TournamentResponseBody(tournament));
 
 				return Ok(tournamentKeys);
 			}
 		}
 
 		[Route]
-		public IHttpActionResult Post()
+		public IHttpActionResult Post([FromBody]TournamentRequestBody requestBody)
 		{
 			var rng = new Random();
+			var details = requestBody ?? new TournamentRequestBody();
 
 			using(var dataContext = new DataContext())
 			{
@@ -38,6 +36,7 @@ namespace Peregrine.Web.Controllers
 					.Add(new Tournament
 					{
 						Key = Guid.NewGuid(),
+						Name = details.name,
 						Seed = rng.Next(),
 					});
 
@@ -46,10 +45,8 @@ namespace Peregrine.Web.Controllers
 				return CreatedAtRoute(
 					"tournament-get",
 					new { tournamentKey = tournament.Key },
-					new
-					{
-						key = tournament.Key,
-					});
+					new TournamentResponseBody(tournament)
+				);
 			}
 		}
 	}
