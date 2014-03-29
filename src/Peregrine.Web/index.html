@@ -4,8 +4,8 @@
 	<title>Welcome to Peregrine</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<!--3.0.3 version of bootstrap required for angular ui bootstrap-->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
 	<link href="Styles/Style.css" rel="stylesheet" />
 </head>
 <body>
@@ -16,11 +16,6 @@
 	</header>
 	<div class="mainContent">
 		<div class="container">
-			<!--<div>
-				<a href="#/">Home</a> |
-				<a href="#/Player/Detail/1">Player One</a> |
-				<a href="#/Tournament/Detail/2">Tournament Two</a>
-			</div>-->
 			<div ng-view></div>
 		</div>
 	</div>
@@ -33,9 +28,21 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-resource.min.js"></script>
-    <script src="/Scripts/ui-bootstrap-tpls.min.js"></script>
-	<script src="/Scripts/PeregrineUi.js"></script>
-	<script src="/Scripts/Resources/StandingsResource.js"></script>
-	<script src="/Scripts/Controllers/StandingsController.js"></script>
+	<script src="/Scripts/ui-bootstrap-tpls.min.js"></script>
+
+	<script src="/Scripts/peregrineUi.js"></script>
+
+	<script src="/Scripts/controllers/mainController.js"></script>
+	<script src="/Scripts/controllers/roundController.js"></script>
+	<script src="/Scripts/controllers/standingsController.js"></script>
+	<script src="/Scripts/controllers/tournamentController.js"></script>
+
+	<script src="/Scripts/resources/outcomeResource.js"></script>
+	<script src="/Scripts/resources/playerResource.js"></script>
+	<script src="/Scripts/resources/roundResource.js"></script>
+	<script src="/Scripts/resources/standingsResource.js"></script>
+	<script src="/Scripts/resources/tournamentResource.js"></script>
+
+	<script src="/Scripts/directives/upDown.js"></script>
 </body>
 </html>
