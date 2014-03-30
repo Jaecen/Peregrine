@@ -106,7 +106,13 @@
 .form-control[disabled]{
 	cursor: default;
 }
+<<<<<<< HEAD
 
 table.pairings-report td[rowspan] {
 	vertical-align: middle;
+=======
+/* round detail page */
+.round-detail-match{
+	line-height: 32px;
+>>>>>>> - Working on a read only round pairings screen
 }

@@ -28,6 +28,10 @@ angular
 			controller: 'roundController',
 			templateUrl: 'Partials/RoundDetail.html'
 		})
+		.when('/Tournament/:tournamentKey/RoundDetail/:roundNumber', {
+			controller: 'roundController',
+			templateUrl: 'Partials/RoundReadOnly.html'
+		})
 		.when('/Tournament/:tournamentKey/Standings', {
 			controller: 'standingsController',
 			templateUrl: 'Partials/Standings.html'
