@@ -6,17 +6,17 @@
 	<h2>Round {{round.number}}</h2>
 	<div class="itemList matches">
 		<div data-ng-repeat="match in round.matches" class="item row round-detail-match">
-			<div class="col-xs-5 round-detail-player text-right">
-				<label>{{match.players[0].name}}</label>
+			<div class="col-xs-5 round-detail-player text-left pairing-box">
+				<span>{{match.players[0].name}}</span>
 			</div>
-			<div class="col-xs-2 text-center">
-				<label class="label label-danger">VS</label>
+			<div class="col-xs-2 text-center pairing-box">
+				<span class="label label-danger">VS</span>
 			</div>
-			<div class="col-xs-5 round-detail-player text-left" data-ng-if="match.players.length > 1">
-				<label>{{match.players[1].name}}</label>
+			<div class="col-xs-5 round-detail-player text-right pairing-box" data-ng-if="match.players.length > 1">
+				<span>{{match.players[1].name}}</span>
 			</div>
-			<div class="col-xs-5 round-detail-player text-left" data-ng-if="match.players.length === 1">
-				<label>Bye</label>
+			<div class="col-xs-5 round-detail-player text-right pairing-box" data-ng-if="match.players.length === 1">
+				<span>Bye</span>
 			</div>
 		</div>
 	</div>
