@@ -6,7 +6,7 @@ using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
-	[RoutePrefix("api/tournaments/{tournamentKey}/rounds/{roundNumber:min(1)}")]
+	[RoutePrefix("api/tournaments/{tournamentKey}/rounds")]
 	public class RoundController : ApiController
 	{
 		readonly RoundManager RoundManager;
@@ -16,7 +16,7 @@ namespace Peregrine.Web.Controllers
 			RoundManager = new RoundManager();
 		}
 
-		[Route]
+		[Route("{roundNumber:min(1)}")]
 		public IHttpActionResult Get(Guid tournamentKey, int roundNumber)
 		{
 			using(var dataContext = new DataContext())
@@ -50,6 +50,42 @@ namespace Peregrine.Web.Controllers
 
 				return Ok(RoundManager.RenderRound(round, roundState));
 			}
+		}
+
+		[Route("current")]
+		public IHttpActionResult Get(Guid tournamentKey)
+		{
+			int currentRoundNumber;
+			using(var dataContext = new DataContext())
+			{
+				var tournament = dataContext
+					.GetTournament(tournamentKey);
+
+				if(tournament == null)
+					return NotFound();
+
+				var roundStatus = Enumerable
+					.Range(1, RoundManager.GetMaxRoundsForTournament(tournament))
+					.Select(roundNumber => new
+						{
+							Number = roundNumber,
+							State = RoundManager.DetermineRoundState(tournament, roundNumber)
+						});
+
+				if(!roundStatus.Any())
+					return NotFound();
+
+				var currentRound = roundStatus
+					.SkipWhile(o => o.State >= RoundState.Final)
+					.FirstOrDefault();
+
+				if(currentRound == null || currentRound.State == RoundState.Invalid)
+					return NotFound();
+
+				currentRoundNumber = currentRound.Number;
+			}
+
+			return Get(tournamentKey, currentRoundNumber);
 		}
 	}
 }
