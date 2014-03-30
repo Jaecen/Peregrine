@@ -28,9 +28,9 @@ angular
 			controller: 'roundController',
 			templateUrl: 'Partials/RoundDetail.html'
 		})
-		.when('/Tournament/:tournamentKey/RoundDetail/:roundNumber', {
+		.when('/Tournament/:tournamentKey/RoundEdit/:roundNumber', {
 			controller: 'roundController',
-			templateUrl: 'Partials/RoundReadOnly.html'
+			templateUrl: 'Partials/RoundEdit.html'
 		})
 		.when('/Tournament/:tournamentKey/Standings', {
 			controller: 'standingsController',

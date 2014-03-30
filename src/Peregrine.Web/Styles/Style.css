@@ -103,7 +103,7 @@
 .draws-wrap label, .draws-wrap .up-down-control {
 	display: inline-block;
 }
-.form-control[disabled]{
+.form-control[disabled], .form-control[readonly]{
 	cursor: default;
 }
 <<<<<<< HEAD

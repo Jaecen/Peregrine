@@ -5,37 +5,22 @@
 <div class="round-area" data-ng-if="round">
 	<h2>Round {{round.number}}</h2>
 	<div class="itemList matches">
-		<div data-ng-repeat="match in round.matches" class="item row">
-			<div class="players">
-				<div class="player-col">
-					<div class="player-wrap">
-						<div class="player form-inline clearfix" data-ng-repeat="player in match.players">
-							<form class="player-form">
-								
-									<div class="player-name-bar">
-										<label class="player-name">{{player.name}}</label>
-									</div>
-									<div class="player-actions-bar">
-										<label class="player-wins">Wins:</label>
-										<span data-up-down="player" data-up-down-attribute="'wins'" data-up-down-change="updatePlayerOutcome" />
-										<button class="btn btn-default drop-button" data-ng-click="dropPlayer(player)">Drop</button>
-									</div>
-								
-							</form>
-						</div>
-					</div>
-				</div>
-				<div class="draws-col" data-ng-if="match.players.length > 1">
-					<div class="draws-wrap form-inline">
-						<label>Draws:</label>
-						<span data-up-down="match.players[0]" data-up-down-attribute="'draws'" data-up-down-change="updatePlayerOutcome" />
-					</div>
-				</div>
+		<div data-ng-repeat="match in round.matches" class="item row round-detail-match">
+			<div class="col-xs-5 round-detail-player text-right">
+				<label>{{match.players[0].name}}</label>
+			</div>
+			<div class="col-xs-2 text-center">
+				<label class="label label-danger">VS</label>
+			</div>
+			<div class="col-xs-5 round-detail-player text-left" data-ng-if="match.players.length > 1">
+				<label>{{match.players[1].name}}</label>
+			</div>
+			<div class="col-xs-5 round-detail-player text-left" data-ng-if="match.players.length === 1">
+				<label>Bye</label>
 			</div>
 		</div>
 	</div>
 	<div class="action-bar">
-		<button data-ng-disabled="!round.completed" data-ng-if="isAnotherRound" ng-click="go('/Tournament/' + tournamentKey + '/Round/' + (round.number + 1))" class="btn btn-primary btn-lg">Start Next Round</button>
-		<button data-ng-disabled="!round.completed" data-ng-if="!isAnotherRound" data-ng-click="go('/Tournament/' + tournamentKey + '/Standings')" class="btn btn-primary btn-lg">Finish The Tournament</button>
+		<button ng-click="go('/Tournament/' + tournamentKey + '/RoundEdit/' + (round.number))" class="btn btn-primary btn-lg">Enter Results</button>
 	</div>
 </div>
