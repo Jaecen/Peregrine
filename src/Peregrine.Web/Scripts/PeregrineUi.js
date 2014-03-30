@@ -18,11 +18,11 @@ angular
 		})
 		.when('/Tournament', {
 			controller: 'tournamentController',
-			templateUrl: 'Partials/TournamentDetail.html'
+			templateUrl: 'Partials/TournamentEdit.html'
 		})
 		.when('/Tournament/:tournamentKey', {
 			controller: 'tournamentController',
-			templateUrl: 'Partials/TournamentDetail.html'
+			templateUrl: 'Partials/TournamentEdit.html'
 		})
 		.when('/Tournament/:tournamentKey/Round/:roundNumber', {
 			controller: 'roundController',

@@ -88,12 +88,11 @@
     <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="Partials\Home.html" />
-    <Content Include="Partials\PlayerDetail.html" />
     <Content Include="Partials\RoundDetail.html" />
     <Content Include="Partials\RoundEdit.html" />
     <Content Include="Partials\Standings.html" />
     <Content Include="Partials\TournamentDashboard.html" />
-    <Content Include="Partials\TournamentDetail.html" />
+    <Content Include="Partials\TournamentEdit.html" />
     <Content Include="Scripts\controllers\mainController.js" />
     <Content Include="Scripts\controllers\tournamentController.js" />
     <Content Include="Scripts\controllers\roundController.js" />
