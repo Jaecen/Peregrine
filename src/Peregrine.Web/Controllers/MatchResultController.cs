@@ -101,6 +101,7 @@ namespace Peregrine.Web.Controllers
 
 				roundState = RoundManager.DetermineRoundState(tournament, roundNumber);
 
+				EventStreamManager.GetInstance(tournamentKey).Publish("round-update", RoundManager.RenderRound(round, roundState));
 				return Ok(RoundManager.RenderRound(round, roundState));
 			}
 		}

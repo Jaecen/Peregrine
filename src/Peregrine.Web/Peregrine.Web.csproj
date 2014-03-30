@@ -124,6 +124,7 @@
     <Compile Include="Controllers\StandingsController.cs" />
     <Compile Include="Controllers\TournamentController.cs" />
     <Compile Include="Controllers\TournamentsController.cs" />
+    <Compile Include="Controllers\TournamentUpdateController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -131,6 +132,7 @@
     <Compile Include="Models\TournamentResponseBody.cs" />
     <Compile Include="Models\TournamentResponseBodyProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\EventStreamManager.cs" />
     <Compile Include="Services\RoundManager.cs" />
     <Compile Include="Services\StatsProvider.cs" />
   </ItemGroup>

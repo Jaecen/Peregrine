@@ -6,6 +6,8 @@
 
 		$scope.location = $location;
 
+		var roundEventSource;
+
 		tournamentResource.get({
 				tournamentKey: $routeParams.tournamentKey
 			})
@@ -20,6 +22,17 @@
 			})
 			.then(function(round) {
 				$scope.round = round;
+
+				roundEventSource = new EventSource('/api/tournaments/'+ $routeParams.tournamentKey + '/updates');
+				roundEventSource.addEventListener(
+					'round-update',
+					function(event) {
+						console.log('received e', event);
+						$scope.$apply(function() {
+							$scope.round = JSON.parse(event.data);
+						})
+					},
+					false);
 
 				return standingsResource.query({
 					tournamentKey: $routeParams.tournamentKey
