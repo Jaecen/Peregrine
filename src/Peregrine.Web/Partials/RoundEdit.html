@@ -36,7 +36,7 @@
 		</div>
 	</div>
 	<div class="action-bar">
-		<button data-ng-disabled="!round.completed" data-ng-if="isAnotherRound" ng-click="go('/Tournament/' + tournamentKey + '/Round/' + (round.number + 1))" class="btn btn-primary btn-lg">Start Next Round</button>
-		<button data-ng-disabled="!round.completed" data-ng-if="!isAnotherRound" data-ng-click="go('/Tournament/' + tournamentKey + '/Standings')" class="btn btn-primary btn-lg">Finish The Tournament</button>
+		<button data-ng-disabled="!round.completed" data-ng-if="isAnotherRound" ng-click="go('/tournament/' + tournamentKey + '/round/' + (round.number + 1))" class="btn btn-primary btn-lg">Start Next Round</button>
+		<button data-ng-disabled="!round.completed" data-ng-if="!isAnotherRound" data-ng-click="go('/tournament/' + tournamentKey + '/standings')" class="btn btn-primary btn-lg">Finish The Tournament</button>
 	</div>
 </div>

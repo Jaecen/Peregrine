@@ -24,15 +24,15 @@ angular
 			controller: 'tournamentController',
 			templateUrl: 'Partials/TournamentEdit.html'
 		})
-		.when('/Tournament/:tournamentKey/Round/:roundNumber', {
+		.when('/tournament/:tournamentKey/round/:roundNumber', {
 			controller: 'roundController',
 			templateUrl: 'Partials/RoundDetail.html'
 		})
-		.when('/Tournament/:tournamentKey/RoundEdit/:roundNumber', {
+		.when('/tournament/:tournamentKey/roundedit/:roundNumber', {
 			controller: 'roundController',
 			templateUrl: 'Partials/RoundEdit.html'
 		})
-		.when('/Tournament/:tournamentKey/Standings', {
+		.when('/tournament/:tournamentKey/standings', {
 			controller: 'standingsController',
 			templateUrl: 'Partials/Standings.html'
 		})
