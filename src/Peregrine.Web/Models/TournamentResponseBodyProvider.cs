@@ -23,8 +23,9 @@ namespace Peregrine.Web.Models
 			var lastRound = RoundManager.GetMaxRoundsForTournament(tournament);
 			var lastRoundState = RoundManager.DetermineRoundState(tournament, lastRound);
 			var finished = lastRoundState >= RoundState.Completed;
+			var totalRounds = RoundManager.GetMaxRoundsForTournament(tournament);
 
-			return new TournamentResponseBody(tournament.Key, tournament.Name, started, finished);
+			return new TournamentResponseBody(tournament.Key, tournament.Name, started, finished, totalRounds);
 		}
 	}
 }
