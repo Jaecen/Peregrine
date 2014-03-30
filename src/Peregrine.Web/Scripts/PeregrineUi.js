@@ -12,6 +12,10 @@ angular
 			controller: 'mainController',
 			templateUrl: 'Partials/Home.html'
 		})
+		.when('/dash/tournament/:tournamentKey', {
+			controller: 'tournamentDashboardController',
+			templateUrl: 'Partials/TournamentDashboard.html'
+		})
 		.when('/Tournament', {
 			controller: 'tournamentController',
 			templateUrl: 'Partials/TournamentDetail.html'
@@ -32,10 +36,14 @@ angular
 });
 
 angular.module('peregrineUi.controllers', [
-	'peregrineUi.resources'
+	'peregrineUi.resources',
+	'peregrineUi.filters'
 ]);
 
 angular.module('peregrineUi.resources', [
+]);
+
+angular.module('peregrineUi.filters', [
 ]);
 
 angular.module('peregrineUi.directives', [

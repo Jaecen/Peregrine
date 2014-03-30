@@ -126,6 +126,7 @@ namespace Peregrine.Web.Services
 					.Concat(byePlayer
 						.Select(o => new Match
 						{
+							Number = 1 + (playerPool.Count() / 2),
 							// A bye gives two game wins
 							Games = new[]
 								{
@@ -151,6 +152,7 @@ namespace Peregrine.Web.Services
 			// Start at the top and take the next player in order. If they've never had a match, 
 			// place both in a pairing and remove them from the pool. If they have had a match,
 			// take the next lowest player. Repeat until an unplayed opponent is found.
+			var matchNumber = 1;
 			while(playerPool.Any())
 			{
 				var left = playerPool
@@ -172,6 +174,7 @@ namespace Peregrine.Web.Services
 						{
 							new Match
 							{
+								Number = matchNumber,
 								Games = new List<Game>(),
 								Players = new[] 
 									{ 
@@ -186,6 +189,8 @@ namespace Peregrine.Web.Services
 
 				playerPool = playerPool
 					.Except(new[] { left, right });
+
+				matchNumber++;
 			}
 
 			return matches.ToArray();
@@ -201,17 +206,19 @@ namespace Peregrine.Web.Services
 				final = roundState >= RoundState.Final,
 				matches = round
 					.Matches
-					.Select(m => new
+					.OrderBy(match => match.Number)
+					.Select(match => new
 					{
-						games = m.Games.Count(),
-						players = m.Players
-							.Select(p => new
+						number = match.Number,
+						games = match.Games.Count(),
+						players = match.Players
+							.Select(player => new
 							{
-								name = p.Name,
-								wins = m.Games.Where(g => g.Winner == p).Count(),
-								losses = m.Games.Where(g => g.Winner != p && g.Winner != null).Count(),
-								draws = m.Games.Where(g => g.Winner == null).Count(),
-								dropped = p.Dropped,
+								name = player.Name,
+								wins = match.Games.Where(game => game.Winner == player).Count(),
+								losses = match.Games.Where(game => game.Winner != player && game.Winner != null).Count(),
+								draws = match.Games.Where(game => game.Winner == null).Count(),
+								dropped = player.Dropped,
 							})
 					})
 					.ToArray()

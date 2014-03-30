@@ -91,11 +91,14 @@
     <Content Include="Partials\PlayerDetail.html" />
     <Content Include="Partials\RoundDetail.html" />
     <Content Include="Partials\Standings.html" />
+    <Content Include="Partials\TournamentDashboard.html" />
     <Content Include="Partials\TournamentDetail.html" />
     <Content Include="Scripts\controllers\mainController.js" />
     <Content Include="Scripts\controllers\tournamentController.js" />
     <Content Include="Scripts\controllers\roundController.js" />
+    <Content Include="Scripts\controllers\tournamentDashboardController.js" />
     <Content Include="Scripts\directives\upDown.js" />
+    <Content Include="Scripts\filters\encodeURIComponent.js" />
     <Content Include="Scripts\peregrineUi.js" />
     <Content Include="Scripts\controllers\standingsController.js" />
     <Content Include="Scripts\resources\tournamentResource.js" />

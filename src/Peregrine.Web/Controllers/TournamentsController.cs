@@ -25,7 +25,8 @@ namespace Peregrine.Web.Controllers
 				var tournamentKeys = dataContext
 					.Tournaments
 					.ToArray()
-					.Select(tournament => TournamentResponseBodyProvider.CreateResponseBody(tournament));
+					.Select(tournament => TournamentResponseBodyProvider.CreateResponseBody(tournament))
+					.ToArray();
 
 				return Ok(tournamentKeys);
 			}

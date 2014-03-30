@@ -48,7 +48,6 @@
 
 		$scope.updateTournament = function() {
 			$scope.tournament.$save({}, function() {
-				console.log('refreshing');
 				$scope.tournament.$get();
 			});
 		}

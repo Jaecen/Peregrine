@@ -106,3 +106,7 @@
 .form-control[disabled]{
 	cursor: default;
 }
+
+table.pairings-report td[rowspan] {
+	vertical-align: middle;
+}
