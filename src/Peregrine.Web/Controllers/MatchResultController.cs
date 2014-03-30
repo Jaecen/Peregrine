@@ -49,7 +49,7 @@ namespace Peregrine.Web.Controllers
 					return NotFound();
 
 				// Can't add results to finalized rounds
-				if(roundState == RoundState.Finalized)
+				if(roundState >= RoundState.Final)
 					return StatusCode(System.Net.HttpStatusCode.MethodNotAllowed);
 
 				var round = tournament

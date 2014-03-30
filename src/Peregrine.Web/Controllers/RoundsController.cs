@@ -37,9 +37,9 @@ namespace Peregrine.Web.Controllers
 					.Select(o => new
 						{
 							number = o.Number,
-							started = o.State == RoundState.Committed,
-							completed = o.State == RoundState.Completed || o.State == RoundState.Finalized,
-							final = o.State == RoundState.Finalized,
+							started = o.State >= RoundState.Committed,
+							completed = o.State >= RoundState.Completed,
+							final = o.State >= RoundState.Final,
 						})
 					.OrderBy(round => round.number)
 					.ToArray();

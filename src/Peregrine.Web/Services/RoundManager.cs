@@ -7,11 +7,11 @@ namespace Peregrine.Web.Services
 {
 	enum RoundState
 	{
+		Invalid = 0,
 		Projected,
 		Committed,
 		Completed,
-		Finalized,
-		Invalid,
+		Final,
 	}
 
 	class RoundManager
@@ -43,7 +43,7 @@ namespace Peregrine.Web.Services
 
 			var previousRoundState = DetermineRoundState(tournament, roundNumber - 1);
 
-			if(previousRoundState != RoundState.Completed && previousRoundState != RoundState.Finalized)
+			if(previousRoundState < RoundState.Completed)
 				return RoundState.Invalid;
 
 			var requestedRound = tournament
@@ -71,7 +71,7 @@ namespace Peregrine.Web.Services
 
 			if(requestedRoundIsCompleted)
 				if(nextRoundHasResults)
-					return RoundState.Finalized;
+					return RoundState.Final;
 				else
 					return RoundState.Completed;
 
@@ -196,9 +196,9 @@ namespace Peregrine.Web.Services
 			return new
 			{
 				number = round.Number,
-				started = roundState == RoundState.Committed,
-				completed = roundState == RoundState.Completed || roundState == RoundState.Finalized,
-				final = roundState == RoundState.Finalized,
+				started = roundState >= RoundState.Committed,
+				completed = roundState >= RoundState.Completed,
+				final = roundState >= RoundState.Final,
 				matches = round
 					.Matches
 					.Select(m => new
