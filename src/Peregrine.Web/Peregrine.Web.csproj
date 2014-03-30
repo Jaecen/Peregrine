@@ -126,6 +126,7 @@
     </Compile>
     <Compile Include="Models\TournamentRequestBody.cs" />
     <Compile Include="Models\TournamentResponseBody.cs" />
+    <Compile Include="Models\TournamentResponseBodyProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\RoundManager.cs" />
     <Compile Include="Services\StatsProvider.cs" />

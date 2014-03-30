@@ -9,6 +9,13 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments/{tournamentKey}")]
 	public class TournamentController : ApiController
 	{
+		readonly TournamentResponseBodyProvider TournamentResponseBodyProvider;
+
+		public TournamentController()
+		{
+			TournamentResponseBodyProvider = new TournamentResponseBodyProvider();
+		}
+
 		[Route(Name = "tournament-get")]
 		public IHttpActionResult Get(Guid tournamentKey)
 		{
@@ -19,7 +26,7 @@ namespace Peregrine.Web.Controllers
 				if(tournament == null)
 					return NotFound();
 
-				return Ok(new TournamentResponseBody(tournament));
+				return Ok(TournamentResponseBodyProvider.CreateResponseBody(tournament));
 			}
 		}
 
@@ -39,7 +46,7 @@ namespace Peregrine.Web.Controllers
 				tournament.Name = requestBody.name;
 				dataContext.SaveChanges();
 
-				return Ok(new TournamentResponseBody(tournament));
+				return Ok(TournamentResponseBodyProvider.CreateResponseBody(tournament));
 			}
 		}
 

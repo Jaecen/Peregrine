@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using Peregrine.Data;
+using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Models
 {
@@ -7,14 +9,15 @@ namespace Peregrine.Web.Models
 	{
 		public readonly Guid key;
 		public readonly string name;
+		public readonly bool started;
+		public readonly bool finished;
 
-		public TournamentResponseBody(Tournament tournament)
+		public TournamentResponseBody(Guid key, string name, bool started, bool finished)
 		{
-			if(tournament == null)
-				throw new ArgumentNullException();
-
-			key = tournament.Key;
-			name = tournament.Name;
+			this.key = key;
+			this.name = name;
+			this.started = started;
+			this.finished = finished;
 		}
 	}
 }

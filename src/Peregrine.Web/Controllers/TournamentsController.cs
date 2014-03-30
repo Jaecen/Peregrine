@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
@@ -9,6 +10,13 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments")]
 	public class TournamentsController : ApiController
 	{
+		readonly TournamentResponseBodyProvider TournamentResponseBodyProvider;
+
+		public TournamentsController()
+		{
+			TournamentResponseBodyProvider = new TournamentResponseBodyProvider();
+		}
+
 		[Route]
 		public IHttpActionResult Get()
 		{
@@ -17,7 +25,7 @@ namespace Peregrine.Web.Controllers
 				var tournamentKeys = dataContext
 					.Tournaments
 					.ToArray()
-					.Select(tournament => new TournamentResponseBody(tournament));
+					.Select(tournament => TournamentResponseBodyProvider.CreateResponseBody(tournament));
 
 				return Ok(tournamentKeys);
 			}
@@ -38,6 +46,7 @@ namespace Peregrine.Web.Controllers
 						Key = Guid.NewGuid(),
 						Name = details.name,
 						Seed = rng.Next(),
+						Players = new List<Player>(),
 					});
 
 				dataContext.SaveChanges();
@@ -45,7 +54,7 @@ namespace Peregrine.Web.Controllers
 				return CreatedAtRoute(
 					"tournament-get",
 					new { tournamentKey = tournament.Key },
-					new TournamentResponseBody(tournament)
+					TournamentResponseBodyProvider.CreateResponseBody(tournament)
 				);
 			}
 		}
