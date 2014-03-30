@@ -11,12 +11,12 @@
 					<div class="player-wrap">
 						<div class="player form-inline clearfix" data-ng-repeat="player in match.players">
 							<div class="player-name-bar">
+								<button class="btn btn-default drop-button pull-right" data-ng-click="dropPlayer(player)">Drop</button>
 								<label class="player-name">{{player.name}}</label>
 							</div>
 							<div class="player-actions-bar" data-ng-if="match.players.length > 1">
 								<span class="player-wins">Wins:</span>
 								<span data-up-down="player" data-up-down-attribute="'wins'" data-up-down-change="updatePlayerOutcome" />
-								<button class="btn btn-default drop-button" data-ng-click="dropPlayer(player)">Drop</button>
 							</div>
 						</div>
 						<div class="player form-inline clearfix" data-ng-if="match.players.length === 1">
