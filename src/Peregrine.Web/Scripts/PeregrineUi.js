@@ -16,11 +16,11 @@ angular
 			controller: 'tournamentDashboardController',
 			templateUrl: 'Partials/TournamentDashboard.html'
 		})
-		.when('/Tournament', {
+		.when('/tournamentedit', {
 			controller: 'tournamentController',
 			templateUrl: 'Partials/TournamentEdit.html'
 		})
-		.when('/Tournament/:tournamentKey', {
+		.when('/tournamentedit/:tournamentKey', {
 			controller: 'tournamentController',
 			templateUrl: 'Partials/TournamentEdit.html'
 		})
