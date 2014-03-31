@@ -33,7 +33,6 @@
 	border-radius: 4px;
 	margin: 8px 0;
 	border: solid 1px #124678;
-	overflow: hidden;
 	background: #d4e9f9;
 }
 
@@ -78,6 +77,15 @@
 	.player-actions-bar {
 		border-top: solid 1px #a8d1f1;
 	}
+}
+.player-wrap{
+	position: relative;
+}
+.versus{
+	position: absolute;
+	top: 50%;
+	left: -12px;
+	margin-top: -12px;
 }
 
 .player {

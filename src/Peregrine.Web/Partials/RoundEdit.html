@@ -11,7 +11,7 @@
 					<div class="player-wrap">
 						<div class="player form-inline clearfix" data-ng-repeat="player in match.players">
 							<div class="player-name-bar">
-								<button class="btn btn-default drop-button pull-right" data-ng-click="dropPlayer(player)">Drop</button>
+								<button class="btn btn-sm btn-default drop-button pull-right" data-ng-click="dropPlayer(player)">Drop</button>
 								<label class="player-name">{{player.name}}</label>
 							</div>
 							<div class="player-actions-bar" data-ng-if="match.players.length > 1">
@@ -23,6 +23,9 @@
 							<div class="player-name-bar">
 								<label class="player-name">Bye</label>
 							</div>
+						</div>
+						<div class="versus">
+							<span class="label label-primary">VS</span>
 						</div>
 					</div>
 				</div>
