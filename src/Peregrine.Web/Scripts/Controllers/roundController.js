@@ -1,30 +1,36 @@
 ﻿angular
 .module('peregrineUi.controllers')
 .controller('roundController', [
-	'$scope', '$routeParams', '$location', 'roundResource', 'outcomeResource', 'playerResource',
-	function($scope, $routeParams, $location, roundResource, outcomeResource, playerResource) {
+	'$scope', '$routeParams', '$location', 'tournamentResource', 'roundResource', 'outcomeResource', 'playerResource',
+	function($scope, $routeParams, $location, tournamentResource, roundResource, outcomeResource, playerResource) {
 		$scope.error = '';
-		$scope.tournamentKey = $routeParams.tournamentKey;
+
+		tournamentResource.get(
+			{ tournamentKey: $routeParams.tournamentKey },
+			function success(tournament) {
+				$scope.error = '';
+				//handle redirect if the tournament is complete already
+				if (tournament.finished) {
+					$location.path('/tournament/' + tournament.key + '/standings');
+				}
+				$scope.tournament = tournament;
+			},
+			function error() {
+				$scope.error = 'Sunova gunnysack! We lost track of your tournament.';
+			});
 
 		$scope.updateRound = function() {
 			roundResource.get({ tournamentKey: $routeParams.tournamentKey, roundNumber: $routeParams.roundNumber },
 			function success(round) {
 				$scope.error = '';
+				//handle redirect if this round is complete already
+				if (round.final) {
+					$location.path('/tournament/' + $routeParams.tournamentKey + '/round/' + (round.number + 1));
+				}
 				$scope.round = round;
-				roundResource.query(
-				{
-					tournamentKey: $routeParams.tournamentKey
-				},
-				function success(rounds) {
-					$scope.error = '';
-					$scope.isAnotherRound = rounds.length > $scope.round.number;
-				},
-				function error() {
-					$scope.error = 'We couldn\'t tell if there is another round or not.';
-				});
 			},
 			function error() {
-				$scope.error = 'We couldn\'t get your round';
+				$scope.error = 'This round is off to a bad start. It got stuck in the tubes.';
 			});
 		};
 
@@ -47,12 +53,12 @@
 					$scope.updateRound();
 				},
 				function error() {
-					$scope.error = 'We were unable to save your match data.';
+					$scope.error = 'Ahh jeez. You clicked so hard you broke it!';
 				});
 		}
 
 		$scope.dropPlayer = function(player) {
-			if(confirm('Seriously?')) {
+			if(confirm('Whoa there! Seriously?')) {
 				playerResource.delete(
 					{
 						tournamentKey: $routeParams.tournamentKey,

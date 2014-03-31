@@ -1,8 +1,8 @@
 ﻿angular
 .module('peregrineUi.controllers')
 .controller('tournamentController', [
-	'$scope', '$routeParams', 'tournamentResource', 'playerResource',
-	function($scope, $routeParams, tournamentResource, playerResource) {
+	'$scope', '$routeParams', '$location', 'tournamentResource', 'playerResource',
+	function($scope, $routeParams, $location, tournamentResource, playerResource) {
 		$scope.players = []; //necessary?
 		$scope.error = '';
 		$scope.newPlayer = {};
@@ -19,6 +19,14 @@
 				{ tournamentKey: $routeParams.tournamentKey },
 				function success(tournament) {
 					$scope.error = '';
+					//handle redirects
+					if(tournament.finished) {
+						$location.path('/tournament/' + tournament.key + '/standings');
+					}
+					else if(tournament.started) {
+						$location.path('/tournament/' + tournament.key + '/round/current');
+					}
+					//add the tournament to the scope
 					$scope.tournament = tournament;
 					//get players
 					playerResource.query({ tournamentKey: tournament.key },
