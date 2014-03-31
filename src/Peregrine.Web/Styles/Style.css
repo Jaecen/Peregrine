@@ -36,12 +36,23 @@
 	background: #d4e9f9;
 }
 
+.player:first-child{
+	border-top-left-radius: 4px;
+}
 .player-name-bar, .player-actions-bar, .draws-wrap {
 	padding: 8px;
 }
 
 .player-wrap .player:nth-child(even) {
 	background: #beddf5;
+}
+
+.player-wrap .dropped-player{
+	background: #fbbcbc;
+}
+
+.player-wrap .dropped-player:nth-child(even) {
+	background: #f9a4a4;
 }
 
 @media (min-width: 768px) {
@@ -67,6 +78,9 @@
 	.player-name-bar {
 		border-right: solid 1px #a8d1f1;
 	}
+	.dropped-player .player-name-bar {
+		border-right: solid 1px #f78c8c;
+	}
 }
 
 @media (max-width: 768px) {
@@ -77,19 +91,32 @@
 	.player-actions-bar {
 		border-top: solid 1px #a8d1f1;
 	}
+	.player:first-child{
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+	}
 }
-.player-wrap{
+.player{
 	position: relative;
 }
 .versus{
 	position: absolute;
-	top: 50%;
+	bottom: -8px;
 	left: -12px;
 	margin-top: -12px;
+	z-index: 1;
+}
+
+.dropped-player .label{
+	line-height: 20px;
+	padding: 6px;
 }
 
 .player {
 	border-top: solid 1px #a8d1f1;
+}
+.player.dropped-player {
+	border-top: solid 1px #f78c8c;
 }
 
 	.player:first-child {
