@@ -16,21 +16,24 @@
 		</div>
 	</div>
 </div>
-<h3>Tournaments</h3>
-<div ng-if="error.length > 0" class="alert alert-danger">
-	{{error}}
+<div class="row">
+	<div class="col-md-6">
+		<h3>Tournaments</h3>
+		<div ng-if="error.length > 0" class="alert alert-danger">
+			{{error}}
+		</div>
+		<div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
+		<ul data-ng-if="tournaments" class="item-list tournament-item-list">
+			<li class="item clearfix" data-ng-repeat="tournament in tournaments">
+				<a href="#/tournamentedit/{{tournament.key}}" class="btn btn-default btn-sm pull-right">
+					Manage
+				</a>
+				<a href="#/dash/tournament/{{tournament.key}}">
+					<label>
+						{{ tournament.name || tournament.key }}
+					</label>
+				</a>
+			</li>
+		</ul>
+	</div>
 </div>
-<div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
-<ul data-ng-if="tournaments" class="item-list tournament-item-list">
-	<li class="item clearfix" data-ng-repeat="tournament in tournaments">
-		<a href="#/tournamentedit/{{tournament.key}}" class="btn btn-default btn-sm pull-right">
-			Manage
-		</a>
-		<a href="#/dash/tournament/{{tournament.key}}">
-			<label>
-				{{ tournament.name || tournament.key }}
-			</label>
-		</a>
-	</li>
-</ul>
-
