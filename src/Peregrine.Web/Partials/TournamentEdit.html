@@ -4,43 +4,50 @@
 <div data-ng-hide="tournament" class="alert alert-info">loading...</div>
 <div class="tournament-area" data-ng-if="tournament">
 	<h2>Tournament Details</h2>
-
-	<ul class="itemList">
-		<li class="item">
-			<label class="tournament-name">Tournament Name</label>
-			<div class="input-group">
-				<input type="text" class="form-control" data-ng-model="tournament.name" />
-				<span class="input-group-btn">
-					<button class="btn btn-default" data-ng-click="updateTournament(tournament)">Update</button>
-				</span>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="tournament-name">Tournament Name</label>
+				<div class="input-group">
+					<input type="text" class="form-control" data-ng-model="tournament.name" />
+					<span class="input-group-btn">
+						<button class="btn btn-default" data-ng-click="updateTournament(tournament)">Update</button>
+					</span>
+				</div>
 			</div>
-		</li>
-		<li class="item">
-			<div>
-				<label class="tournament-code">Tournament Code</label>
-				<input type="text" class="form-control" data-ng-model="tournament.key" readonly="readonly" />
-			</div>
-		</li>
-	</ul>
-	<h2>Players</h2>
-	<ul class="itemList">
-		<li data-ng-repeat="player in players" class="item">
-			<div class="input-group">
-				<input type="text" class="form-control" data-ng-model="player.name" disabled="disabled">
-				<span class="input-group-btn">
-					<button class="btn btn-default" data-ng-click="deletePlayer(player)">Delete</button>
-				</span>
-			</div>
-		</li>
-	</ul>
-	<form class="addPlayerForm" data-ng-submit="addPlayer()">
-		<div class="input-group">
-			<input type="text" class="form-control item-adder-input" data-ng-model="newPlayer.name">
-			<span class="input-group-btn">
-				<input type="submit" class="btn btn-primary" value="Add Player" />
-			</span>
 		</div>
-	</form>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<div>
+					<label class="tournament-code">Tournament Code</label>
+					<input type="text" class="form-control" data-ng-model="tournament.key" readonly="readonly" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<h2>Players</h2>
+	<div class="row">
+		<div class="col-sm-6">
+			<ul class="item-list">
+				<li data-ng-repeat="player in players" class="item">
+					<div class="input-group">
+						<input type="text" class="form-control" data-ng-model="player.name" disabled="disabled">
+						<span class="input-group-btn">
+							<button class="btn btn-default" data-ng-click="deletePlayer(player)">Delete</button>
+						</span>
+					</div>
+				</li>
+			</ul>
+			<form class="addPlayerForm" data-ng-submit="addPlayer()">
+				<div class="input-group">
+					<input type="text" placeholder="Full Name" class="form-control item-adder-input" data-ng-model="newPlayer.name">
+					<span class="input-group-btn">
+						<input type="submit" class="btn btn-primary" value="Add Player" />
+					</span>
+				</div>
+			</form>
+		</div>
+	</div>
 	<div class="action-bar">
 		<a href="#/tournament/{{tournament.key}}/round/1" class="btn btn-primary btn-lg">Start Round One</a>
 	</div>

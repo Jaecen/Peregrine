@@ -21,13 +21,15 @@
 	{{error}}
 </div>
 <div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
-<ul data-ng-if="tournaments">
-	<li data-ng-repeat="tournament in tournaments">
-		<a href="#/dash/tournament/{{tournament.key}}">
-			{{ tournament.name || tournament.key }}
-		</a>
-		<a href="#/tournamentedit/{{tournament.key}}" class="btn btn-default btn-sm">
+<ul data-ng-if="tournaments" class="item-list tournament-item-list">
+	<li class="item clearfix" data-ng-repeat="tournament in tournaments">
+		<a href="#/tournamentedit/{{tournament.key}}" class="btn btn-default btn-sm pull-right">
 			Manage
+		</a>
+		<a href="#/dash/tournament/{{tournament.key}}">
+			<label>
+				{{ tournament.name || tournament.key }}
+			</label>
 		</a>
 	</li>
 </ul>

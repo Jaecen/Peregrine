@@ -11,24 +11,31 @@
 	padding: 16px 0;
 }
 
-.itemList {
+.item-list {
 	padding: 0;
 	list-style: none;
 }
 
-	.itemList .item {
+	.item-list .item {
 		margin: 8px 0;
 	}
 
-.inputPlaceholder {
-	width: 100%;
+/* home page */
+.tournament-item-list .item{
+	border-radius: 4px;
+	margin: 8px 0;
+	border: solid 1px #124678;
+	background: #d4e9f9;
+	padding: 8px;
 }
 
+/* tournament page*/
 .addPlayerForm {
 	margin-bottom: 8px;
 }
 
-/* rounds */
+
+/* rounds page */
 .matches .item {
 	border-radius: 4px;
 	margin: 8px 0;

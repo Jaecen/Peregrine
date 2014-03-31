@@ -4,7 +4,7 @@
 <div data-ng-hide="round" class="alert alert-info">loading...</div>
 <div class="round-area" data-ng-if="round">
 	<h2>Round {{round.number}}</h2>
-	<div class="itemList matches">
+	<div class="item-list matches">
 		<div data-ng-repeat="match in round.matches" class="item row round-detail-match">
 			<div class="col-xs-5 round-detail-player text-left pairing-box">
 				<span>{{match.players[0].name}}</span>
