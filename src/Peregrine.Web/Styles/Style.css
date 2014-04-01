@@ -20,6 +20,9 @@
 		margin: 8px 0;
 	}
 
+.action-bar .btn{
+	margin-bottom: 4px;
+}
 /* home page */
 .tournament-item-list .item{
 	border-radius: 4px;
@@ -45,6 +48,9 @@
 
 .player:first-child{
 	border-top-left-radius: 4px;
+}
+.player:last-child{
+	border-bottom-left-radius: 4px;
 }
 .player-name-bar, .player-actions-bar, .draws-wrap {
 	padding: 8px;
@@ -102,6 +108,13 @@
 		border-top-left-radius: 4px;
 		border-top-right-radius: 4px;
 	}
+	.player-wrap .player:last-child{
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+	}
+	.player-wrap:last-child{
+		border-bottom: 0 none;
+	}
 }
 .player{
 	position: relative;
@@ -149,8 +162,16 @@
 	cursor: default;
 }
 
-table.pairings-report td[rowspan] {
+.pairings-report td[rowspan] {
 	vertical-align: middle;
+	border-right: solid 1px #ddd;
+	border-left: solid 1px #ddd;
+}
+.pairings-report td[rowspan]:last-child {
+	border-right: none 0;
+}
+.pairings-report td[rowspan]:first-child {
+	border-left: none 0;
 }
 
 /* round detail page */

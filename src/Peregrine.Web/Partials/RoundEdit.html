@@ -41,7 +41,8 @@
 		</div>
 	</div>
 	<div class="action-bar">
-		<button data-ng-disabled="!round.completed" data-ng-if="tournament.totalRounds > round.number" ng-click="go('/tournament/' + tournament.key + '/round/' + (round.number + 1))" class="btn btn-primary btn-lg">Start Next Round</button>
+		<button data-ng-disabled="!round.completed" data-ng-if="tournament.totalRounds > round.number" ng-click="go('/tournament/' + tournament.key + '/round/' + (round.number + 1))" class="btn btn-primary btn-lg">Start Round {{round.number + 1}}</button>
 		<button data-ng-disabled="!round.completed" data-ng-if="tournament.totalRounds === round.number" data-ng-click="go('/tournament/' + tournament.key + '/standings')" class="btn btn-primary btn-lg">Finish The Tournament</button>
+		<a href="#/dash/tournament/{{tournament.key}}" class="btn btn-default btn-lg">Dashboard</a>
 	</div>
 </div>
