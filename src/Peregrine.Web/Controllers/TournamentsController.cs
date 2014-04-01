@@ -4,17 +4,26 @@ using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Models;
+using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
 	[RoutePrefix("api/tournaments")]
 	public class TournamentsController : ApiController
 	{
-		readonly TournamentResponseBodyProvider TournamentResponseBodyProvider;
+		readonly EventPublisher EventPublisher;
+		readonly TournamentResponseProvider TournamentResponseProvider;
 
-		public TournamentsController()
+		public TournamentsController(EventPublisher eventPublisher, TournamentResponseProvider tournamentResponseProvider)
 		{
-			TournamentResponseBodyProvider = new TournamentResponseBodyProvider();
+			if(eventPublisher == null)
+				throw new ArgumentNullException("eventPublisher");
+
+			if(tournamentResponseProvider == null)
+				throw new ArgumentNullException("tournamentResponseProvider");
+
+			EventPublisher = eventPublisher;
+			TournamentResponseProvider = tournamentResponseProvider;
 		}
 
 		[Route]
@@ -22,21 +31,21 @@ namespace Peregrine.Web.Controllers
 		{
 			using(var dataContext = new DataContext())
 			{
-				var tournamentKeys = dataContext
+				var tournaments = dataContext
 					.Tournaments
 					.ToArray()
-					.Select(tournament => TournamentResponseBodyProvider.CreateResponseBody(tournament))
+					.Select(tournament => TournamentResponseProvider.Create(tournament))
 					.ToArray();
 
-				return Ok(tournamentKeys);
+				return Ok(tournaments);
 			}
 		}
 
 		[Route]
-		public IHttpActionResult Post([FromBody]TournamentRequestBody requestBody)
+		public IHttpActionResult Post([FromBody]TournamentRequest requestBody)
 		{
 			var rng = new Random();
-			var details = requestBody ?? new TournamentRequestBody();
+			var details = requestBody ?? new TournamentRequest();
 
 			using(var dataContext = new DataContext())
 			{
@@ -52,10 +61,12 @@ namespace Peregrine.Web.Controllers
 
 				dataContext.SaveChanges();
 
+				EventPublisher.Created(tournament);
+
 				return CreatedAtRoute(
 					"tournament-get",
 					new { tournamentKey = tournament.Key },
-					TournamentResponseBodyProvider.CreateResponseBody(tournament)
+					TournamentResponseProvider.Create(tournament)
 				);
 			}
 		}

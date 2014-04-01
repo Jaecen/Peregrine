@@ -1,22 +1,33 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Peregrine.Web.Services
 {
 	class EventStreamManager
 	{
-		static readonly Dictionary<Guid, EventStreamManager> Instances = new Dictionary<Guid,EventStreamManager>();
+		static readonly ConcurrentDictionary<Tuple<string, string>, EventStreamManager> Instances;
 
-		public static EventStreamManager GetInstance(Guid key)
+		static EventStreamManager()
 		{
-			if(!Instances.ContainsKey(key))
-				Instances[key] = new EventStreamManager();
+			Instances = new ConcurrentDictionary<Tuple<string, string>, EventStreamManager>(
+				new TupleEqualityComparer<string, string>(
+					StringComparer.OrdinalIgnoreCase,
+					StringComparer.OrdinalIgnoreCase
+				)
+			);
+		}
 
-			return Instances[key];
+		public static EventStreamManager GetInstance(string type, string key)
+		{
+			var keyTuple = Tuple.Create(type, key);
+
+			if(!Instances.ContainsKey(keyTuple))
+				Instances[keyTuple] = new EventStreamManager();
+
+			return Instances[keyTuple];
 		}
 
 		readonly ConcurrentDictionary<Guid, StreamWriter> Listeners;

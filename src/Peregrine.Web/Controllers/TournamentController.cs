@@ -1,19 +1,29 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Models;
+using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
 	[RoutePrefix("api/tournaments/{tournamentKey}")]
 	public class TournamentController : ApiController
 	{
-		readonly TournamentResponseBodyProvider TournamentResponseBodyProvider;
+		readonly EventPublisher EventPublisher;
+		readonly TournamentResponseProvider TournamentResponseProvider;
 
-		public TournamentController()
+		public TournamentController(EventPublisher eventPublisher, TournamentResponseProvider tournamentResponseProvider)
 		{
-			TournamentResponseBodyProvider = new TournamentResponseBodyProvider();
+			if(eventPublisher == null)
+				throw new ArgumentNullException("eventPublisher");
+
+			if(tournamentResponseProvider == null)
+				throw new ArgumentNullException("tournamentResponseProvider");
+
+			EventPublisher = eventPublisher;
+			TournamentResponseProvider = tournamentResponseProvider;
 		}
 
 		[Route(Name = "tournament-get")]
@@ -26,12 +36,26 @@ namespace Peregrine.Web.Controllers
 				if(tournament == null)
 					return NotFound();
 
-				return Ok(TournamentResponseBodyProvider.CreateResponseBody(tournament));
+				return Ok(TournamentResponseProvider.Create(tournament));
 			}
 		}
 
+		[Route("updates")]
+		public IHttpActionResult GetEventSource(Guid tournamentKey)
+		{
+			return ResponseMessage(new HttpResponseMessage
+			{
+				Content = new PushStreamContent(
+					(stream, content, context) => EventStreamManager
+						.GetInstance("tournament", tournamentKey.ToString())
+						.AddListener(new System.IO.StreamWriter(stream)),
+					"text/event-stream"
+				),
+			});
+		}
+
 		[Route]
-		public IHttpActionResult Put(Guid tournamentKey, [FromBody] TournamentRequestBody requestBody)
+		public IHttpActionResult Put(Guid tournamentKey, [FromBody] TournamentRequest requestBody)
 		{
 			if(requestBody == null)
 				return BadRequest("No request body provided.");
@@ -44,9 +68,12 @@ namespace Peregrine.Web.Controllers
 					return NotFound();
 
 				tournament.Name = requestBody.name;
+				
 				dataContext.SaveChanges();
 
-				return Ok(TournamentResponseBodyProvider.CreateResponseBody(tournament));
+				EventPublisher.Created(tournament);
+
+				return Ok(TournamentResponseProvider.Create(tournament));
 			}
 		}
 
@@ -59,6 +86,8 @@ namespace Peregrine.Web.Controllers
 
 				if(tournament == null)
 					return NotFound();
+
+				EventPublisher.Deleted(tournament);
 
 				return StatusCode(HttpStatusCode.NoContent);
 			}

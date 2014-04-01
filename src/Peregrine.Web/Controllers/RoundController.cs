@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Web.Models;
 using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
@@ -9,14 +11,32 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments/{tournamentKey}/rounds")]
 	public class RoundController : ApiController
 	{
+		readonly EventPublisher EventPublisher;
+		readonly TournamentManager TournamentManager;
 		readonly RoundManager RoundManager;
+		readonly RoundResponseProvider RoundResponseProvider;
 
-		public RoundController()
+		public RoundController(EventPublisher eventPublisher, TournamentManager tournamentManager, RoundManager roundManager, RoundResponseProvider roundResponseProvider)
 		{
-			RoundManager = new RoundManager();
+			if(eventPublisher == null)
+				throw new ArgumentNullException("eventPublisher");
+
+			if(tournamentManager == null)
+				throw new ArgumentNullException("tournamentManager");
+
+			if(roundManager == null)
+				throw new ArgumentNullException("roundManager");
+
+			if(roundResponseProvider == null)
+				throw new ArgumentNullException("roundResponseProvider");
+
+			EventPublisher = eventPublisher;
+			TournamentManager = tournamentManager;
+			RoundManager = roundManager;
+			RoundResponseProvider = roundResponseProvider;
 		}
 
-		[Route("{roundNumber:min(1)}")]
+		[Route("{roundNumber:min(1)}", Name="round-get")]
 		public IHttpActionResult Get(Guid tournamentKey, int roundNumber)
 		{
 			using(var dataContext = new DataContext())
@@ -27,35 +47,32 @@ namespace Peregrine.Web.Controllers
 				if(tournament == null)
 					return NotFound();
 
-				if(roundNumber > RoundManager.GetMaxRoundsForTournament(tournament))
+				var round = RoundManager.GetRound(tournament, roundNumber);
+
+				if(round == null)
 					return NotFound();
 
-				var roundState = RoundManager.DetermineRoundState(tournament, roundNumber);
-
-				if(roundState == RoundState.Invalid)
-					return NotFound();
-
-				Round round;
-				if(roundState == RoundState.Projected)
-					round = new Round
-					{
-						Number = roundNumber,
-						Matches = RoundManager.CreateMatches(tournament, roundNumber),
-					};
-				else
-					round = tournament
-						.Rounds
-						.Where(r => r.Number == roundNumber)
-						.FirstOrDefault();
-
-				return Ok(RoundManager.RenderRound(round, roundState));
+				return Ok(RoundResponseProvider.Create(tournament, round));
 			}
+		}
+
+		[Route("{roundNumber:min(1)}/updates")]
+		public IHttpActionResult GetEventSource(Guid tournamentKey, int roundNumber)
+		{
+			return ResponseMessage(new HttpResponseMessage
+			{
+				Content = new PushStreamContent(
+					(stream, content, context) => EventStreamManager
+						.GetInstance("round", String.Format("{0}/{1}", tournamentKey, roundNumber))
+						.AddListener(new System.IO.StreamWriter(stream)),
+					"text/event-stream"
+				),
+			});
 		}
 
 		[Route("current")]
 		public IHttpActionResult Get(Guid tournamentKey)
 		{
-			int currentRoundNumber;
 			using(var dataContext = new DataContext())
 			{
 				var tournament = dataContext
@@ -64,28 +81,16 @@ namespace Peregrine.Web.Controllers
 				if(tournament == null)
 					return NotFound();
 
-				var roundStatus = Enumerable
-					.Range(1, RoundManager.GetMaxRoundsForTournament(tournament))
-					.Select(roundNumber => new
-						{
-							Number = roundNumber,
-							State = RoundManager.DetermineRoundState(tournament, roundNumber)
-						});
+				var currentRoundNumber = TournamentManager.GetCurrentRoundNumber(tournament);
 
-				if(!roundStatus.Any())
+				if(currentRoundNumber == null)
 					return NotFound();
 
-				var currentRound = roundStatus
-					.SkipWhile(o => o.State >= RoundState.Final)
-					.FirstOrDefault();
-
-				if(currentRound == null || currentRound.State == RoundState.Invalid)
-					return NotFound();
-
-				currentRoundNumber = currentRound.Number;
+				return RedirectToRoute(
+						"round-get",
+						new { tournamentKey = tournamentKey, roundNumber = currentRoundNumber.Value }
+					);
 			}
-
-			return Get(tournamentKey, currentRoundNumber);
 		}
 	}
 }

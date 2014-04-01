@@ -1,7 +1,7 @@
 ﻿
 namespace Peregrine.Web.Models
 {
-	public class TournamentRequestBody
+	public class TournamentRequest
 	{
 		public string name;
 	}

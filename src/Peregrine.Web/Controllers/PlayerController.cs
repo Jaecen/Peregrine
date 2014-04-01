@@ -4,12 +4,29 @@ using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Web.Models;
+using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
 	[RoutePrefix("api/tournaments/{tournamentKey}/players/{playerName}")]
 	public class PlayerController : ApiController
 	{
+		readonly EventPublisher EventPublisher;
+		readonly PlayerResponseProvider PlayerResponseProvider;
+
+		public PlayerController(EventPublisher eventPublisher, PlayerResponseProvider playerResponseProvider)
+		{
+			if(eventPublisher == null)
+				throw new ArgumentNullException("eventPublisher");
+
+			if(playerResponseProvider == null)
+				throw new ArgumentNullException("playerResponseProvider");
+
+			EventPublisher = eventPublisher;
+			PlayerResponseProvider = playerResponseProvider;
+		}
+
 		[Route(Name="player-get")]
 		public IHttpActionResult Get(Guid tournamentKey, string playerName)
 		{
@@ -22,7 +39,7 @@ namespace Peregrine.Web.Controllers
 				if(player == null)
 					return NotFound();
 
-				return Ok(Render(player));
+				return Ok(PlayerResponseProvider.Create(player));
 			}
 		}
 
@@ -59,17 +76,20 @@ namespace Peregrine.Web.Controllers
 					.Add(new Player
 					{
 						Name = playerName,
+						Dropped = false,
 					});
 
 				tournament.Players.Add(player);
 
 				dataContext.SaveChanges();
 
+				EventPublisher.Updated(tournament, player);
+
 				return CreatedAtRoute(
-					"player-get",
- 					new { tournamentKey = tournamentKey, playerName = playerName},
-					Render(player)
-				);
+						"player-get",
+						new { tournamentKey = tournament.Key, playerName = player.Name },
+						PlayerResponseProvider.Create(player)
+					);
 			}
 		}
 
@@ -102,9 +122,12 @@ namespace Peregrine.Web.Controllers
 				{
 					// Drop
 					player.Dropped = true;
+
 					dataContext.SaveChanges();
 
-					return Ok(Render(player));
+					EventPublisher.Updated(tournament, player);
+
+					return Ok(PlayerResponseProvider.Create(player));
 				}
 				else
 				{
@@ -112,21 +135,14 @@ namespace Peregrine.Web.Controllers
 					dataContext.Players.Remove(player);
 					dataContext.SaveChanges();
 
+					EventPublisher.Deleted(tournament, player);
+		
 					return ResponseMessage(new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.NoContent)
 						{
 							Content = new StringContent(String.Empty, Encoding.UTF8, "application/json")
 						});
 				}
 			}
-		}
-
-		object Render(Player player)
-		{
-			return new
-			{
-				name = player.Name,
-				dropped = player.Dropped,
-			};
 		}
 	}
 }

@@ -10,7 +10,7 @@ namespace Peregrine.Web.Controllers
 	public class RoundsController : ApiController
 	{
 		readonly RoundManager RoundManager;
-		
+
 		public RoundsController()
 		{
 			RoundManager = new RoundManager();
@@ -32,7 +32,7 @@ namespace Peregrine.Web.Controllers
 					.Select(round => new
 						{
 							Number = round.Number,
-							State = RoundManager.DetermineRoundState(tournament, round.Number),
+							State = RoundManager.GetRoundState(tournament, round.Number),
 						})
 					.Select(o => new
 						{
@@ -51,7 +51,7 @@ namespace Peregrine.Web.Controllers
 					.DefaultIfEmpty(0)
 					.LastOrDefault();
 
-				var nextRoundState = RoundManager.DetermineRoundState(tournament, lastRoundNumber + 1);
+				var nextRoundState = RoundManager.GetRoundState(tournament, lastRoundNumber + 1);
 
 				if(nextRoundState != RoundState.Invalid && lastRoundNumber < RoundManager.GetMaxRoundsForTournament(tournament))
 					roundNumbers = roundNumbers
@@ -66,7 +66,7 @@ namespace Peregrine.Web.Controllers
 								}
 							})
 						.ToArray();
-					
+
 				return Ok(roundNumbers);
 			}
 		}

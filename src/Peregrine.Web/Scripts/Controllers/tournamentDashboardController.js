@@ -6,37 +6,53 @@
 
 		$scope.location = $location;
 
+		var tournamentEventSource;
 		var roundEventSource;
 
-		tournamentResource.get({
+		$scope.tournament = tournamentResource.get({
 				tournamentKey: $routeParams.tournamentKey
 			})
 			.$promise
 			.then(function(tournament) {
-				$scope.tournament = tournament;
+				var url = '/api/tournaments/' + $routeParams.tournamentKey + '/updates';
+				console.log('listening for tournament updates', url);
 
-				return roundResource.get({
-					tournamentKey: $routeParams.tournamentKey,
-					roundNumber: 'current'
-				}).$promise
-			})
-			.then(function(round) {
-				$scope.round = round;
-
-				roundEventSource = new EventSource('/api/tournaments/'+ $routeParams.tournamentKey + '/updates');
-				roundEventSource.addEventListener(
-					'round-update',
+				tournamentEventSource = new EventSource(url);
+				tournamentEventSource.addEventListener(
+					'updated',
 					function(event) {
+						console.log('tournament update', event);
+						$scope.$apply(function() {
+							$scope.tournament = JSON.parse(event.data);
+						})
+					},
+					false);
+			});
+
+		$scope.round = roundResource.get({
+				tournamentKey: $routeParams.tournamentKey,
+				roundNumber: 'current'
+			}).$promise
+			.then(function(round) {
+				var url = '/api/tournaments/' + $routeParams.tournamentKey + '/rounds/' + round.number + '/updates';
+				console.log('listening for round updates', url);
+
+				roundEventSource = new EventSource(url);
+				roundEventSource.addEventListener(
+					'updated',
+					function(event) {
+						console.log('round update', event);
 						$scope.$apply(function() {
 							$scope.round = JSON.parse(event.data);
 						})
 					},
 					false);
 
-				return standingsResource.query({
-					tournamentKey: $routeParams.tournamentKey
-				}).$promise;
-			})
+			});
+
+		standingsResource.query({
+				tournamentKey: $routeParams.tournamentKey
+			}).$promise
 			.then(function(standings) {
 				// Track the max value for each metric so we can graph each player's stats against it.
 				var maxMatchPoints = 0;

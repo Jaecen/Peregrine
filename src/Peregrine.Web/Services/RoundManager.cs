@@ -5,7 +5,7 @@ using Peregrine.Data;
 
 namespace Peregrine.Web.Services
 {
-	enum RoundState
+	public enum RoundState
 	{
 		Invalid = 0,
 		Projected,
@@ -14,7 +14,7 @@ namespace Peregrine.Web.Services
 		Final,
 	}
 
-	class RoundManager
+	public class RoundManager
 	{
 		readonly StatsProvider StatsProvider;
 
@@ -30,7 +30,7 @@ namespace Peregrine.Web.Services
 		// - A round is projected when the previous round is completed by no results have been submitted.
 		// - A round is invalid if it's more than one greater than the last completed round number
 		// When a round becomes committed, it's written to the database and can't be changed. All matches must have a result submitted to move forward.
-		public RoundState DetermineRoundState(Tournament tournament, int roundNumber)
+		public RoundState GetRoundState(Tournament tournament, int roundNumber)
 		{
 			if(roundNumber < 0)
 				return RoundState.Invalid;
@@ -41,7 +41,7 @@ namespace Peregrine.Web.Services
 			if(tournament.Players.Count < 2)
 				return RoundState.Invalid;
 
-			var previousRoundState = DetermineRoundState(tournament, roundNumber - 1);
+			var previousRoundState = GetRoundState(tournament, roundNumber - 1);
 
 			if(previousRoundState < RoundState.Completed)
 				return RoundState.Invalid;
@@ -198,35 +198,30 @@ namespace Peregrine.Web.Services
 			return matches.ToArray();
 		}
 
-		public object RenderRound(Round round, RoundState roundState)
+		public Round GetRound(Tournament tournament, int roundNumber)
 		{
-			return new
-			{
-				number = round.Number,
-				started = roundState >= RoundState.Committed,
-				completed = roundState >= RoundState.Completed,
-				final = roundState >= RoundState.Final,
-				matches = round
-					.Matches
-					.OrderBy(match => match.Number)
-					.Select(match => new
-					{
-						number = match.Number,
-						games = match.Games.Count(),
-						players = match
-							.Players
-							.OrderBy(player => player.Name)
-							.Select(player => new
-							{
-								name = player.Name,
-								wins = match.Games.Where(game => game.Winner == player).Count(),
-								losses = match.Games.Where(game => game.Winner != player && game.Winner != null).Count(),
-								draws = match.Games.Where(game => game.Winner == null).Count(),
-								dropped = player.Dropped,
-							})
-					})
-					.ToArray()
-			};
+			if(tournament == null)
+				throw new ArgumentNullException("tournament");
+
+			if(roundNumber > GetMaxRoundsForTournament(tournament))
+				return null;
+
+			var roundState = GetRoundState(tournament, roundNumber);
+
+			if(roundState == RoundState.Invalid)
+				return null;
+
+			if(roundState == RoundState.Projected)
+				return new Round
+				{
+					Number = roundNumber,
+					Matches = CreateMatches(tournament, roundNumber),
+				};
+			else
+				return tournament
+					.Rounds
+					.Where(r => r.Number == roundNumber)
+					.FirstOrDefault();
 		}
 
 		public int GetMaxRoundsForTournament(Tournament tournament)

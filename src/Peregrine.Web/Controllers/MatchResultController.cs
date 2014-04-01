@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Web.Models;
 using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
@@ -9,13 +10,26 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments/{tournamentKey}/rounds/{roundNumber:int:min(1)}/{playerName}")]
 	public class MatchResultController : ApiController
 	{
+		readonly EventPublisher EventPublisher;
 		readonly RoundManager RoundManager;
+		readonly RoundResponseProvider RoundResponseProvider;
 
-		public MatchResultController()
+		public MatchResultController(EventPublisher eventPublisher, RoundManager roundManager, RoundResponseProvider roundResponseProvider)
 		{
-			RoundManager = new RoundManager();
+			if(eventPublisher == null)
+				throw new ArgumentException("roundEventPublisher");
+
+			if(roundManager == null)
+				throw new ArgumentException("roundManager");
+
+			if(roundResponseProvider == null)
+				throw new ArgumentException("roundResponseProvider");
+
+			EventPublisher = eventPublisher;
+			RoundManager = roundManager;
+			RoundResponseProvider = roundResponseProvider;
 		}
-		
+
 		[Route("{result:regex(^(draws|wins)$)}/{count}")]
 		public IHttpActionResult Put(Guid tournamentKey, int roundNumber, string playerName, string result, int count)
 		{
@@ -44,7 +58,7 @@ namespace Peregrine.Web.Controllers
 				if(roundNumber > RoundManager.GetMaxRoundsForTournament(tournament))
 					return NotFound();
 
-				var roundState = RoundManager.DetermineRoundState(tournament, roundNumber);
+				var roundState = RoundManager.GetRoundState(tournament, roundNumber);
 				if(roundState == RoundState.Invalid)
 					return NotFound();
 
@@ -99,10 +113,9 @@ namespace Peregrine.Web.Controllers
 
 				dataContext.SaveChanges();
 
-				roundState = RoundManager.DetermineRoundState(tournament, roundNumber);
+				EventPublisher.Updated(tournament, round);
 
-				EventStreamManager.GetInstance(tournamentKey).Publish("round-update", RoundManager.RenderRound(round, roundState));
-				return Ok(RoundManager.RenderRound(round, roundState));
+				return Ok(RoundResponseProvider.Create(tournament, round));
 			}
 		}
 	}
