@@ -92,6 +92,7 @@ namespace Peregrine.Web.Services
 			// Randomize within each group.
 			var playerPool = tournament
 				.Players
+				.Where(player => !player.Dropped)
 				.Select(player => new
 					{
 						Player = player,
