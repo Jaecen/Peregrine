@@ -27,7 +27,6 @@
 				roundEventSource.addEventListener(
 					'round-update',
 					function(event) {
-						console.log('received e', event);
 						$scope.$apply(function() {
 							$scope.round = JSON.parse(event.data);
 						})

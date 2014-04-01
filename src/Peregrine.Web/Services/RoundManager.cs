@@ -211,7 +211,9 @@ namespace Peregrine.Web.Services
 					{
 						number = match.Number,
 						games = match.Games.Count(),
-						players = match.Players
+						players = match
+							.Players
+							.OrderBy(player => player.Name)
 							.Select(player => new
 							{
 								name = player.Name,
