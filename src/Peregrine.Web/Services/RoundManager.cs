@@ -145,6 +145,7 @@ namespace Peregrine.Web.Services
 									o.Player,
 								},
 						})
+						.ToArray()
 					);
 
 				playerPool = playerPool.Except(byePlayer);
