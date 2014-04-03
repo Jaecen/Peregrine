@@ -26,8 +26,8 @@
 /* home page */
 .tournament-item-list .item{
 	border-radius: 4px;
-	margin: 8px 0;
-	border: solid 1px #124678;
+	margin-bottom: 8px;
+	border: solid 1px #b3d7f3;
 	background: #d4e9f9;
 	padding: 8px;
 }

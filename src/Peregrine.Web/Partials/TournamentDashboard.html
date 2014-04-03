@@ -20,7 +20,7 @@
 </div>
 
 <div class="row">
-	<div class="col-md-6">
+	<div data-ng-if="round.number" data-ng-class="{'col-md-6': standings.length, 'col-md-12': !standings.length}">
 		<h3>Pairings</h3>
 		<div class="table-responsive">
 			<table class="table table-striped pairings-report">
@@ -77,7 +77,7 @@
 			</table>
 		</div>
 	</div>
-	<div class="col-md-6">
+	<div data-ng-if="standings.length" data-ng-class="{'col-md-6': round.number, 'col-md-12': !round.number}">
 		<h3>Standings</h3>
 		<div class="table-responsive">
 			<table class="table table table-striped ">
