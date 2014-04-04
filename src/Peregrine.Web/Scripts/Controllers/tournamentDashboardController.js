@@ -10,9 +10,10 @@
 		var roundEventSource;
 
 		$scope.tournament = tournamentResource.get({
-				tournamentKey: $routeParams.tournamentKey
-			})
-			.$promise
+			tournamentKey: $routeParams.tournamentKey
+		});
+
+		$scope.tournament.$promise
 			.then(function(tournament) {
 				var url = '/api/tournaments/' + $routeParams.tournamentKey + '/updates';
 				console.log('listening for tournament updates', url);
@@ -30,9 +31,11 @@
 			});
 
 		$scope.round = roundResource.get({
-				tournamentKey: $routeParams.tournamentKey,
-				roundNumber: 'current'
-			}).$promise
+			tournamentKey: $routeParams.tournamentKey,
+			roundNumber: 'current'
+		});
+
+		$scope.round.$promise
 			.then(function(round) {
 				var url = '/api/tournaments/' + $routeParams.tournamentKey + '/rounds/' + round.number + '/updates';
 				console.log('listening for round updates', url);
