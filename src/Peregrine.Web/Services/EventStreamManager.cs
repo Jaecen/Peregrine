@@ -50,20 +50,25 @@ namespace Peregrine.Web.Services
 
 				try
 				{
-					listener.WriteLine("event: {0}", eventName);
-					listener.WriteLine("data: {0}", JsonConvert.SerializeObject(message));
-					listener.WriteLine();
-					listener.Flush();
-
-					// For somereason, outputs lag one behind unless we write and flush a second time.
-					listener.WriteLine();
-					listener.Flush();
+					PublishTo(listener, eventName, message);
 				}
 				catch
 				{
 					Listeners.TryRemove(listenerKey, out listener);
 				}
 			}
+		}
+
+		public static void PublishTo(StreamWriter listener, string eventName, object message)
+		{
+			listener.WriteLine("event: {0}", eventName);
+			listener.WriteLine("data: {0}", JsonConvert.SerializeObject(message));
+			listener.WriteLine();
+			listener.Flush();
+
+			// For somereason, outputs lag one behind unless we write and flush a second time.
+			listener.WriteLine();
+			listener.Flush();
 		}
 	}
 }

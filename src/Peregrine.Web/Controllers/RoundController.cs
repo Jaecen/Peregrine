@@ -59,12 +59,38 @@ namespace Peregrine.Web.Controllers
 		[Route("{roundNumber:min(1)}/updates")]
 		public IHttpActionResult GetEventSource(Guid tournamentKey, int roundNumber)
 		{
+			RoundResponse initialState;
+
+			using(var dataContext = new DataContext())
+			{
+				var tournament = dataContext
+					.GetTournament(tournamentKey);
+
+				if(tournament == null)
+					return NotFound();
+
+				var round = RoundManager.GetRound(tournament, roundNumber);
+
+				if(round == null)
+					return NotFound();
+
+				initialState = RoundResponseProvider.Create(tournament, round);
+			}
+
 			return ResponseMessage(new HttpResponseMessage
 			{
 				Content = new PushStreamContent(
-					(stream, content, context) => EventStreamManager
-						.GetInstance("round", String.Format("{0}/{1}", tournamentKey, roundNumber))
-						.AddListener(new System.IO.StreamWriter(stream)),
+					(stream, content, context) => 
+						{
+							var streamWriter = new System.IO.StreamWriter(stream);
+							
+							EventStreamManager
+								.PublishTo(streamWriter, "updated", initialState);
+
+							EventStreamManager
+								.GetInstance("round", String.Format("{0}/{1}", tournamentKey, roundNumber))
+								.AddListener(streamWriter);
+						},
 					"text/event-stream"
 				),
 			});

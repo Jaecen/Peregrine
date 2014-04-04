@@ -43,12 +43,31 @@ namespace Peregrine.Web.Controllers
 		[Route("updates")]
 		public IHttpActionResult GetEventSource(Guid tournamentKey)
 		{
+			TournamentResponse initialState;
+			using(var dataContext = new DataContext())
+			{
+				var tournament = dataContext.GetTournament(tournamentKey);
+
+				if(tournament == null)
+					return NotFound();
+
+				initialState = TournamentResponseProvider.Create(tournament);
+			}
+
 			return ResponseMessage(new HttpResponseMessage
 			{
 				Content = new PushStreamContent(
-					(stream, content, context) => EventStreamManager
-						.GetInstance("tournament", tournamentKey.ToString())
-						.AddListener(new System.IO.StreamWriter(stream)),
+					(stream, content, context) => 
+						{
+							var streamWriter = new System.IO.StreamWriter(stream);
+
+							EventStreamManager
+								.PublishTo(streamWriter, "updated", initialState);
+
+							EventStreamManager
+								.GetInstance("tournament", tournamentKey.ToString())
+								.AddListener(streamWriter);
+						},
 					"text/event-stream"
 				),
 			});

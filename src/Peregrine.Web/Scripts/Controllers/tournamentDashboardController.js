@@ -9,49 +9,27 @@
 		var tournamentEventSource;
 		var roundEventSource;
 
-		$scope.tournament = tournamentResource.get({
-			tournamentKey: $routeParams.tournamentKey
-		});
+		var tournamentUrl = '/api/tournaments/' + $routeParams.tournamentKey + '/updates';
+		tournamentEventSource = new EventSource(tournamentUrl);
+		tournamentEventSource.addEventListener(
+			'updated',
+			function(event) {
+				$scope.$apply(function() {
+					$scope.tournament = JSON.parse(event.data);
+				})
+			},
+			false);
 
-		$scope.tournament.$promise
-			.then(function(tournament) {
-				var url = '/api/tournaments/' + $routeParams.tournamentKey + '/updates';
-				console.log('listening for tournament updates', url);
-
-				tournamentEventSource = new EventSource(url);
-				tournamentEventSource.addEventListener(
-					'updated',
-					function(event) {
-						console.log('tournament update', event);
-						$scope.$apply(function() {
-							$scope.tournament = JSON.parse(event.data);
-						})
-					},
-					false);
-			});
-
-		$scope.round = roundResource.get({
-			tournamentKey: $routeParams.tournamentKey,
-			roundNumber: 'current'
-		});
-
-		$scope.round.$promise
-			.then(function(round) {
-				var url = '/api/tournaments/' + $routeParams.tournamentKey + '/rounds/' + round.number + '/updates';
-				console.log('listening for round updates', url);
-
-				roundEventSource = new EventSource(url);
-				roundEventSource.addEventListener(
-					'updated',
-					function(event) {
-						console.log('round update', event);
-						$scope.$apply(function() {
-							$scope.round = JSON.parse(event.data);
-						})
-					},
-					false);
-
-			});
+		var roundUrl = '/api/tournaments/' + $routeParams.tournamentKey + '/rounds/1/updates';
+		roundEventSource = new EventSource(roundUrl);
+		roundEventSource.addEventListener(
+			'updated',
+			function(event) {
+				$scope.$apply(function() {
+					$scope.round = JSON.parse(event.data);
+				})
+			},
+			false);
 
 		standingsResource.query({
 				tournamentKey: $routeParams.tournamentKey
