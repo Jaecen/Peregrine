@@ -170,8 +170,11 @@
     <Compile Include="Models\PlayerMatchStatsResponseProvider.cs" />
     <Compile Include="Models\PlayerResponse.cs" />
     <Compile Include="Models\PlayerResponseProvider.cs" />
+    <Compile Include="Models\PlayerStandingResponse.cs" />
     <Compile Include="Models\RoundResponse.cs" />
     <Compile Include="Models\RoundResponseProvider.cs" />
+    <Compile Include="Models\StandingsResponse.cs" />
+    <Compile Include="Models\StandingsResponseProvider.cs" />
     <Compile Include="Models\TournamentRequest.cs" />
     <Compile Include="Models\TournamentResponse.cs" />
     <Compile Include="Models\TournamentResponseProvider.cs" />

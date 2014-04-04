@@ -4,12 +4,11 @@
 <div class="standings-area">
 	<h2>Tournament Standings</h2>
 	<div class="table-responsive">
-		<table class="table table-striped">
+		<table class="table table table-striped ">
 			<thead>
 				<tr>
 					<th>#</th>
 					<th>Name</th>
-					<th>Stats</th>
 					<th>Match Points</th>
 					<th>Opponent Match Win %</th>
 					<th>Game Win %</th>
@@ -17,21 +16,33 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr data-ng-repeat="player in standings">
+				<tr data-ng-repeat="player in standings.playerStandings">
 					<td>{{ player.rank }}</td>
-					<td>{{ player.name }}</td>
-					<td ng-init="pctMatchPts = player.matchPoints / maxMatchPoints * 50; pctOppMatchWin = player.opponentsMatchWinPercentage / maxOpponentsMatchWinPercentage * 25; pctGameWin = player.gameWinPercentage / maxGameWinPercentage * 12.5; pctOppGameWin = player.opponentsGameWinPercentage / maxOpponentsGameWinPercentage * 12.5;">
-						<svg height="10" width="100">
-							<rect height="10" ng-attr-width="{{ pctMatchPts }}" fill="#124678" />
-							<rect height="10" ng-attr-width="{{ pctOppMatchWin }}" fill="#326698" ng-attr-x="{{ pctMatchPts }}" />
-							<rect height="10" ng-attr-width="{{ pctGameWin }}" fill="#5286B8" ng-attr-x="{{ pctMatchPts + pctOppMatchWin }}" />
-							<rect height="10" ng-attr-width="{{ pctOppGameWin }}" fill="#72A6D8" ng-attr-x="{{ pctMatchPts + pctOppMatchWin + pctGameWin }}" />
+					<td>{{ player.playerName }}</td>
+					<td style="color: #124678;">
+						{{ player.matchPoints | number:0 }}
+						<svg height="10" width="20">
+							<rect height="10" ng-attr-width="{{ player.absoluteMatchPoints * 20 }}" fill="#124678" />
 						</svg>
 					</td>
-					<td style="color: #124678;">{{ player.matchPoints | number:0 }}</td>
-					<td style="color: #326698;">{{ player.opponentsMatchWinPercentage | number:4 }}</td>
-					<td style="color: #5286B8;">{{ player.gameWinPercentage | number:4 }}</td>
-					<td style="color: #72A6D8;">{{ player.opponentsGameWinPercentage | number:4 }}</td>
+					<td style="color: #326698;">
+						{{ player.opponentsMatchWinPercentage | number:4 }}
+						<svg height="10" width="20">
+							<rect height="10" ng-attr-width="{{ player.absoluteOpponentsMatchWinPercentage * 20 }}" fill="#326698" />
+						</svg>
+					</td>
+					<td style="color: #5286B8;">
+						{{ player.gameWinPercentage | number:4 }}
+						<svg height="10" width="20">
+							<rect height="10" ng-attr-width="{{ player.absoluteGameWinPercentage * 20 }}" fill="#5286B8" />
+						</svg>
+					</td>
+					<td style="color: #72A6D8;">
+						{{ player.opponentsGameWinPercentage | number:4 }}
+						<svg height="10" width="20">
+							<rect height="10" ng-attr-width="{{ player.absoluteOpponentsGameWinPercentage * 20 }}" fill="#72A6D8" />
+						</svg>
+					</td>
 				</tr>
 			</tbody>
 		</table>

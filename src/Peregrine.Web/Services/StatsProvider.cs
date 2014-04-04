@@ -4,7 +4,7 @@ using Peregrine.Data;
 
 namespace Peregrine.Web.Services
 {
-	class StatsProvider
+	public class StatsProvider
 	{
 		const int MatchWin = 3;
 		const int MatchDraw = 1;

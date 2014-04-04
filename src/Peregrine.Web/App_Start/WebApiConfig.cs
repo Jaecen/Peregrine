@@ -27,12 +27,14 @@ namespace Peregrine.Web
 			builder.RegisterType<EventPublisher>();
 			builder.RegisterType<RoundManager>();
 			builder.RegisterType<TournamentManager>();
+			builder.RegisterType<StatsProvider>();
 	
 			builder.RegisterType<TournamentResponseProvider>();
 			builder.RegisterType<PlayerResponseProvider>();
 			builder.RegisterType<RoundResponseProvider>();
 			builder.RegisterType<MatchResponseProvider>();
 			builder.RegisterType<PlayerMatchStatsResponseProvider>();
+			builder.RegisterType<StandingsResponseProvider>();
 
 			return builder;
 		}

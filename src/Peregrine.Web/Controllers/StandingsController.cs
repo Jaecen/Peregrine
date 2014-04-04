@@ -1,18 +1,23 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Web.Http;
 using Peregrine.Data;
+using Peregrine.Web.Models;
 using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
 	public class StandingsController : ApiController
 	{
-		readonly StatsProvider StatsProvider;
+		readonly StandingsResponseProvider StandingsResponseProvider;
 
-		public StandingsController()
+		public StandingsController(StandingsResponseProvider standingsResponseProvider)
 		{
-			StatsProvider = new StatsProvider();
+			if(standingsResponseProvider == null)
+				throw new ArgumentException("standings");
+
+			StandingsResponseProvider = standingsResponseProvider;
 		}
 
 		[Route("api/tournaments/{tournamentKey}/standings")]
@@ -29,37 +34,45 @@ namespace Peregrine.Web.Controllers
 				if(roundNumber.HasValue && tournament.GetRound(roundNumber.Value) == null)
 					return NotFound();
 
-				var standings = tournament
-					.Players
-					.Select(player => new
-					{
-						name = player.Name,
-						matchPoints = StatsProvider.GetMatchPoints(tournament, player, roundNumber),
-						matchWinPercentage = StatsProvider.GetMatchWinPercentage(tournament, player, roundNumber),
-						opponentsMatchWinPercentage = StatsProvider.GetOpponentsMatchWinPercentage(tournament, player, roundNumber),
-						gamePoints = StatsProvider.GetGamePoints(tournament, player, roundNumber),
-						gameWinPercentage = StatsProvider.GetGameWinPercentage(tournament, player, roundNumber),
-						opponentsGameWinPercentage = StatsProvider.GetOpponentsGameWinPercentage(tournament, player, roundNumber),
-					})
-					.OrderByDescending(o => o.matchPoints)
-					.ThenByDescending(o => o.opponentsMatchWinPercentage)
-					.ThenByDescending(o => o.gameWinPercentage)
-					.ThenByDescending(o => o.opponentsGameWinPercentage)
-					.Select((o, rank) => new
-					{
-						rank = rank + 1,
-						o.name,
-						o.matchPoints,
-						o.matchWinPercentage,
-						o.opponentsMatchWinPercentage,
-						o.gamePoints,
-						o.gameWinPercentage,
-						o.opponentsGameWinPercentage,
-					})
-					.ToArray();
-
-				return Ok(standings);
+				return Ok(StandingsResponseProvider.Create(tournament, roundNumber));
 			}
+		}
+
+		[Route("api/tournaments/{tournamentKey}/standings/updates")]
+		[Route("api/tournaments/{tournamentKey}/round/{roundNumber:min(1)}/standings/updates")]
+		public IHttpActionResult GetEventSource(Guid tournamentKey, int? roundNumber = null)
+		{
+			StandingsResponse initialState;
+			using(var dataContext = new DataContext())
+			{
+				var tournament = dataContext.GetTournament(tournamentKey);
+
+				if(tournament == null)
+					return NotFound();
+
+				if(roundNumber.HasValue && tournament.GetRound(roundNumber.Value) == null)
+					return NotFound();
+
+				initialState = StandingsResponseProvider.Create(tournament, roundNumber);
+			}
+
+			return ResponseMessage(new HttpResponseMessage
+			{
+				Content = new PushStreamContent(
+					(stream, content, context) =>
+					{
+						var streamWriter = new System.IO.StreamWriter(stream);
+
+						EventStreamManager
+							.PublishTo(streamWriter, "updated", initialState);
+
+						EventStreamManager
+							.GetInstance("standings", String.Format("{0}/{1}", tournamentKey, roundNumber))
+							.AddListener(streamWriter);
+					},
+					"text/event-stream"
+				),
+			});
 		}
 	}
 }
