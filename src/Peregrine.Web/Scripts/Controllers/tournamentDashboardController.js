@@ -31,9 +31,15 @@
 			},
 			false);
 
-		$scope.standings = standingsResource.get({
-			tournamentKey: $routeParams.tournamentKey
-		});
-
+		var standingsUrl = '/api/tournaments/' + $routeParams.tournamentKey + '/standings/updates';
+		roundEventSource = new EventSource(standingsUrl);
+		roundEventSource.addEventListener(
+			'updated',
+			function(event) {
+				$scope.$apply(function() {
+					$scope.standings = JSON.parse(event.data);
+				})
+			},
+			false);
 	}
 ]);

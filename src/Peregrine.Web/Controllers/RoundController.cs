@@ -88,7 +88,7 @@ namespace Peregrine.Web.Controllers
 								.PublishTo(streamWriter, "updated", initialState);
 
 							EventStreamManager
-								.GetInstance("round", String.Format("{0}/{1}", tournamentKey, roundNumber))
+								.GetInstance(String.Format("round/{0}/{1}", tournamentKey, roundNumber))
 								.AddListener(streamWriter);
 						},
 					"text/event-stream"

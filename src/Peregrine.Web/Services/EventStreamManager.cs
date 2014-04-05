@@ -8,26 +8,19 @@ namespace Peregrine.Web.Services
 {
 	class EventStreamManager
 	{
-		static readonly ConcurrentDictionary<Tuple<string, string>, EventStreamManager> Instances;
+		static readonly ConcurrentDictionary<string, EventStreamManager> Instances;
 
 		static EventStreamManager()
 		{
-			Instances = new ConcurrentDictionary<Tuple<string, string>, EventStreamManager>(
-				new TupleEqualityComparer<string, string>(
-					StringComparer.OrdinalIgnoreCase,
-					StringComparer.OrdinalIgnoreCase
-				)
-			);
+			Instances = new ConcurrentDictionary<string, EventStreamManager>();
 		}
 
-		public static EventStreamManager GetInstance(string type, string key)
+		public static EventStreamManager GetInstance(string key)
 		{
-			var keyTuple = Tuple.Create(type, key);
+			if(!Instances.ContainsKey(key))
+				Instances[key] = new EventStreamManager();
 
-			if(!Instances.ContainsKey(keyTuple))
-				Instances[keyTuple] = new EventStreamManager();
-
-			return Instances[keyTuple];
+			return Instances[key];
 		}
 
 		readonly ConcurrentDictionary<Guid, StreamWriter> Listeners;
