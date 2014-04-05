@@ -53,24 +53,48 @@ namespace Peregrine.Web.Models
 		{
 			this.rank = source.rank;
 			this.playerName = source.playerName;
+			
 			this.matchPoints = source.matchPoints;
-			this.relativeMatchPoints = (source.matchPoints - minMatchPoints) / (maxMatchPoints - minMatchPoints);
-			this.absoluteMatchPoints = source.matchPoints / maxMatchPoints;
+			if(maxMatchPoints > 0 && maxMatchPoints > minMatchPoints)
+			{
+				this.relativeMatchPoints = (source.matchPoints - minMatchPoints) / (maxMatchPoints - minMatchPoints);
+				this.absoluteMatchPoints = source.matchPoints / maxMatchPoints;
+			}
+			
 			this.matchWinPercentage = source.matchWinPercentage;
-			this.relativeMatchWinPercentage = (source.matchWinPercentage - minMatchWinPercentage) / (maxMatchWinPercentage - minMatchWinPercentage);
-			this.absoluteMatchWinPercentage = source.matchWinPercentage / maxMatchWinPercentage;
+			if(maxMatchWinPercentage > 0 && maxMatchWinPercentage > minMatchWinPercentage)
+			{
+				this.relativeMatchWinPercentage = (source.matchWinPercentage - minMatchWinPercentage) / (maxMatchWinPercentage - minMatchWinPercentage);
+				this.absoluteMatchWinPercentage = source.matchWinPercentage / maxMatchWinPercentage;
+			}
+			
 			this.opponentsMatchWinPercentage = source.opponentsMatchWinPercentage;
-			this.relativeOpponentsMatchWinPercentage = (source.opponentsMatchWinPercentage - minOpponentsMatchWinPercentage) / (maxOpponentsMatchWinPercentage - minOpponentsMatchWinPercentage);
-			this.absoluteOpponentsMatchWinPercentage = source.opponentsMatchWinPercentage / maxOpponentsMatchWinPercentage;
+			if(maxOpponentsMatchWinPercentage > 0 && maxOpponentsMatchWinPercentage > minOpponentsMatchWinPercentage)
+			{
+				this.relativeOpponentsMatchWinPercentage = (source.opponentsMatchWinPercentage - minOpponentsMatchWinPercentage) / (maxOpponentsMatchWinPercentage - minOpponentsMatchWinPercentage);
+				this.absoluteOpponentsMatchWinPercentage = source.opponentsMatchWinPercentage / maxOpponentsMatchWinPercentage;
+			}
+			
 			this.gamePoints = source.gamePoints;
-			this.relativeGamePoints = (source.gamePoints - minGamePoints) / (maxGamePoints - minGamePoints);
-			this.absoluteGamePoints = source.gamePoints / maxGamePoints;
+			if(maxGamePoints > 0 && maxGamePoints > minGamePoints)
+			{
+				this.relativeGamePoints = (source.gamePoints - minGamePoints) / (maxGamePoints - minGamePoints);
+				this.absoluteGamePoints = source.gamePoints / maxGamePoints;
+			}
+			
 			this.gameWinPercentage = source.gameWinPercentage;
-			this.relativeGameWinPercentage = (source.gameWinPercentage - minGameWinPercentage) / (maxGameWinPercentage - minGameWinPercentage);
-			this.absoluteGameWinPercentage = source.gameWinPercentage / maxGameWinPercentage;
+			if(maxGameWinPercentage > 0 && maxGameWinPercentage > minGameWinPercentage)
+			{
+				this.relativeGameWinPercentage = (source.gameWinPercentage - minGameWinPercentage) / (maxGameWinPercentage - minGameWinPercentage);
+				this.absoluteGameWinPercentage = source.gameWinPercentage / maxGameWinPercentage;
+			}
+
 			this.opponentsGameWinPercentage = source.opponentsGameWinPercentage;
-			this.relativeOpponentsGameWinPercentage = (source.opponentsGameWinPercentage - minOpponentsGameWinPercentage) / (maxOpponentsGameWinPercentage - minOpponentsGameWinPercentage);
-			this.absoluteOpponentsGameWinPercentage = source.opponentsGameWinPercentage / maxOpponentsGameWinPercentage;
+			if(maxOpponentsGameWinPercentage > 0 && maxOpponentsGameWinPercentage > minOpponentsGameWinPercentage)
+			{
+				this.relativeOpponentsGameWinPercentage = (source.opponentsGameWinPercentage - minOpponentsGameWinPercentage) / (maxOpponentsGameWinPercentage - minOpponentsGameWinPercentage);
+				this.absoluteOpponentsGameWinPercentage = source.opponentsGameWinPercentage / maxOpponentsGameWinPercentage;
+			}
 		}
 	}
 }
