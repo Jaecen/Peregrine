@@ -49,7 +49,7 @@
 		</div>
 	</div>
 	<div class="action-bar">
-		<a href="#/tournament/{{tournament.key}}/round/1" class="btn btn-primary btn-lg">Start Round One</a>
+		<button ng-click="setActiveRound(tournament.key, 1)" class="btn btn-primary btn-lg">Start Round One</button>
 		<a href="#/dash/tournament/{{tournament.key}}" class="btn btn-default btn-lg">Dashboard</a>
 	</div>
 </div>

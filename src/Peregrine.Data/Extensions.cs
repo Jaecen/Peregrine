@@ -18,6 +18,20 @@ namespace Peregrine.Data
 				.FirstOrDefault(t => t.Key == tournamentKey);
 		}
 
+		public static Round GetActiveRound(this Tournament tournament)
+		{
+			if(tournament == null)
+				return null;
+
+			if(tournament.ActiveRoundNumber == null)
+				return null;
+
+			return tournament
+				.Rounds
+				.Where(r => r.Number == tournament.ActiveRoundNumber)
+				.FirstOrDefault();
+		}
+
 		public static Round GetRound(this Tournament tournament, int roundNumber)
 		{
 			if(tournament == null)

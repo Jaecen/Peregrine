@@ -34,6 +34,9 @@ namespace Peregrine.Web.Controllers
 				if(roundNumber.HasValue && tournament.GetRound(roundNumber.Value) == null)
 					return NotFound();
 
+				if(!roundNumber.HasValue && !tournament.ActiveRoundNumber.HasValue)
+					return NotFound();
+
 				return Ok(StandingsResponseProvider.Create(tournament, roundNumber));
 			}
 		}
@@ -53,7 +56,10 @@ namespace Peregrine.Web.Controllers
 				if(roundNumber.HasValue && tournament.GetRound(roundNumber.Value) == null)
 					return NotFound();
 
-				initialState = StandingsResponseProvider.Create(tournament, roundNumber);
+				if(!roundNumber.HasValue && !tournament.ActiveRoundNumber.HasValue)
+					initialState = null;
+				else
+					initialState = StandingsResponseProvider.Create(tournament, roundNumber);
 			}
 
 			return ResponseMessage(new HttpResponseMessage

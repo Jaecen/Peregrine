@@ -1,8 +1,8 @@
 ﻿angular
 .module('peregrineUi.controllers')
 .controller('tournamentController', [
-	'$scope', '$routeParams', '$location', 'tournamentResource', 'playerResource',
-	function($scope, $routeParams, $location, tournamentResource, playerResource) {
+	'$scope', '$routeParams', '$location', 'tournamentResource', 'playerResource', 'activeRoundResource',
+	function($scope, $routeParams, $location, tournamentResource, playerResource, activeRoundResource) {
 		$scope.players = []; //necessary?
 		$scope.error = '';
 		$scope.newPlayer = {};
@@ -24,7 +24,7 @@
 						$location.path('/tournament/' + tournament.key + '/standings');
 					}
 					else if(tournament.started) {
-						$location.path('/tournament/' + tournament.key + '/round/current');
+						$location.path('/tournament/' + tournament.key + '/round/active');
 					}
 					//add the tournament to the scope
 					$scope.tournament = tournament;
@@ -111,6 +111,17 @@
 					$scope.error = 'We were unable to delete the player!';
 				});
 		};
+
+		$scope.setActiveRound = function(tournamentKey, roundNumber) {
+			activeRoundResource.set(
+				{ tournamentKey: tournamentKey }, 
+				{ roundNumber: roundNumber },
+				function() {
+					var path = '/tournament/' + tournamentKey + '/roundedit/' + roundNumber;
+					$location.path(path);
+				}
+			);
+		}
 
 		function comparePlayer(playerOne, playerTwo) {
 			if(playerOne.name < playerTwo.name)

@@ -8,7 +8,7 @@
 		<h2>
 			{{ tournament.name || tournament.key }}
 		</h2>
-		<h3>
+		<h3 ng-if="round">
 			Round {{ round.number }} of {{ tournament.totalRounds }} - 43:37
 		</h3>
 	</div>
@@ -18,6 +18,8 @@
 		</div>
 	</div>
 </div>
+
+<div data-ng-hide="round" class="alert alert-info">Waiting for first round to start...</div>
 
 <div class="row">
 	<div data-ng-if="round.number" data-ng-class="{'col-md-6': standings.playerStandings.length, 'col-md-12': !standings.playerStandings.length}">

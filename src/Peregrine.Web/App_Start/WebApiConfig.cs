@@ -35,6 +35,7 @@ namespace Peregrine.Web
 			builder.RegisterType<MatchResponseProvider>();
 			builder.RegisterType<PlayerMatchStatsResponseProvider>();
 			builder.RegisterType<StandingsResponseProvider>();
+			builder.RegisterType<ActiveRoundResponseProvider>();
 
 			return builder;
 		}

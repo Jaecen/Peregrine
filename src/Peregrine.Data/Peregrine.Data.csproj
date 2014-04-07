@@ -64,6 +64,10 @@
     <Compile Include="Migrations\201403240100230_Fix_Match_Players_Many_To_Many.Designer.cs">
       <DependentUpon>201403240100230_Fix_Match_Players_Many_To_Many.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201404050712008_Add_Active_Round_Number.cs" />
+    <Compile Include="Migrations\201404050712008_Add_Active_Round_Number.Designer.cs">
+      <DependentUpon>201404050712008_Add_Active_Round_Number.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Tournament.cs" />
     <Compile Include="Game.cs" />
@@ -82,6 +86,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201403240100230_Fix_Match_Players_Many_To_Many.resx">
       <DependentUpon>201403240100230_Fix_Match_Players_Many_To_Many.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201404050712008_Add_Active_Round_Number.resx">
+      <DependentUpon>201404050712008_Add_Active_Round_Number.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

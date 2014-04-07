@@ -138,6 +138,7 @@
     <Content Include="Scripts\filters\encodeURIComponent.js" />
     <Content Include="Scripts\peregrineUi.js" />
     <Content Include="Scripts\controllers\standingsController.js" />
+    <Content Include="Scripts\resources\activeRoundResource.js" />
     <Content Include="Scripts\resources\tournamentResource.js" />
     <Content Include="Scripts\resources\roundResource.js" />
     <Content Include="Scripts\resources\outcomeResource.js" />
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ActiveRoundController.cs" />
     <Compile Include="Controllers\MatchResultController.cs" />
     <Compile Include="Controllers\PlayerController.cs" />
     <Compile Include="Controllers\PlayersController.cs" />
@@ -164,6 +166,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ActiveRoundRequest.cs" />
+    <Compile Include="Models\ActiveRoundResponse.cs" />
+    <Compile Include="Models\ActiveRoundResponseProvider.cs" />
     <Compile Include="Models\MatchResponse.cs" />
     <Compile Include="Models\MatchResponseProvider.cs" />
     <Compile Include="Models\PlayerMatchStatsResponse.cs" />

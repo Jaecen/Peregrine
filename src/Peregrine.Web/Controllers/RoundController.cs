@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using Peregrine.Data;
@@ -36,7 +35,7 @@ namespace Peregrine.Web.Controllers
 			RoundResponseProvider = roundResponseProvider;
 		}
 
-		[Route("{roundNumber:min(1)}", Name="round-get")]
+		[Route("{roundNumber:min(1)}", Name = "round-get")]
 		public IHttpActionResult Get(Guid tournamentKey, int roundNumber)
 		{
 			using(var dataContext = new DataContext())
@@ -80,43 +79,20 @@ namespace Peregrine.Web.Controllers
 			return ResponseMessage(new HttpResponseMessage
 			{
 				Content = new PushStreamContent(
-					(stream, content, context) => 
-						{
-							var streamWriter = new System.IO.StreamWriter(stream);
-							
-							EventStreamManager
-								.PublishTo(streamWriter, "updated", initialState);
+					(stream, content, context) =>
+					{
+						var streamWriter = new System.IO.StreamWriter(stream);
 
-							EventStreamManager
-								.GetInstance(String.Format("round/{0}/{1}", tournamentKey, roundNumber))
-								.AddListener(streamWriter);
-						},
+						EventStreamManager
+							.PublishTo(streamWriter, "updated", initialState);
+
+						EventStreamManager
+							.GetInstance(String.Format("round/{0}/{1}", tournamentKey, roundNumber))
+							.AddListener(streamWriter);
+					},
 					"text/event-stream"
 				),
 			});
-		}
-
-		[Route("current")]
-		public IHttpActionResult Get(Guid tournamentKey)
-		{
-			using(var dataContext = new DataContext())
-			{
-				var tournament = dataContext
-					.GetTournament(tournamentKey);
-
-				if(tournament == null)
-					return NotFound();
-
-				var currentRoundNumber = TournamentManager.GetCurrentRoundNumber(tournament);
-
-				if(currentRoundNumber == null)
-					return NotFound();
-
-				return RedirectToRoute(
-						"round-get",
-						new { tournamentKey = tournamentKey, roundNumber = currentRoundNumber.Value }
-					);
-			}
 		}
 	}
 }

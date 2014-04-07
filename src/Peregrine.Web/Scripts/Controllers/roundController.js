@@ -1,8 +1,8 @@
 ﻿angular
 .module('peregrineUi.controllers')
 .controller('roundController', [
-	'$scope', '$routeParams', '$location', 'tournamentResource', 'roundResource', 'outcomeResource', 'playerResource',
-	function($scope, $routeParams, $location, tournamentResource, roundResource, outcomeResource, playerResource) {
+	'$scope', '$routeParams', '$location', 'tournamentResource', 'roundResource', 'outcomeResource', 'playerResource', 'activeRoundResource',
+	function($scope, $routeParams, $location, tournamentResource, roundResource, outcomeResource, playerResource, activeRoundResource) {
 		$scope.error = '';
 
 		tournamentResource.get(
@@ -72,6 +72,17 @@
 						$scope.error = 'We were unable to save your match data.';
 					});
 			}
+		}
+
+		$scope.setActiveRound = function(tournamentKey, roundNumber) {
+			activeRoundResource.set(
+				{ tournamentKey: tournamentKey },
+				{ roundNumber: roundNumber },
+				function() {
+					var path = '/tournament/' + tournamentKey + '/roundedit/' + roundNumber;
+					$location.path(path);
+				}
+			);
 		}
 
 		$scope.go = function(path) {

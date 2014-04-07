@@ -28,7 +28,8 @@ namespace Peregrine.Web.Models
 				name: tournament.Name,
 				started: tournamentState >= TournamentState.Started,
 				finished: tournamentState >= TournamentState.Finished,
-				totalRounds: TournamentManager.GetTotalRounds(tournament)
+				totalRounds: TournamentManager.GetTotalRounds(tournament),
+				activeRoundNumber: tournament.ActiveRoundNumber
 			);
 		}
 	}

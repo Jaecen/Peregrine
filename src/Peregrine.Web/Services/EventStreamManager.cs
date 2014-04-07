@@ -54,12 +54,17 @@ namespace Peregrine.Web.Services
 
 		public static void PublishTo(StreamWriter listener, string eventName, object message)
 		{
-			listener.WriteLine("event: {0}", eventName);
+			if(message == null)
+				return;
+
+			if(!String.IsNullOrEmpty(eventName))
+				listener.WriteLine("event: {0}", eventName);
+
 			listener.WriteLine("data: {0}", JsonConvert.SerializeObject(message));
 			listener.WriteLine();
 			listener.Flush();
 
-			// For somereason, outputs lag one behind unless we write and flush a second time.
+			// For some reason, outputs lag one behind unless we write and flush a second time.
 			listener.WriteLine();
 			listener.Flush();
 		}
