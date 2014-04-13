@@ -119,7 +119,6 @@ namespace Peregrine.Web.Services
 			if(playerPool.Count() % 2 == 1)
 			{
 				var byePlayer = playerPool
-					.Reverse()
 					.Where(o => !o.HadBye)
 					.Take(1);
 
