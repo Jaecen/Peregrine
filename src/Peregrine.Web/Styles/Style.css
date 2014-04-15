@@ -1,9 +1,28 @@
 ﻿header {
 	background: #124678;
 	color: #fff;
+	box-shadow: 0 0 8px rgba(0,0,0,0.9);
+	border-bottom: solid 2px #0e3962;
 }
 
 	header a, header a:hover {
+		color: #fff;
+	}
+
+.logo-wrap{
+	padding: 6px 0 10px 0;
+}
+
+footer {
+	background: #124678;
+	color: #fff;
+	box-shadow: 0 0 8px rgba(0,0,0,0.9);
+	border-top: solid 2px #0e3962;
+	padding: 4px;
+	margin-bottom: 0;
+}
+
+	footer a, footer a:hover {
 		color: #fff;
 	}
 
