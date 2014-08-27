@@ -10,16 +10,12 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments/{tournamentKey}/rounds")]
 	public class RoundController : ApiController
 	{
-		readonly EventPublisher EventPublisher;
 		readonly TournamentManager TournamentManager;
 		readonly RoundManager RoundManager;
 		readonly RoundResponseProvider RoundResponseProvider;
 
-		public RoundController(EventPublisher eventPublisher, TournamentManager tournamentManager, RoundManager roundManager, RoundResponseProvider roundResponseProvider)
+		public RoundController(TournamentManager tournamentManager, RoundManager roundManager, RoundResponseProvider roundResponseProvider)
 		{
-			if(eventPublisher == null)
-				throw new ArgumentNullException("eventPublisher");
-
 			if(tournamentManager == null)
 				throw new ArgumentNullException("tournamentManager");
 
@@ -29,7 +25,6 @@ namespace Peregrine.Web.Controllers
 			if(roundResponseProvider == null)
 				throw new ArgumentNullException("roundResponseProvider");
 
-			EventPublisher = eventPublisher;
 			TournamentManager = tournamentManager;
 			RoundManager = roundManager;
 			RoundResponseProvider = roundResponseProvider;
@@ -53,46 +48,6 @@ namespace Peregrine.Web.Controllers
 
 				return Ok(RoundResponseProvider.Create(tournament, round));
 			}
-		}
-
-		[Route("{roundNumber:min(1)}/updates")]
-		public IHttpActionResult GetEventSource(Guid tournamentKey, int roundNumber)
-		{
-			RoundResponse initialState;
-
-			using(var dataContext = new DataContext())
-			{
-				var tournament = dataContext
-					.GetTournament(tournamentKey);
-
-				if(tournament == null)
-					return NotFound();
-
-				var round = RoundManager.GetRound(tournament, roundNumber);
-
-				if(round == null)
-					return NotFound();
-
-				initialState = RoundResponseProvider.Create(tournament, round);
-			}
-
-			return ResponseMessage(new HttpResponseMessage
-			{
-				Content = new PushStreamContent(
-					(stream, content, context) =>
-					{
-						var streamWriter = new System.IO.StreamWriter(stream);
-
-						EventStreamManager
-							.PublishTo(streamWriter, "updated", initialState);
-
-						EventStreamManager
-							.GetInstance(String.Format("round/{0}/{1}", tournamentKey, roundNumber))
-							.AddListener(streamWriter);
-					},
-					"text/event-stream"
-				),
-			});
 		}
 	}
 }

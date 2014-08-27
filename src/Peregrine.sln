@@ -5,7 +5,11 @@ VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1DCE3AD1-3BFD-4D74-8B40-B25FD1B233AF}"
 	ProjectSection(SolutionItems) = preProject
+		..\doc\magic_the_gathering_tournament_rules_pdf1.pdf = ..\doc\magic_the_gathering_tournament_rules_pdf1.pdf
+		..\doc\PairingPermutations.txt = ..\doc\PairingPermutations.txt
 		..\README.md = ..\README.md
+		..\doc\State Machine.txt = ..\doc\State Machine.txt
+		..\doc\Swiss_Pairings.pdf = ..\doc\Swiss_Pairings.pdf
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Data", "Peregrine.Data\Peregrine.Data.csproj", "{F189834C-A485-4DF1-B424-994E16EE999F}"
@@ -18,6 +22,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{07AA81
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unstated", "Unstated\Unstated.csproj", "{0A0BD666-2A2E-445F-AB88-69C6B4D14EDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unstated.Test", "Unstated.Test\Unstated.Test.csproj", "{4FFE4DBA-A210-4F66-97DE-8A6F3F6BF318}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine.Test", "Peregrine.Test\Peregrine.Test.csproj", "{360C1728-29D4-4659-931A-911D5E928EA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peregrine", "Peregrine\Peregrine.csproj", "{4A150FCE-A508-4462-BBD8-25BB9848BA62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +45,22 @@ Global
 		{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC62F7B9-529A-4A5C-8123-9182F8F7BB41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A0BD666-2A2E-445F-AB88-69C6B4D14EDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A0BD666-2A2E-445F-AB88-69C6B4D14EDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A0BD666-2A2E-445F-AB88-69C6B4D14EDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A0BD666-2A2E-445F-AB88-69C6B4D14EDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FFE4DBA-A210-4F66-97DE-8A6F3F6BF318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FFE4DBA-A210-4F66-97DE-8A6F3F6BF318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FFE4DBA-A210-4F66-97DE-8A6F3F6BF318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FFE4DBA-A210-4F66-97DE-8A6F3F6BF318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{360C1728-29D4-4659-931A-911D5E928EA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{360C1728-29D4-4659-931A-911D5E928EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{360C1728-29D4-4659-931A-911D5E928EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{360C1728-29D4-4659-931A-911D5E928EA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A150FCE-A508-4462-BBD8-25BB9848BA62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A150FCE-A508-4462-BBD8-25BB9848BA62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A150FCE-A508-4462-BBD8-25BB9848BA62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A150FCE-A508-4462-BBD8-25BB9848BA62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

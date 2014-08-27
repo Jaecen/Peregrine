@@ -1,0 +1,29 @@
+Tournament Created
+	Add Player -> Tournament Started
+		Create a new player(ID)
+
+Tournament Started
+	Add Player -> Tournament Started
+		Create a new player(ID)
+
+	Remove Player -> Tournament Started
+		Remove a player
+
+	Enter Round Result -> Round Started
+		Record round result
+
+Round Started
+	Enter Round Result -> Round Started
+		Record round result
+
+	End Round -> Round Ended
+	End Round -> Final Round|Tournament Ended
+
+Round Ended
+	Remove Player -> Round Ended
+		Drop player for next round
+
+	Enter Round Result -> Round Started
+		Record round result
+	
+Tournament Ended

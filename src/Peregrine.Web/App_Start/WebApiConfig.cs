@@ -24,7 +24,6 @@ namespace Peregrine.Web
 
 			builder.RegisterApiControllers(System.Reflection.Assembly.GetExecutingAssembly());
 
-			builder.RegisterType<EventPublisher>();
 			builder.RegisterType<RoundManager>();
 			builder.RegisterType<TournamentManager>();
 			builder.RegisterType<StatsProvider>();

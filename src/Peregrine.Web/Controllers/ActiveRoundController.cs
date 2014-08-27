@@ -12,18 +12,13 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments/{tournamentKey}/rounds/active")]
 	public class ActiveRoundController : ApiController
 	{
-		readonly EventPublisher EventPublisher;
 		readonly ActiveRoundResponseProvider ActiveRoundResponseProvider;
 
-		public ActiveRoundController(EventPublisher eventPublisher, ActiveRoundResponseProvider activeRoundResponseProvider)
+		public ActiveRoundController(ActiveRoundResponseProvider activeRoundResponseProvider)
 		{
-				if(eventPublisher == null)
-				throw new ArgumentNullException("eventPublisher");
-
 			if(activeRoundResponseProvider == null)
 				throw new ArgumentNullException("activeRoundResponseProvider");
 
-			EventPublisher = eventPublisher;
 			ActiveRoundResponseProvider = activeRoundResponseProvider;
 		}
 
@@ -58,8 +53,6 @@ namespace Peregrine.Web.Controllers
 
 				tournament.ActiveRoundNumber = request.roundNumber;
 				dataContext.SaveChanges();
-
-				EventPublisher.Updated(tournament);
 
 				return Ok(ActiveRoundResponseProvider.Create(tournament, tournament.ActiveRoundNumber));
 			}

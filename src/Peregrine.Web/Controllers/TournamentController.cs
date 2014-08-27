@@ -11,18 +11,13 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments/{tournamentKey}")]
 	public class TournamentController : ApiController
 	{
-		readonly EventPublisher EventPublisher;
 		readonly TournamentResponseProvider TournamentResponseProvider;
 
-		public TournamentController(EventPublisher eventPublisher, TournamentResponseProvider tournamentResponseProvider)
+		public TournamentController(TournamentResponseProvider tournamentResponseProvider)
 		{
-			if(eventPublisher == null)
-				throw new ArgumentNullException("eventPublisher");
-
 			if(tournamentResponseProvider == null)
 				throw new ArgumentNullException("tournamentResponseProvider");
 
-			EventPublisher = eventPublisher;
 			TournamentResponseProvider = tournamentResponseProvider;
 		}
 
@@ -38,39 +33,6 @@ namespace Peregrine.Web.Controllers
 
 				return Ok(TournamentResponseProvider.Create(tournament));
 			}
-		}
-
-		[Route("updates")]
-		public IHttpActionResult GetEventSource(Guid tournamentKey)
-		{
-			TournamentResponse initialState;
-			using(var dataContext = new DataContext())
-			{
-				var tournament = dataContext.GetTournament(tournamentKey);
-
-				if(tournament == null)
-					return NotFound();
-
-				initialState = TournamentResponseProvider.Create(tournament);
-			}
-
-			return ResponseMessage(new HttpResponseMessage
-			{
-				Content = new PushStreamContent(
-					(stream, content, context) => 
-						{
-							var streamWriter = new System.IO.StreamWriter(stream);
-
-							EventStreamManager
-								.PublishTo(streamWriter, "updated", initialState);
-
-							EventStreamManager
-								.GetInstance(String.Format("tournament/{0}", tournamentKey))
-								.AddListener(streamWriter);
-						},
-					"text/event-stream"
-				),
-			});
 		}
 
 		[Route]
@@ -90,8 +52,6 @@ namespace Peregrine.Web.Controllers
 				
 				dataContext.SaveChanges();
 
-				EventPublisher.Created(tournament);
-
 				return Ok(TournamentResponseProvider.Create(tournament));
 			}
 		}
@@ -108,8 +68,6 @@ namespace Peregrine.Web.Controllers
 
 				dataContext.Tournaments.Remove(tournament);
 				dataContext.SaveChanges();
-
-				EventPublisher.Deleted(tournament);
 
 				return StatusCode(HttpStatusCode.NoContent);
 			}

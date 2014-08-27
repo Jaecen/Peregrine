@@ -1,0 +1,272 @@
+You probably don't want to read this. This document explains the "pairings permutation" math and logic. It's not much fun.
+
+Because pairings are assigned sequentially, it's possible that an earlier valid pairing can preclude a subsequent paring from chosing anything other than a rematch. This can occur when players drop.
+		
+Assume a five player game where the fifth player dropped after the first round. A has played B and C. B has played A and D. At the beginning of round three, only the following valid pairings remain:
+	A vs D
+	B vs C
+	C vs D
+		
+If C vs D is chosen as match #1 (due to C and D being ranked #1 and #2), then neither A vs D nor B vs C can be chosen, leaving only an invalid rematch of A vs B. This could have been avoided if B vs C had been selected for match #1 instead, though that would not have strictly followed the ordering rules of the standard pairing algorithm.
+		
+To resolve this situation, we must consider all potential pairings sets for a round, ordered by preference, and reject sets until we find one that doesn't contain any invalid pairings (i.e. rematches).
+
+Our solution is to run through all possible pairing permutations lazily, rearranging the lower ranked matches before the higher ones. We start with the most preferred (i.e. correct by definition of the algorithm). We then alternate offsetting by some number when choosign the first player and skipping some number to get the second player. We offset and skip further until all possible combinations have been considered.
+
+In the "Unique Pairings" section below, you can see how many actual unique pairings there are. Unfortunately, the algorithm implemented here is not that efficient. Given n players, it will generate n^2 permutated pairing sets, despite there being only (n-1) * (n/2) unique pairings. The overage is duplicated pairings: either exact duplicates or pairings with the same matchups in a different order.
+
+===== Unique Pairings =====
+TLDR; The number of unique pairings for n players = (n-1) * (n/2).
+
+There are x(x + 1)/2 possible permutations of n - see http://en.wikipedia.org/wiki/Triangular_numbers for details. When trying to calculate the unique number of pairings using that formula, use n = the number of players - 1
+	Players		n		Unique number of pairings
+	2			1		n(n + 1) / 2				= 1
+	4			3		n(n + 1) / 2				= 6
+	6			5		n(n + 1) / 2				= 15
+	8			7		n(n + 1) / 2				= 28
+	x			(x-1)	(x - 1)((x - 1) + 1) / 2	= (x-1) * (x/2)
+
+===== Determining Permutations =====
+The heart of the algorithm is runninf a normal pairing algorithm with varying numbers of offsets and skips. For the following examples, consider a game with six players, A through F, ranked in alphabetical order. 
+
+	A
+	B
+	C
+	D
+	E
+	F
+
+An ideal pairing set will take the top two ranked players as a match
+	 
+	|A
+	|B
+	C
+	D
+	E
+	F
+
+An offset means offsetting the first chosen player and then proceeding normally. So an offset of 1 would pick B vs C for the first pairing:
+
+	A		Offset 0
+	|B		Offset 1
+	|C
+	D
+	E
+	F
+
+This would leave the following unpaired players:
+
+	A
+	D
+	E
+	F
+
+So the second pairing would be A vs D:
+
+	|A		Offset 0
+	|D
+	E
+	F
+
+We could have offset in the second pairing instead:
+
+	A		Offset 0
+	|D		Offset 1
+	|E
+	F
+
+We can also offset by more than 1:
+
+	A		Offset 0
+	B		Offset 1
+	|C		Offset 2
+	|D
+	E
+	F
+
+You can see that offset 2 produce the same matchups as offset 0, just in a different order (CvD,AvB,EvF using offset 2 instead of  AvB,CvD,EvF using offset 0).
+
+Offsets are the first way to permutate. With offsets alone, though, it would be impossible to ever generate a match of A vs C. For that, we need skips. A skip means skipping some number of players before choosing the second player. So a skip of 1 would produce A vs C for the first pairing:
+
+	|A		Offset 0
+	B		Skip 0
+	|C		Skip 1
+	D
+	E
+	F
+
+This would leave the following unpaired players:
+
+	B
+	D
+	E
+	F
+
+Just as with offsets, you can skip in subsequent matches and skip more than one:
+
+	|B		Offset 0
+	D		Skip 0
+	E		Skip 1
+	|F		Skip 2
+
+Offsets and skips are combined to create all the possible permutations:
+
+	A		Offset 0
+	|B		Offset 1
+	C		Skip 0
+	D		Skip 1
+	|E		Skip 2
+	F		
+
+(What the initial ideal pairing actually did was run the algorithm with set all offets and skips at zero.)
+
+The algorithm works by starting with all the unpaired players and setting offset and skip to zero. It then selects the first pairing, and recursively calls itself with the remaining unpaired players. It then increments offset by one, the does the same thing again. It increments the offset until it's hit the max number of offsets, then increments skip and repeats all the offsets. Once both skip and offset have hit their max, it returns.
+
+The max number of skips and offsets is (n / 2) - 1, where n is the number of unpaired players. So six players can offset and skip by two, four players can offset and skip by one, and two players can offset and skip by zero (i.e. they can't offset or skip).
+
+Below is a really boring walkthrough of the algorithm for picking the first few permutations of a six player game.
+
+Start with unpaired players =
+	A
+	B
+	C
+	D
+	E
+	F
+
+Choose first pairing with offset = 0 and skip = 0
+
+	|A		Offset 0
+	|B		Skip 0
+	C
+	D
+	E
+	F
+
+Recurse with remaining unparied players.
+
+	Unpaired players =
+		C
+		D
+		E
+		F
+
+	Choose first pairing with offset = 0 and skip = 0
+
+		|C		Offset 0
+		|D		Skip 0
+		E
+		F
+
+	Recurse with remaining unparied players.
+
+		Unpaired players =
+			E
+			F
+
+		Choose first pairing with offset = 0 and skip = 0
+
+			|E		Offset 0
+			|F		Skip 0
+
+		Return E vs F
+
+		Max offset or skip increment = (2 / 2) - 1 = 0
+		Can't increment offset or skip
+		Done
+
+	Return C vs D, E vs F
+
+	Max offset or skip increment = (4 / 2) - 1 = 1
+	
+	Increment offset by 1
+	Choose first pairing with offset = 1 and skip = 0
+
+		C		Offset 0
+		|D		Offset 1
+		|E		Skip 0
+		F
+
+	Recurse with remaining unparied players.
+
+		Unpaired players =
+			C
+			F
+
+		Choose first pairing with offset = 0 and skip = 0
+
+			|C		Offset 0
+			|F		Skip 0
+
+		Return C vs F
+
+		Max offset or skip increment = (2 / 2) - 1 = 0
+		Can't increment offset or skip
+		Done
+
+	Return D vs E, C vs F
+
+	Max offset or skip increment = (4 / 2) - 1 = 1
+	
+	Can't increment offset to 2.
+	Reset offset to 0, increment skip to 1
+	Choose first pairing with offset = 0 and skip = 1
+
+		|C		Offset 0
+		D		Skip 0
+		|E		Skip 1
+		F
+
+	Recurse with remaining unparied players.
+
+		Unpaired players =
+			D
+			F
+
+		Choose first pairing with offset = 0 and skip = 0
+
+			|D		Offset 0
+			|F		Skip 0
+
+		Return D vs F
+
+		Max offset or skip increment = (2 / 2) - 1 = 0
+		Can't increment offset or skip
+		Done
+
+	Return C vs E, D vs F
+
+	Max offset or skip increment = (4 / 2) - 1 = 1
+
+	Increment offset to 1	
+	Choose first pairing with offset = 1 and skip = 1
+
+		C		Offset 0
+		|D		Offset 1
+		E		Skip 0
+		|F		Skip 1
+		
+	Recurse with remaining unparied players.
+
+		Unpaired players =
+			C
+			E
+
+		Choose first pairing with offset = 0 and skip = 0
+
+			|C		Offset 0
+			|E		Skip 0
+
+		Return C vs E
+
+		Max offset or skip increment = (2 / 2) - 1 = 0
+		Can't increment offset or skip
+		Done
+
+	Return D vs F, C vs E
+
+	Max offset or skip increment = (4 / 2) - 1 = 1
+	Can't increment offset or skip to 2
+	Done
+
+etc, but now change first pairing and repeat all above.

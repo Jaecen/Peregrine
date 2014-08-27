@@ -5,43 +5,41 @@
 	function($scope, $routeParams, $location, tournamentResource, roundResource, standingsResource, playerResource) {
 
 		$scope.location = $location;
-		var roundEventSource;
-		var roundUpdatedHandler = function(event) {
-			var round = JSON.parse(event.data);
 
-			$scope.$apply(function() {
-				$scope.round = round;
-			})
-		};
+		tournamentResource.get(
+			{ tournamentKey: $routeParams.tournamentKey },
+			function success(tournament) {
+				$scope.error = '';
+				//handle redirect if the tournament is complete already
+				if(tournament.finished) {
+					$location.path('/tournament/' + tournament.key + '/standings');
+				}
 
-		var tournamentUrl = '/api/tournaments/' + $routeParams.tournamentKey + '/updates';
-		var tournamentEventSource = new EventSource(tournamentUrl);
-		var tournamentUpdatedHandler = function(event) {
-			var tournament = JSON.parse(event.data);
-
-			if(roundEventSource) {
-				roundEventSource.removeEventListener('updated', roundUpdatedHandler);
-			}
-
-			if(tournament.activeRoundNumber) {
-				var roundUrl = '/api/tournaments/' + tournament.key + '/rounds/' + tournament.activeRoundNumber + '/updates';
-				roundEventSource = new EventSource(roundUrl);
-				roundEventSource.addEventListener('updated', roundUpdatedHandler, false);
-			}
-
-			$scope.$apply(function() {
 				$scope.tournament = tournament;
-			})
-		};
-		tournamentEventSource.addEventListener('updated', tournamentUpdatedHandler, false);
 
-		var standingsUrl = '/api/tournaments/' + $routeParams.tournamentKey + '/standings/updates';
-		var standingsEventSource = new EventSource(standingsUrl);
-		var standingsUpdatedHandler = function(event) {
-			$scope.$apply(function() {
-				$scope.standings = JSON.parse(event.data);
-			})
-		};
-		standingsEventSource.addEventListener('updated', standingsUpdatedHandler, false);
+				roundResource.get({
+						tournamentKey: $routeParams.tournamentKey,
+						roundNumber: tournament.activeRoundNumber 
+					},
+					function success(round) {
+						$scope.round = round;
+					},
+					function error() {
+						$scope.error = 'Could not load the current round.';
+					});
+
+				standingsResource.get(
+					{ tournamentKey: $routeParams.tournamentKey },
+					function success(standings) {
+						$scope.standings = standings;
+					},
+					function error() {
+						$scope.error = 'Could not load the current standings.';
+					});
+
+			},
+			function error() {
+				$scope.error = 'Sunova gunnysack! We lost track of your tournament.';
+			});
 	}
 ]);

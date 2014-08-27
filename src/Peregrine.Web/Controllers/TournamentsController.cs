@@ -11,18 +11,13 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments")]
 	public class TournamentsController : ApiController
 	{
-		readonly EventPublisher EventPublisher;
 		readonly TournamentResponseProvider TournamentResponseProvider;
 
-		public TournamentsController(EventPublisher eventPublisher, TournamentResponseProvider tournamentResponseProvider)
+		public TournamentsController(TournamentResponseProvider tournamentResponseProvider)
 		{
-			if(eventPublisher == null)
-				throw new ArgumentNullException("eventPublisher");
-
 			if(tournamentResponseProvider == null)
 				throw new ArgumentNullException("tournamentResponseProvider");
 
-			EventPublisher = eventPublisher;
 			TournamentResponseProvider = tournamentResponseProvider;
 		}
 
@@ -60,8 +55,6 @@ namespace Peregrine.Web.Controllers
 					});
 
 				dataContext.SaveChanges();
-
-				EventPublisher.Created(tournament);
 
 				return CreatedAtRoute(
 					"tournament-get",

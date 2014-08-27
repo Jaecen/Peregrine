@@ -10,22 +10,17 @@ namespace Peregrine.Web.Controllers
 	[RoutePrefix("api/tournaments/{tournamentKey}/rounds/{roundNumber:int:min(1)}/{playerName}")]
 	public class MatchResultController : ApiController
 	{
-		readonly EventPublisher EventPublisher;
 		readonly RoundManager RoundManager;
 		readonly RoundResponseProvider RoundResponseProvider;
 
-		public MatchResultController(EventPublisher eventPublisher, RoundManager roundManager, RoundResponseProvider roundResponseProvider)
+		public MatchResultController(RoundManager roundManager, RoundResponseProvider roundResponseProvider)
 		{
-			if(eventPublisher == null)
-				throw new ArgumentException("roundEventPublisher");
-
 			if(roundManager == null)
 				throw new ArgumentException("roundManager");
 
 			if(roundResponseProvider == null)
 				throw new ArgumentException("roundResponseProvider");
 
-			EventPublisher = eventPublisher;
 			RoundManager = roundManager;
 			RoundResponseProvider = roundResponseProvider;
 		}
@@ -112,8 +107,6 @@ namespace Peregrine.Web.Controllers
 						});
 
 				dataContext.SaveChanges();
-
-				EventPublisher.Updated(tournament, round);
 
 				return Ok(RoundResponseProvider.Create(tournament, round));
 			}

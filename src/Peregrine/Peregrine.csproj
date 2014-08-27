@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4A150FCE-A508-4462-BBD8-25BB9848BA62}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Peregrine</RootNamespace>
+    <AssemblyName>Peregrine</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Engine\AddPlayerCommand.cs" />
+    <Compile Include="Engine\CommandEvent.cs" />
+    <Compile Include="Engine\CommandResult.cs" />
+    <Compile Include="Engine\EndRoundCommand.cs" />
+    <Compile Include="Engine\IContextBuilder.cs" />
+    <Compile Include="Engine\RecordMatchResultsCommand.cs" />
+    <Compile Include="Engine\RemovePlayerCommand.cs" />
+    <Compile Include="Engine\Swiss\SwissRankingEngine.cs" />
+    <Compile Include="Engine\Swiss\SwissStatisticsProvider.cs" />
+    <Compile Include="Engine\Swiss\SwissTournamanetContextBuilder.cs" />
+    <Compile Include="Engine\Swiss\SwissTournamentContext.cs" />
+    <Compile Include="Engine\CreateTournamentCommand.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Engine\GameResult.cs" />
+    <Compile Include="Engine\IRankingEngine.cs" />
+    <Compile Include="Engine\Match.cs" />
+    <Compile Include="Engine\MatchResult.cs" />
+    <Compile Include="Engine\Player.cs" />
+    <Compile Include="Engine\PlayerStanding.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Engine\Round.cs" />
+    <Compile Include="Engine\TournamentCommand.cs" />
+    <Compile Include="Engine\CommandEventHandler.cs" />
+    <Compile Include="Engine\TournamentState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Engine\DoubleElimination\" />
+    <Folder Include="Engine\RoundRobin\" />
+    <Folder Include="Engine\SingleElimination\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Unstated\Unstated.csproj">
+      <Project>{0a0bd666-2a2e-445f-ab88-69c6b4d14edb}</Project>
+      <Name>Unstated</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
