@@ -8,12 +8,14 @@
 	</div>
 	<div class="col-lg-6">
 		<h3>Find a tournament code</h3>
-		<div class="input-group input-group-lg">
-			<input type="text" class="form-control">
-			<span class="input-group-btn">
-				<button class="btn btn-primary" type="button">Go</button>
-			</span>
-		</div>
+		<form data-ng-submit="goToTournament()">
+			<div class="input-group input-group-lg">
+				<input type="text" data-ng-model="searchTournamentCode" class="form-control">
+				<span class="input-group-btn">
+					<button type="submit" class="btn btn-primary" type="button">Go</button>
+				</span>
+			</div>
+		</form>
 	</div>
 </div>
 <h3>Tournaments</h3>
