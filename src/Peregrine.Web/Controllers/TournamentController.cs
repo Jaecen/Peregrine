@@ -106,6 +106,9 @@ namespace Peregrine.Web.Controllers
 				if(tournament == null)
 					return NotFound();
 
+				dataContext.Tournaments.Remove(tournament);
+				dataContext.SaveChanges();
+
 				EventPublisher.Deleted(tournament);
 
 				return StatusCode(HttpStatusCode.NoContent);

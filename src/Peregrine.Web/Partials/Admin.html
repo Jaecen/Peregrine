@@ -1,0 +1,18 @@
+﻿<h3>I see you've made it past all of our defenses... What would you like to destroy?</h3>
+<div ng-if="error.length > 0" class="alert alert-danger">
+	{{error}}
+</div>
+<div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
+<div class="row tournament-item-list" data-ng-if="tournaments">
+	<div class="col-md-6" data-ng-repeat-start="tournament in tournaments">
+		<div class="item clearfix">
+			<a href="#/tournamentedit/{{tournament.key}}">
+				<label>
+					{{ tournament.name || tournament.key }}
+				</label>
+			</a>
+			<button class="btn btn-sm btn-danger pull-right" data-ng-click="deleteTournament(tournament.key)">Delete</button>
+		</div>
+	</div>
+	<div class="clearfix visible-md visible-lg" data-ng-if="$odd" data-ng-repeat-end></div>
+</div>

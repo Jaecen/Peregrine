@@ -36,6 +36,10 @@ angular
 			controller: 'standingsController',
 			templateUrl: 'Partials/Standings.html'
 		})
+		.when('/secretadmin', {
+			controller: 'adminController',
+			templateUrl: 'Partials/Admin.html'
+		})
 		.otherwise({ redirectTo: '/' });
 });
 

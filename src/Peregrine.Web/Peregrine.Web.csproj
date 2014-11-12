@@ -125,12 +125,14 @@
     <Content Include="Global.asax" />
     <Content Include="Images\Logo.png" />
     <Content Include="index.html" />
+    <Content Include="Partials\Admin.html" />
     <Content Include="Partials\Home.html" />
     <Content Include="Partials\RoundDetail.html" />
     <Content Include="Partials\RoundEdit.html" />
     <Content Include="Partials\Standings.html" />
     <Content Include="Partials\TournamentDashboard.html" />
     <Content Include="Partials\TournamentEdit.html" />
+    <Content Include="Scripts\controllers\adminController.js" />
     <Content Include="Scripts\controllers\mainController.js" />
     <Content Include="Scripts\controllers\tournamentController.js" />
     <Content Include="Scripts\controllers\roundController.js" />
@@ -204,7 +206,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Peregrine.Data\Peregrine.Data.csproj">
