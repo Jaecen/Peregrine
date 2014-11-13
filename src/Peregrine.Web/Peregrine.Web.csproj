@@ -216,6 +216,8 @@
   <ItemGroup>
     <None Include="Properties\PublishProfiles\swissperegrine - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\swissperegrine - Web Deploy.pubxml" />
+    <Content Include="Styles\bootstrap-theme.css.map" />
+    <Content Include="Styles\bootstrap.css.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

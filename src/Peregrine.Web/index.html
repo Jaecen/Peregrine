@@ -5,26 +5,26 @@
 	<meta name="description" content="We help you easily run your magic tournament from your phone or desktop." />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<!--3.0.3 version of bootstrap required for angular ui bootstrap-->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+	<link href="Styles/bootstrap.css" rel="stylesheet" />
+	<link href="Styles/bootstrap-theme.css" rel="stylesheet" />
 	<link href="Styles/Style.css" rel="stylesheet" />
 	<link rel="icon" type="image/png" href="/Images/favicon.png" />
 </head>
 <body>
 	<header>
-		<div class="container">
+		<div class="container-fluid">
 			<div class="logo-wrap">
 				<a href="/"><img src="/images/logo.png" alt="Magic Tourney" class="logo img-responsive" /></a>
 			</div>
 		</div>
 	</header>
 	<div class="mainContent">
-		<div class="container">
+		<div class="container-fluid">
 			<div ng-view></div>
 		</div>
 	</div>
 	<footer>
-		<div class="container">
+		<div class="container-fluid">
 			<small>&copy; 2014. All rights reserved. Especially the right to make snarky comments in tiny text.</small>
 		</div>
 	</footer>

@@ -1,8 +1,10 @@
-﻿header {
-	background: #124678;
+﻿
+header {
+	background: #ddd;
 	color: #fff;
 	box-shadow: 0 0 8px rgba(0,0,0,0.9);
-	border-bottom: solid 2px #0e3962;
+	border-bottom: solid 2px #DF1F26;
+	text-align: left;
 }
 
 	header a, header a:hover {
@@ -11,13 +13,19 @@
 
 .logo-wrap{
 	padding: 6px 0 10px 0;
+	display: inline-block;
+	margin: 0px auto;
+}
+
+.logo-wrap img{
+	max-width: 100%;
 }
 
 footer {
-	background: #124678;
-	color: #fff;
+	background: #ccc;
+	border-bottom: solid 2px #DF1F26;
 	box-shadow: 0 0 8px rgba(0,0,0,0.9);
-	border-top: solid 2px #0e3962;
+	border-top: solid 2px #DF1F26;
 	padding: 4px;
 	margin-bottom: 0;
 }
