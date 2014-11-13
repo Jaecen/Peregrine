@@ -1,9 +1,10 @@
-﻿
-header {
+﻿body{
 	background: #ddd;
+}
+header {
+	
 	color: #fff;
-	box-shadow: 0 0 8px rgba(0,0,0,0.9);
-	border-bottom: solid 2px #DF1F26;
+	border-bottom: solid 2px #000;
 	text-align: left;
 }
 
@@ -22,10 +23,7 @@ header {
 }
 
 footer {
-	background: #ccc;
-	border-bottom: solid 2px #DF1F26;
-	box-shadow: 0 0 8px rgba(0,0,0,0.9);
-	border-top: solid 2px #DF1F26;
+	border-top: solid 2px #000;
 	padding: 4px;
 	margin-bottom: 0;
 }
@@ -36,6 +34,8 @@ footer {
 
 .mainContent {
 	padding: 16px 0;
+	background: linear-gradient(to left, #D4EDFC, #fff);
+
 }
 
 .item-list {
