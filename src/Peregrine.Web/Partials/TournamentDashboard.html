@@ -2,136 +2,137 @@
 	{{error}}
 </div>
 <div data-ng-hide="tournament" class="alert alert-info">loading...</div>
-
-<div class="row">
-	<div class="col-md-10 col-sm-12">
-		<h2>
-			{{ tournament.name || tournament.key }}
-		</h2>
-		<h3 ng-if="round">
-			Round {{ round.number }} of {{ tournament.totalRounds }} - 43:37
-		</h3>
-	</div>
-	<div class="col-md-2 visible-md visible-lg">
-		<div class="text-right">
-			<img ng-attr-src="//api.qrserver.com/v1/create-qr-code/?data={{ location.absUrl() | encodeURIComponent }}&size=100x100&color=124678" />
+	<div class="row">
+		<div class="col-md-10">
+			<h1>
+				{{ tournament.name || tournament.key }}
+			</h1>
+			<h3 ng-if="round">
+				Round {{ round.number }} of {{ tournament.totalRounds }} - 43:37
+			</h3>
+		</div>
+		<div class="col-md-2 visible-md visible-lg">
+			<div class="text-right">
+				<img ng-attr-src="//api.qrserver.com/v1/create-qr-code/?data={{ location.absUrl() | encodeURIComponent }}&size=100x100&color=124678" />
+			</div>
 		</div>
 	</div>
-</div>
 
-<div data-ng-hide="round" class="alert alert-info">Waiting for first round to start...</div>
+<div class="content-box">
+	<div data-ng-hide="round" class="alert alert-info">Waiting for first round to start...</div>
 
-<div class="row">
-	<div data-ng-if="round.number" data-ng-class="{'col-md-6': standings.playerStandings.length, 'col-md-12': !standings.playerStandings.length}">
-		<h3>Pairings</h3>
-		<div class="table-responsive">
-			<table class="table table-striped pairings-report">
-				<thead>
-					<tr>
-						<th>Table</th>
-						<th>Players</th>
-						<th class="text-center">Wins</th>
-						<th class="text-center">Losses</th>
-						<th class="text-center">Draws</th>
-					</tr>
-				</thead>
-				<tbody ng-repeat="match in round.matches">
-					<tr ng-if="match.players[1]">
-						<td rowspan="2">
-							{{ match.number }}
-						</td>
-						<td>
-							{{ match.players[0].name }}
-						</td>
-						<td class="text-center">
-							{{ match.players[0].wins }}
-						</td>
-						<td class="text-center">
-							{{ match.players[0].losses }}
-						</td>
-						<td rowspan="2" class="text-center">
-							{{ match.players[0].draws }}
-						</td>
-					</tr>
-					<tr ng-if="match.players[1]">
-						<td>
-							{{ match.players[1].name }}
-						</td>
-						<td class="text-center">
-							{{ match.players[1].wins }}
-						</td>
-						<td class="text-center">
-							{{ match.players[1].losses }}
-						</td>
-					</tr>
-					<tr ng-if="match.players.length == 1">
-						<td>
-							-
-						</td>
-						<td>
-							{{ match.players[0].name }}
-						</td>
-						<td colspan="3" class="text-center">
-							<span class="label label-primary">bye</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+	<div class="row">
+		<div data-ng-if="round.number" data-ng-class="{'col-md-6': standings.playerStandings.length, 'col-md-12': !standings.playerStandings.length}">
+			<h3>Pairings</h3>
+			<div class="table-responsive">
+				<table class="table table-striped pairings-report">
+					<thead>
+						<tr>
+							<th>Table</th>
+							<th>Players</th>
+							<th class="text-center">Wins</th>
+							<th class="text-center">Losses</th>
+							<th class="text-center">Draws</th>
+						</tr>
+					</thead>
+					<tbody ng-repeat="match in round.matches">
+						<tr ng-if="match.players[1]">
+							<td rowspan="2">
+								{{ match.number }}
+							</td>
+							<td>
+								{{ match.players[0].name }}
+							</td>
+							<td class="text-center">
+								{{ match.players[0].wins }}
+							</td>
+							<td class="text-center">
+								{{ match.players[0].losses }}
+							</td>
+							<td rowspan="2" class="text-center">
+								{{ match.players[0].draws }}
+							</td>
+						</tr>
+						<tr ng-if="match.players[1]">
+							<td>
+								{{ match.players[1].name }}
+							</td>
+							<td class="text-center">
+								{{ match.players[1].wins }}
+							</td>
+							<td class="text-center">
+								{{ match.players[1].losses }}
+							</td>
+						</tr>
+						<tr ng-if="match.players.length == 1">
+							<td>
+								-
+							</td>
+							<td>
+								{{ match.players[0].name }}
+							</td>
+							<td colspan="3" class="text-center">
+								<span class="label label-primary">bye</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
-	</div>
-	<div data-ng-if="standings.playerStandings.length" data-ng-class="{'col-md-6': round.number, 'col-md-12': !round.number}">
-		<h3>Standings</h3>
-		<div class="table-responsive">
-			<table class="table table table-striped ">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Name</th>
-						<th title="Match Points" colspan="2">MP</th>
-						<th title="Opponent Match Win %" colspan="2">OMW%</th>
-						<th title="Game Win %" colspan="2">GW%</th>
-						<th title="Opponent Game Win %" colspan="2">OGW%</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr data-ng-repeat="player in standings.playerStandings">
-						<td>{{ player.rank }}</td>
-						<td>{{ player.playerName }}</td>
-						<td style="color: #124678;">
-							{{ player.matchPoints | number:0 }}
-						</td>
-						<td style="color: #124678; width: 15%;">
-							<svg style="width: 100%;">
-								<rect height="10px" ng-attr-width="{{ player.relativeMatchPoints * 100 }}%" fill="#124678" />
-							</svg>
-						</td>
-						<td style="color: #326698;">
-							{{ player.opponentsMatchWinPercentage | number:4 }}
-						</td>
-						<td style="color: #326698; width: 15%;">
-							<svg style="width: 100%;">
-								<rect height="10" ng-attr-width="{{ player.relativeOpponentsMatchWinPercentage * 100 }}%" fill="#326698" />
-							</svg>
-						</td>
-						<td style="color: #5286B8;">
-							{{ player.gameWinPercentage | number:4 }}
-						</td>
-						<td style="color: #5286B8; width: 15%;">
-							<svg style="width: 100%;">
-								<rect height="10" ng-attr-width="{{ player.relativeGameWinPercentage * 100 }}%" fill="#5286B8" />
-							</svg>
-						</td>
-						<td style="color: #72A6D8;">
-							{{ player.opponentsGameWinPercentage | number:4 }}
-						</td>
-						<td style="color: #72A6D8; width: 15%;">
-							<svg style="width: 100%;">
-								<rect height="10" ng-attr-width="{{ player.relativeOpponentsGameWinPercentage * 100 }}%" fill="#72A6D8" />
-							</svg>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+		<div data-ng-if="standings.playerStandings.length" data-ng-class="{'col-md-6': round.number, 'col-md-12': !round.number}">
+			<h3>Standings</h3>
+			<div class="table-responsive">
+				<table class="table table table-striped ">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Name</th>
+							<th title="Match Points" colspan="2">MP</th>
+							<th title="Opponent Match Win %" colspan="2">OMW%</th>
+							<th title="Game Win %" colspan="2">GW%</th>
+							<th title="Opponent Game Win %" colspan="2">OGW%</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr data-ng-repeat="player in standings.playerStandings">
+							<td>{{ player.rank }}</td>
+							<td>{{ player.playerName }}</td>
+							<td style="color: #124678;">
+								{{ player.matchPoints | number:0 }}
+							</td>
+							<td style="color: #124678; width: 15%;">
+								<svg style="width: 100%;">
+									<rect height="10px" ng-attr-width="{{ player.relativeMatchPoints * 100 }}%" fill="#124678" />
+								</svg>
+							</td>
+							<td style="color: #326698;">
+								{{ player.opponentsMatchWinPercentage | number:4 }}
+							</td>
+							<td style="color: #326698; width: 15%;">
+								<svg style="width: 100%;">
+									<rect height="10" ng-attr-width="{{ player.relativeOpponentsMatchWinPercentage * 100 }}%" fill="#326698" />
+								</svg>
+							</td>
+							<td style="color: #5286B8;">
+								{{ player.gameWinPercentage | number:4 }}
+							</td>
+							<td style="color: #5286B8; width: 15%;">
+								<svg style="width: 100%;">
+									<rect height="10" ng-attr-width="{{ player.relativeGameWinPercentage * 100 }}%" fill="#5286B8" />
+								</svg>
+							</td>
+							<td style="color: #72A6D8;">
+								{{ player.opponentsGameWinPercentage | number:4 }}
+							</td>
+							<td style="color: #72A6D8; width: 15%;">
+								<svg style="width: 100%;">
+									<rect height="10" ng-attr-width="{{ player.relativeOpponentsGameWinPercentage * 100 }}%" fill="#72A6D8" />
+								</svg>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>

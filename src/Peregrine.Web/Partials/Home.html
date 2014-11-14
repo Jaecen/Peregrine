@@ -2,36 +2,35 @@
 	Use Magic Tourney to setup your Magic the Gathering tournament.
 </p>
 <div class="row">
-	<div class="col-lg-6">
-		<h3>New tournament</h3>
-		<a href="#/tournamentedit" class="btn btn-primary btn-lg">Get Started</a>
+	<div class="col-lg-4">
+		<h3>Tournaments</h3>
+		<div ng-if="error.length > 0" class="alert alert-danger">
+			{{error}}
+		</div>
+		<div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
+		<ul class="list-group tournament-item-list" data-ng-if="tournaments">
+			<li class="list-group-item" data-ng-repeat="tournament in tournaments">
+				<a href="#/dash/tournament/{{tournament.key}}">
+					{{ tournament.name || tournament.key }}
+				</a>
+			</li>
+		</ul>
 	</div>
-	<div class="col-lg-6">
+	<div class="col-lg-4">
+		<h3>Create a tournament</h3>
+		<p>
+			<a href="#/tournamentedit" class="btn btn-success btn-lg">Get Started</a>
+		</p>
+
 		<h3>Find a tournament code</h3>
 		<form data-ng-submit="goToTournament()">
 			<div class="input-group input-group-lg">
 				<input type="text" data-ng-model="searchTournamentCode" class="form-control">
 				<span class="input-group-btn">
-					<button type="submit" class="btn btn-primary" type="button">Go</button>
+					<button type="submit" class="btn btn-success" type="button">Go</button>
 				</span>
 			</div>
 		</form>
 	</div>
 </div>
-<h3>Tournaments</h3>
-<div ng-if="error.length > 0" class="alert alert-danger">
-	{{error}}
-</div>
-<div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
-<div class="row tournament-item-list" data-ng-if="tournaments">
-	<div class="col-md-6" data-ng-repeat-start="tournament in tournaments">
-		<div class="item clearfix">
-			<a href="#/dash/tournament/{{tournament.key}}">
-				<label>
-					{{ tournament.name || tournament.key }}
-				</label>
-			</a>
-		</div>
-	</div>
-	<div class="clearfix visible-md visible-lg" data-ng-if="$odd" data-ng-repeat-end></div>
-</div>
+

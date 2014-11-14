@@ -1,5 +1,5 @@
 ﻿body{
-	background: #ddd;
+	background: linear-gradient(to left, #ccc, #eee);
 }
 header {
 	
@@ -14,7 +14,6 @@ header {
 
 .logo-wrap{
 	padding: 6px 0 10px 0;
-	display: inline-block;
 	margin: 0px auto;
 }
 
@@ -37,7 +36,13 @@ footer {
 	background: linear-gradient(to left, #D4EDFC, #fff);
 
 }
-
+.content-box{
+	background: #fff;
+	border-top: solid 2px #BE2028;
+	border-bottom: solid 2px #BE2028;
+	padding: 20px;
+	margin-bottom: 20px;
+}
 .item-list {
 	padding: 0;
 	list-style: none;
@@ -52,10 +57,9 @@ footer {
 }
 /* home page */
 .tournament-item-list .item{
-	border-radius: 4px;
 	margin-bottom: 8px;
-	border: solid 1px #b3d7f3;
-	background: #d4e9f9;
+	border: solid 2px #000;
+	background: #eee;
 	padding: 8px;
 }
 
