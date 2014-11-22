@@ -1,0 +1,13 @@
+﻿{
+    "name": "Magic Tourney",
+    "icons": [
+        
+		{
+            "src": "images/favicon.png",
+            "sizes": "152x152",
+            "type": "image/png"
+        }
+    ],
+	"start_url": "/",
+	"display": "standalone"
+}
