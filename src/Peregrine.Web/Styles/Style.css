@@ -37,9 +37,9 @@ footer {
 
 }
 .content-box{
+	border-top: 2px solid #BE2028;
+	border-bottom: 2px solid #BE2028;
 	background: #fff;
-	border-top: solid 2px #BE2028;
-	border-bottom: solid 2px #BE2028;
 	padding: 20px;
 	margin-bottom: 20px;
 }
@@ -71,9 +71,8 @@ footer {
 
 /* rounds page */
 .matches .item {
-	border-radius: 4px;
 	margin: 8px 0;
-	border: solid 1px #124678;
+	border: solid 2px #BE2028;
 	background: #d4e9f9;
 }
 

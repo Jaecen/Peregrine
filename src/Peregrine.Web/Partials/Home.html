@@ -3,20 +3,6 @@
 </p>
 <div class="row">
 	<div class="col-lg-4">
-		<h3>Tournaments</h3>
-		<div ng-if="error.length > 0" class="alert alert-danger">
-			{{error}}
-		</div>
-		<div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
-		<ul class="list-group tournament-item-list" data-ng-if="tournaments">
-			<li class="list-group-item" data-ng-repeat="tournament in tournaments">
-				<a href="#/dash/tournament/{{tournament.key}}">
-					{{ tournament.name || tournament.key }}
-				</a>
-			</li>
-		</ul>
-	</div>
-	<div class="col-lg-4">
 		<h3>Create a tournament</h3>
 		<p>
 			<a href="#/tournamentedit" class="btn btn-success btn-lg">Get Started</a>
@@ -31,6 +17,20 @@
 				</span>
 			</div>
 		</form>
+	</div>
+	<div class="col-lg-6">
+		<h3>Tournaments</h3>
+		<div ng-if="error.length > 0" class="alert alert-danger">
+			{{error}}
+		</div>
+		<div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
+		<ul class="list-group tournament-item-list" data-ng-if="tournaments">
+			<li class="list-group-item" data-ng-repeat="tournament in tournaments">
+				<a href="#/dash/tournament/{{tournament.key}}">
+					{{ tournament.name || tournament.key }}
+				</a>
+			</li>
+		</ul>
 	</div>
 </div>
 

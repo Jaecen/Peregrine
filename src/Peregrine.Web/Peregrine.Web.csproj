@@ -123,6 +123,7 @@
   <ItemGroup>
     <Content Include="DirectiveTemplates\upDown.html" />
     <Content Include="Global.asax" />
+    <Content Include="Images\Favicon.png" />
     <Content Include="Images\Logo.png" />
     <Content Include="index.html" />
     <Content Include="Partials\Admin.html" />
@@ -218,6 +219,7 @@
     <None Include="Properties\PublishProfiles\swissperegrine - Web Deploy.pubxml" />
     <Content Include="Styles\bootstrap-theme.css.map" />
     <Content Include="Styles\bootstrap.css.map" />
+    <None Include="Properties\PublishProfiles\swissperegrine.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
