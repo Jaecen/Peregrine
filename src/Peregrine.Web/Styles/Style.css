@@ -1,5 +1,6 @@
 ﻿body{
-	background: linear-gradient(to left, #ccc, #eee);
+	background: #222;
+	color: #ddd;
 }
 header {
 	
@@ -14,7 +15,13 @@ header {
 
 .logo-wrap{
 	padding: 6px 0 10px 0;
-	margin: 0px auto;
+	margin: 0 auto;
+}
+
+
+.logo-wrap a{
+	display: inline-block;
+	max-width: 100%;
 }
 
 .logo-wrap img{
@@ -31,10 +38,10 @@ footer {
 		color: #fff;
 	}
 
-.mainContent {
+.main-content {
 	padding: 16px 0;
-	background: linear-gradient(to left, #D4EDFC, #fff);
-
+	background: linear-gradient(to left, #FFFCD3, #fff);
+	color: #333
 }
 .content-box{
 	border-top: 2px solid #BE2028;
@@ -55,14 +62,66 @@ footer {
 .action-bar .btn{
 	margin-bottom: 4px;
 }
-/* home page */
-.tournament-item-list .item{
-	margin-bottom: 8px;
-	border: solid 2px #000;
-	background: #eee;
-	padding: 8px;
+
+/* text box styles */
+.text-1, .text-2, .text-3, .text-4, .text-sm, .text-md, .text-lg, .text-xs,
+.form-control.text-1, .form-control.text-2, .form-control.text-3, .form-control.text-4, .form-control.text-sm, .form-control.text-md, .form-control.text-lg, .form-control.text-xs {
+	max-width: 100%;
 }
 
+.text-1, .form-control.text-1 {
+	width: 38px;
+}
+
+.text-2, .form-control.text-2 {
+	width: 48px;
+}
+
+.text-3, .form-control.text-3 {
+	width: 60px;
+}
+
+.text-4, .form-control.text-4 {
+	width: 70px;
+}
+
+.text-xs, .form-control.text-xs {
+	width: 100px;
+}
+
+.text-sm, .form-control.text-sm {
+	width: 180px;
+}
+
+.text-md, .form-control.text-md {
+	width: 270px;
+}
+
+.text-lg, .form-control.text-lg {
+	width: 450px;
+}
+
+.text-multiline, .form-control.text-multiline {
+	min-height: 200px;
+}
+
+/* home page */
+.tournament-item-table{
+	background: #fff;	
+	border: solid 2px #000;
+}
+
+.tournament-item-table > tbody > tr > td{
+	line-height: 34px;
+}
+/* dashboards */
+.bar-statistic{
+	height: 20px;
+	width: 100%;
+}
+.statistic-label{
+	width: 60px;
+}
 /* tournament page*/
 .addPlayerForm {
 	margin-bottom: 8px;
@@ -72,22 +131,19 @@ footer {
 /* rounds page */
 .matches .item {
 	margin: 8px 0;
-	border: solid 2px #BE2028;
-	background: #d4e9f9;
+	border: solid 2px #000;
+	background: #fff;
 }
 
 .player:first-child{
-	border-top-left-radius: 4px;
-}
-.player:last-child{
-	border-bottom-left-radius: 4px;
+	border-top: none 0;
 }
 .player-name-bar, .player-actions-bar, .draws-wrap {
 	padding: 8px;
 }
 
 .player-wrap .player:nth-child(even) {
-	background: #beddf5;
+	background: #eee;
 }
 
 .player-wrap .dropped-player{
@@ -100,7 +156,7 @@ footer {
 
 @media (min-width: 768px) {
 	.player-wrap {
-		border-right: solid 1px #a8d1f1;
+		border-right: solid 1px #000;
 	}
 
 	.player-col {
@@ -119,7 +175,7 @@ footer {
 	}
 
 	.player-name-bar {
-		border-right: solid 1px #a8d1f1;
+		border-right: solid 1px #000;
 	}
 	.dropped-player .player-name-bar {
 		border-right: solid 1px #f78c8c;
@@ -128,11 +184,11 @@ footer {
 
 @media (max-width: 768px) {
 	.player-wrap {
-		border-bottom: solid 1px #a8d1f1;
+		border-bottom: solid 1px #000;
 	}
 
 	.player-actions-bar {
-		border-top: solid 1px #a8d1f1;
+		border-top: solid 1px #000;
 	}
 	.player:first-child{
 		border-top-left-radius: 4px;
@@ -148,6 +204,7 @@ footer {
 }
 .player{
 	position: relative;
+	border-top: solid 1px #000;
 }
 .versus{
 	position: absolute;
@@ -162,16 +219,9 @@ footer {
 	padding: 6px;
 }
 
-.player {
-	border-top: solid 1px #a8d1f1;
-}
 .player.dropped-player {
 	border-top: solid 1px #f78c8c;
 }
-
-	.player:first-child {
-		border-top: none 0;
-	}
 
 .player-name {
 	line-height: 20px;

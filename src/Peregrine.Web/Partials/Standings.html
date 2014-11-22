@@ -19,28 +19,28 @@
 				<tr data-ng-repeat="player in standings.playerStandings">
 					<td>{{ player.rank }}</td>
 					<td>{{ player.playerName }}</td>
-					<td style="color: #124678;">
-						{{ player.matchPoints | number:0 }}
-						<svg height="10" width="20">
-							<rect height="10" ng-attr-width="{{ player.absoluteMatchPoints * 20 }}" fill="#124678" />
+					<td width="20%">
+						<svg class="bar-statistic">
+							<rect height="20" ng-attr-width="{{ player.absoluteMatchPoints * 100 }}" fill="#2BA24A" />
+							<text x="5" y="15" fill="#000">{{ player.matchPoints | number:0 }}</text>
 						</svg>
 					</td>
-					<td style="color: #326698;">
-						{{ player.opponentsMatchWinPercentage | number:4 }}
-						<svg height="10" width="20">
-							<rect height="10" ng-attr-width="{{ player.absoluteOpponentsMatchWinPercentage * 20 }}" fill="#326698" />
+					<td width="20%">
+						<svg class="bar-statistic">
+							<rect height="20" ng-attr-width="{{ player.absoluteOpponentsMatchWinPercentage * 100 }}" fill="#2BA24A" />
+							<text x="5" y="15" fill="#000">{{ player.opponentsMatchWinPercentage | number:4 }}</text>
 						</svg>
 					</td>
-					<td style="color: #5286B8;">
-						{{ player.gameWinPercentage | number:4 }}
-						<svg height="10" width="20">
-							<rect height="10" ng-attr-width="{{ player.absoluteGameWinPercentage * 20 }}" fill="#5286B8" />
+					<td width="20%">
+						<svg class="bar-statistic">
+							<rect height="20" ng-attr-width="{{ player.absoluteGameWinPercentage * 100 }}" fill="#2BA24A" />
+							<text x="5" y="15" fill="#000">{{ player.gameWinPercentage | number:4 }}</text>
 						</svg>
 					</td>
-					<td style="color: #72A6D8;">
-						{{ player.opponentsGameWinPercentage | number:4 }}
-						<svg height="10" width="20">
-							<rect height="10" ng-attr-width="{{ player.absoluteOpponentsGameWinPercentage * 20 }}" fill="#72A6D8" />
+					<td width="20%">
+						<svg class="bar-statistic">
+							<rect height="20" ng-attr-width="{{ player.absoluteOpponentsGameWinPercentage * 100 }}" fill="#2BA24A" />
+							<text x="5" y="15" fill="#000">{{ player.opponentsGameWinPercentage | number:4 }}</text>
 						</svg>
 					</td>
 				</tr>

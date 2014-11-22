@@ -24,7 +24,7 @@
 						$location.path('/tournament/' + tournament.key + '/standings');
 					}
 					else if(tournament.started) {
-						$location.path('/tournament/' + tournament.key + '/round/active');
+						$location.path('/tournament/' + tournament.key + '/round/1');
 					}
 					//add the tournament to the scope
 					$scope.tournament = tournament;
