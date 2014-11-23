@@ -55,9 +55,13 @@ footer {
 	list-style: none;
 }
 
-	.item-list .item {
-		margin: 8px 0;
-	}
+.item-list  .item {
+	margin: 8px 0;
+	border: solid 2px #000;
+	background: #fff;
+	padding: 8px;
+	line-height: 25px;
+}
 
 .action-bar .btn{
 	margin-bottom: 4px;
@@ -129,12 +133,6 @@ footer {
 
 
 /* rounds page */
-.matches .item {
-	margin: 8px 0;
-	border: solid 2px #000;
-	background: #fff;
-}
-
 .player:first-child{
 	border-top: none 0;
 }
