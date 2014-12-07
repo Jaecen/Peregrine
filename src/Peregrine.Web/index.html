@@ -8,7 +8,6 @@
 	<!--3.0.3 version of bootstrap required for angular ui bootstrap-->
 	<link href="Styles/Bootstrap/Less/bootstrap.min.css" rel="stylesheet" />
 	<link href="Styles/Bootstrap/Less/theme.css" rel="stylesheet" />
-	<link href="Styles/Style.css" rel="stylesheet" />
 	<!--manifest file for application pinning in mobile-->
 	<link rel="manifest" href="/manifest.json">
 	<link rel="icon" type="image/png" href="/Images/favicon.png?v=2" />
@@ -16,8 +15,30 @@
 <body>
 	<header>
 		<div class="container-fluid">
-			<div class="logo-wrap">
-				<a href="/"><img src="/images/logo.png" alt="Magic Tourney" class="logo img-responsive" /></a>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="logo-wrap">
+						<a href="/">
+							<img src="/images/logo.png" alt="Magic Tourney" class="logo img-responsive" />
+						</a>
+					</div>
+				</div>
+				<div class="col-sm-6 text-right-sm">
+					<div class="login-wrap" data-ng-controller="userLinksController">
+						<a class="btn btn-primary" href="#/login" data-ng-if="!loggedIn">
+							<span class="glyphicon glyphicon-log-in"></span> Log in
+						</a>
+						<span data-ng-if="loggedIn" class="user-message-wrap">
+							<span class="user-message">
+								You are logged in as <span class="username">{{userName}}</span>
+							</span>
+							<a class="btn btn-primary" data-ng-click="logout()">
+								<span class="glyphicon glyphicon-log-out"></span> Log out
+							</a>
+						</span>
+						<div class="text-danger" data-ng-if="error">{{error}}</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</header>
@@ -46,6 +67,7 @@
 	<script src="/Scripts/controllers/tournamentDashboardController.js"></script>
 	<script src="/Scripts/controllers/adminController.js"></script>
 	<script src="/Scripts/controllers/loginController.js"></script>
+	<script src="/Scripts/controllers/userLinksController.js"></script>
 	<script src="/Scripts/resources/outcomeResource.js"></script>
 	<script src="/Scripts/resources/playerResource.js"></script>
 	<script src="/Scripts/resources/roundResource.js"></script>
