@@ -160,6 +160,8 @@
   <ItemGroup>
     <None Include="manifest.json" />
     <Content Include="DirectiveTemplates\upDown.html" />
+    <Content Include="Partials\Login.html" />
+    <Content Include="Scripts\controllers\loginController.js" />
     <Content Include="Styles\Bootstrap\Fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\Favicon.png" />

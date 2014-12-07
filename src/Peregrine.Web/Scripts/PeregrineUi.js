@@ -40,6 +40,10 @@ angular
 			controller: 'adminController',
 			templateUrl: 'Partials/Admin.html'
 		})
+		.when('/login', {
+			controller: 'loginController',
+			templateUrl: 'Partials/Login.html'
+		})
 		.otherwise({ redirectTo: '/' });
 });
 
