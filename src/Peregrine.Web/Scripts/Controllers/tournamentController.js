@@ -49,7 +49,13 @@
 				function() {
 					$scope.error = '';
 				},
-				function() {
+				function (data) {
+					if (data.status && data.status === 401)
+					{
+						sessionStorage.setItem('returnUrl', $location.path())
+						$location.path('/login/');
+					}
+
 					$scope.error = 'We were unable to create a tournament.';
 				});
 		}

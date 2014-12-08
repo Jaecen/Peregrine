@@ -37,6 +37,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
+		[Authorize]
 		public IHttpActionResult Post([FromBody]TournamentRequest requestBody)
 		{
 			var rng = new Random();

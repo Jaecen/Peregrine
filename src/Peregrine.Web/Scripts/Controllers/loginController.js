@@ -51,7 +51,10 @@
 				sessionStorage.setItem("userName", data.userName);
 				//tell the userlinks in the header to check for a login
 				$rootScope.$emit('login')
-				$location.path('/');
+				//redirect
+				var returnUrl = sessionStorage.getItem('returnUrl') != null ? sessionStorage.getItem('returnUrl') : '/';
+				sessionStorage.removeItem('returnUrl');
+				$location.path(returnUrl);
 			}).error(function (data, status, headers, config) {
 				$scope.error = status;
 			})
