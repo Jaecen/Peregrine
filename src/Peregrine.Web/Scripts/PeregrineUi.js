@@ -5,6 +5,7 @@ angular
 	'ngResource',
 	'peregrineUi.controllers',
 	'peregrineUi.directives',
+	'peregrineUi.factories',
 	'ui.bootstrap'
 ]).config(function ($routeProvider, $locationProvider) {
 	$routeProvider
@@ -49,7 +50,8 @@ angular
 
 angular.module('peregrineUi.controllers', [
 	'peregrineUi.resources',
-	'peregrineUi.filters'
+	'peregrineUi.filters',
+	'peregrineUi.factories'
 ]);
 
 angular.module('peregrineUi.resources', [
@@ -59,4 +61,7 @@ angular.module('peregrineUi.filters', [
 ]);
 
 angular.module('peregrineUi.directives', [
+]);
+
+angular.module('peregrineUi.factories', [
 ]);

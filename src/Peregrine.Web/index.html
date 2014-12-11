@@ -25,14 +25,14 @@
 				</div>
 				<div class="col-sm-6 text-right-sm">
 					<div class="login-wrap" data-ng-controller="userLinksController">
-						<a class="btn btn-primary" href="#/login" data-ng-if="!loggedIn">
+						<a class="btn btn-default" href="#/login" data-ng-if="!loggedIn">
 							<span class="glyphicon glyphicon-log-in"></span> Log in
 						</a>
 						<span data-ng-if="loggedIn" class="user-message-wrap">
 							<span class="user-message">
 								You are logged in as <span class="username">{{userName}}</span>
 							</span>
-							<a class="btn btn-primary" data-ng-click="logout()">
+							<a class="btn btn-default" data-ng-click="logOut()">
 								<span class="glyphicon glyphicon-log-out"></span> Log out
 							</a>
 						</span>
@@ -74,6 +74,7 @@
 	<script src="/Scripts/resources/standingsResource.js"></script>
 	<script src="/Scripts/resources/tournamentResource.js"></script>
 	<script src="/Scripts/resources/activeRoundResource.js"></script>
+	<script src="/Scripts/factories/authService.js"></script>
 
 	<script src="/Scripts/filters/encodeURIComponent.js"></script>
 

@@ -1,17 +1,20 @@
 ﻿<div ng-if="error.length > 0" class="alert alert-danger">
 	{{error}}
 </div>
+<div ng-if="message.length > 0" class="alert alert-success">
+	{{message}}
+</div>
 <div class="row">
 	<div class="col-md-6">
 		<h3>Login</h3>
 		<form data-ng-submit="loginClick()">
 			<div class="form-group">
 				<label for="login-email">Email:</label>
-				<input type="email" class="form-control" id="login-email" name="login-email" data-ng-model="loginEmail" value="" />
+				<input type="email" class="form-control" id="login-email" name="login-email" data-ng-model="loginData.userName" value="" />
 			</div>
 			<div class="form-group">
 				<label for="login-password">Password:</label>
-				<input type="password" class="form-control" id="login-password" name="login-password" data-ng-model="loginPassword" value="" />
+				<input type="password" class="form-control" id="login-password" name="login-password" data-ng-model="loginData.password" value="" />
 			</div>
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary">Login</button>
@@ -23,11 +26,11 @@
 		<form data-ng-submit="registerClick()">
 			<div class="form-group">
 				<label for="register-email">Email:</label>
-				<input type="email" class="form-control" id="register-email" name="register-email" data-ng-model="registerEmail" value="" />
+				<input type="email" class="form-control" id="register-email" name="register-email" data-ng-model="registration.userName" value="" />
 			</div>
 			<div class="form-group">
 				<label for="register-password">Password:</label>
-				<input type="password" class="form-control" id="register-password" name="register-password" data-ng-model="registerPassword" value="" />
+				<input type="password" class="form-control" id="register-password" name="register-password" data-ng-model="registration.password" value="" />
 			</div>
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary">Register</button>

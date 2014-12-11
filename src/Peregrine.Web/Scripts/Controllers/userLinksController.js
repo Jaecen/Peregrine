@@ -1,8 +1,8 @@
 ﻿angular
 .module('peregrineUi.controllers')
 .controller('userLinksController', [
-	'$scope', '$http', '$rootScope',
-	function ($scope, $http, $rootScope) {
+	'$scope', '$http', '$rootScope', 'authService',
+	function ($scope, $http, $rootScope, authService) {
 
 		function updateLoginStatus() {
 			$scope.loggedIn = (sessionStorage.getItem('accessToken') != null && sessionStorage.getItem('accessToken').length > 0);
@@ -18,19 +18,15 @@
 		});
 
 		//logout
-		$scope.logout = function () {
-			$http({
-				method: 'POST',
-				url: '/api/account/logout',
-				headers: { 'Content-Type': 'application/json' }
-			})
-			.success(function (data, status, headers, config) {
-				sessionStorage.removeItem('accessToken');
-				sessionStorage.removeItem('userName');
-				updateLoginStatus();
-			}).error(function (data, status, headers, config) {
-				$scope.error = "We were unable to log you out";
-			})
+		$scope.logOut = function () {
+			authService.logOut()
+			.then(
+				function success(data, status, headers, config) {
+					updateLoginStatus();
+				},
+				function error(data, status, headers, config) {
+					$scope.error = "We were unable to log you out";
+				});
 		}
 	}
 ]);

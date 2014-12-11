@@ -163,6 +163,7 @@
     <Content Include="Partials\Login.html" />
     <Content Include="Scripts\controllers\userLinksController.js" />
     <Content Include="Scripts\controllers\loginController.js" />
+    <Content Include="Scripts\factories\authService.js" />
     <Content Include="Styles\Bootstrap\Fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\Favicon.png" />
