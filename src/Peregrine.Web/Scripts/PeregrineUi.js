@@ -46,6 +46,10 @@ angular
 			templateUrl: 'Partials/Login.html'
 		})
 		.otherwise({ redirectTo: '/' });
+})
+//add an interceptor to setup gobal auth token headers and global error handling
+.config(function ($httpProvider) {
+	$httpProvider.interceptors.push('authInterceptorService');
 });
 
 angular.module('peregrineUi.controllers', [

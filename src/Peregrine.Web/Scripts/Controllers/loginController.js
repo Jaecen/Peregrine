@@ -1,12 +1,12 @@
 ﻿angular
 .module('peregrineUi.controllers')
 .controller('loginController', [
-	'$scope', '$location', '$rootScope', 'authService',
-	function ($scope, $location, $rootScope, authService) {
+	'$scope', '$location', '$rootScope', '$timeout', 'authService',
+	function ($scope, $location, $rootScope, $timeout, authService) {
 		$scope.error = '';
 
 		$scope.registration = {
-			userName: "",
+			email: "",
 			password: ""
 		};
 
@@ -18,12 +18,8 @@
 		$scope.loginClick = function () {
 			authService.login($scope.loginData)
 				.then(function (response) {
-					//tell the userlinks in the header to check for a login
-					$rootScope.$emit('login')
-					//redirect
-					var returnUrl = sessionStorage.getItem('returnUrl') != null ? sessionStorage.getItem('returnUrl') : '/';
-					sessionStorage.removeItem('returnUrl');
-					$location.path(returnUrl);
+					$scope.message = 'Hey nice work you remembered! Bubbye.';
+					afterLogin();
 				},
 				function (error) {
 					$scope.message = error.error_description;
@@ -32,27 +28,47 @@
 
 		$scope.registerClick = function () {
 			authService.saveRegistration($scope.registration)
-				.then(function (response) {
-					$scope.savedSuccessfully = true;
-					$scope.message = "User has been registered successfully, you will be redicted to login page in 2 seconds.";
-					startTimer();
-				},
-				function (response) {
-					var errors = [];
-					for (var key in response.data.modelState) {
-						for (var i = 0; i < response.data.modelState[key].length; i++) {
-							errors.push(response.data.modelState[key][i]);
+				.then(
+					function (response) {
+						$scope.error = '';
+						var loginData = {
+								userName: $scope.registration.email,
+								password: $scope.registration.password
+							};
+					
+						authService.login(loginData)
+						.then(
+							function success(response, status) {
+								$scope.message = 'Nice! you\'re registered and logged in. Now get off my login screen!';
+								afterLogin();
+							},
+							function error(error, status) {
+								$scope.error('We were able to create your account, but we failed to log you in')
+							});
+					},
+					function (response) {
+						var errors = [];
+						for (var key in response.data.ModelState) {
+							for (var i = 0; i < response.data.ModelState[key].length; i++) {
+								errors.push(response.data.ModelState[key][i]);
+							}
 						}
-					}
-					$scope.error = "Failed to register user due to:" + errors.join(' ');
-				});
+						$scope.error = 'Sorry that didn\'t work out. : ' + errors.join(' ');
+					});
 		}
 
-		var startTimer = function () {
-			var timer = $timeout(function () {
-				$timeout.cancel(timer);
-				$location.path('/login');
-			}, 2000);
+		var afterLogin = function () {
+			//tell the userlinks in the header to check for a login
+			$rootScope.$emit('login');
+			$timeout(function () {
+				redirect();
+			}, 2500);
+		}
+
+		var redirect = function () {
+			var returnUrl = sessionStorage.getItem('returnUrl') != null ? sessionStorage.getItem('returnUrl') : '/';
+			sessionStorage.removeItem('returnUrl');
+			$location.path(returnUrl);
 		}
 	}
 ]);

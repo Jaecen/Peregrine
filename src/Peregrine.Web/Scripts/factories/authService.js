@@ -12,19 +12,27 @@
 		};
 
 		var _saveRegistration = function (registration) {
-			_logOut();
-			return $http.post(serviceBase + 'api/account/register', registration)
-				.then(function (response) {
-				return response;
+			var deferred = $q.defer();
+			$http({
+				method: 'POST',
+				url: serviceBase + 'api/account/register',
+				headers: { 'Content-Type': 'application/json' },
+				data: registration
+			})
+			.success(function (response) {
+				deferred.resolve(response);
+			})
+			.error(function (error, status) {
+				deferred.reject(error);
 			});
-
+			return deferred.promise;
 		};
 
 		var _login = function (loginData) {
 			var deferred = $q.defer();
 			$http({
 				method: 'POST',
-				url: '/Token',
+				url: '/token',
 				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 				transformRequest: function (obj) {
 					var str = [];
