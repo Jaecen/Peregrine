@@ -4,7 +4,7 @@ using Microsoft.Owin.Security.Cookies;
 
 namespace Peregrine.Web.Controllers
 {
-	[RoutePrefix("authentication")]
+	[RoutePrefix("api/authentication")]
 	public class AuthenticationController : ApiController
 	{
 		[Route]

@@ -4,17 +4,17 @@ using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.Identity;
 using Peregrine.Data;
 using Peregrine.Web.Models;
-using Peregrine.Web.Providers;
+using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
-	[RoutePrefix("user")]
+	[RoutePrefix("api/user")]
 	public class UserController : ApiController
 	{
-		readonly ApplicationUserManager UserManager;
+		readonly UserManager<User> UserManager;
 		readonly ExternalLoginContextProvider ExternalLoginContextProvider;
 
-		public UserController(ApplicationUserManager userManager, ExternalLoginContextProvider externalLoginContextProvider)
+		public UserController(UserManager<User> userManager, ExternalLoginContextProvider externalLoginContextProvider)
 		{
 			UserManager = userManager;
 			ExternalLoginContextProvider = externalLoginContextProvider;
@@ -43,11 +43,11 @@ namespace Peregrine.Web.Controllers
 
 			var user = new User
 			{
-				UserName = model.Email,
-				Email = model.Email
+				UserName = model.email,
+				Email = model.email
 			};
 
-			var result = UserManager.CreateAsync(user, model.Password).Result;
+			var result = UserManager.CreateAsync(user, model.password).Result;
 
 			return result.Succeeded
 				? Ok()

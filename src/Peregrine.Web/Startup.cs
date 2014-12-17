@@ -9,7 +9,7 @@ namespace Peregrine.Web
 	{
 		public void Configuration(IAppBuilder app)
 		{
-			ConfigureAuth(app);
+			new AuthConfig().Configure(app);
 		}
 	}
 }

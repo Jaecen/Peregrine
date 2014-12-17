@@ -220,7 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\IdentityConfig.cs" />
-    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActiveRoundController.cs" />
@@ -254,8 +254,8 @@
     <Compile Include="Models\TournamentResponse.cs" />
     <Compile Include="Models\TournamentResponseProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\ApplicationOAuthProvider.cs" />
-    <Compile Include="Providers\ExternalLoginContextProvider.cs" />
+    <Compile Include="Services\ApplicationOAuthProvider.cs" />
+    <Compile Include="Services\ExternalLoginContextProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Services\RoundManager.cs" />
     <Compile Include="Services\StatsProvider.cs" />

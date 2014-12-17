@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Data.Entity;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -21,17 +17,12 @@ namespace Peregrine.Data
 			return userIdentity;
 		}
 	}
-	
+
 	public class IdentityDataContext : IdentityDbContext<User>
 	{
 		public IdentityDataContext()
-			: base(DataContext.ConnectionStringName, throwIfV1Schema: false)
+			: base(DataContext.ConnectionStringName)
 		{ }
-
-		public static IdentityDataContext Create()
-		{
-			return new IdentityDataContext();
-		}
 	}
 
 	public class DataContext : DbContext

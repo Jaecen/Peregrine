@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -9,15 +9,14 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using Peregrine.Data;
 using Peregrine.Web.Models;
-using Peregrine.Web.Providers;
 using Peregrine.Web.Results;
+using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
@@ -237,7 +236,7 @@ namespace Peregrine.Web.Controllers
 			}
 			else
 			{
-				var claims = externalLoginData.GetClaims();
+				var claims = ExternalLoginContextProvider.GetClaimsFromContext(externalLoginData);
 				var claimsIdentity = new ClaimsIdentity(claims, OAuthDefaults.AuthenticationType);
 				Request
 					.GetOwinContext()
@@ -274,7 +273,7 @@ namespace Peregrine.Web.Controllers
 						{
 							provider = description.AuthenticationType,
 							response_type = "token",
-							client_id = Startup.PublicClientId,
+							client_id = AuthConfig.PublicClientId,
 							redirect_uri = new Uri(Request.RequestUri, returnUrl).AbsoluteUri,
 							state = state
 						}),
@@ -294,11 +293,11 @@ namespace Peregrine.Web.Controllers
 
 			var user = new User
 				{
-					UserName = model.Email,
-					Email = model.Email
+					UserName = model.email,
+					Email = model.email
 				};
 
-			var result = await UserManager.CreateAsync(user, model.Password);
+			var result = await UserManager.CreateAsync(user, model.password);
 
 			return result.Succeeded
 				? Ok()
@@ -314,7 +313,11 @@ namespace Peregrine.Web.Controllers
 			if(!ModelState.IsValid)
 				return BadRequest(ModelState);
 
-			var info = await Authentication.GetExternalLoginInfoAsync();
+			var info = await Request
+				.GetOwinContext()
+				.Authentication
+				.GetExternalLoginInfoAsync();
+
 			if(info == null)
 				return InternalServerError();
 
