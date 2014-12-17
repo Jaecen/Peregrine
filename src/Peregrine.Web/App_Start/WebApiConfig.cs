@@ -13,7 +13,6 @@ namespace Peregrine.Web
 			config.MapHttpAttributeRoutes();
 			
 			var builder = CreateBuilder();
-
 			var container = builder.Build();
 			config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 		}
@@ -35,6 +34,8 @@ namespace Peregrine.Web
 			builder.RegisterType<PlayerMatchStatsResponseProvider>();
 			builder.RegisterType<StandingsResponseProvider>();
 			builder.RegisterType<ActiveRoundResponseProvider>();
+
+
 
 			return builder;
 		}
