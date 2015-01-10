@@ -158,6 +158,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ConnectionStrings.config" />
     <None Include="manifest.json" />
     <Content Include="DirectiveTemplates\upDown.html" />
     <Content Include="Partials\Login.html" />
@@ -165,6 +166,7 @@
     <Content Include="Scripts\controllers\loginController.js" />
     <Content Include="Scripts\factories\authInterceptorService.js" />
     <Content Include="Scripts\factories\authService.js" />
+    <Content Include="Scripts\resources\externalLoginResource.js" />
     <Content Include="Styles\Bootstrap\Fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\Favicon.png" />
@@ -268,7 +270,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="ConnectionStrings.config" />
+    <Content Include="AppSettings.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

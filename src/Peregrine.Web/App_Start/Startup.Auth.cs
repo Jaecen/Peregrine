@@ -10,6 +10,7 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using Peregrine.Web.Providers;
 using Peregrine.Web.Models;
+using System.Configuration;
 
 namespace Peregrine.Web
 {
@@ -60,8 +61,9 @@ namespace Peregrine.Web
 
 			app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
 			{
-				ClientId = "435072335912-j0b91c4te719ctmgk5nhrcoj2h5shk40.apps.googleusercontent.com",
-				ClientSecret = "fGKz4TOp4M_OA13K1NB6_Ql2"
+				
+				ClientId = ConfigurationManager.AppSettings["GoogleClientId"],
+				ClientSecret = ConfigurationManager.AppSettings["GoogleClientSecret"]
 			});
 		}
 	}

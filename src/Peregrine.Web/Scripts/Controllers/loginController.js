@@ -1,8 +1,8 @@
 ﻿angular
 .module('peregrineUi.controllers')
 .controller('loginController', [
-	'$scope', '$location', '$rootScope', '$timeout', 'authService',
-	function ($scope, $location, $rootScope, $timeout, authService) {
+	'$scope', '$location', '$rootScope', '$timeout', 'authService', 'externalLoginResource',
+	function ($scope, $location, $rootScope, $timeout, authService, externalLoginResource) {
 		$scope.error = '';
 
 		$scope.registration = {
@@ -14,6 +14,20 @@
 			userName: "",
 			password: ""
 		};
+
+		$scope.externalLogins = [];
+
+		externalLoginResource.get(
+				{},
+				function success(externalLogins) {
+					$scope.error = '';
+					for (var i = 0; i < externalLogins.length; i++) {
+						$scope.externalLogins.push(externalLogins[i]);
+					}
+				},
+				function error() {
+					$scope.error = 'So apparently you can\'t login right now. Uh... try again?';
+				});
 
 		$scope.loginClick = function () {
 			authService.login($scope.loginData)
