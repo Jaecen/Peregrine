@@ -16,25 +16,29 @@
 	<header>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-sm-6">
+				<div class="col-sm-7">
 					<div class="logo-wrap">
 						<a href="/">
 							<img src="/images/logo.png" alt="Magic Tourney" class="logo img-responsive" />
 						</a>
 					</div>
 				</div>
-				<div class="col-sm-6 text-right-sm">
+				<div class="col-sm-5 text-right-sm">
 					<div class="login-wrap" data-ng-controller="userLinksController">
 						<a class="btn btn-default" href="#/login" data-ng-if="!loggedIn">
-							<span class="glyphicon glyphicon-log-in"></span> Log in
+							<span class="glyphicon glyphicon-log-in"></span>
+							<span>Log in</span>
 						</a>
 						<span data-ng-if="loggedIn" class="user-message-wrap">
-							<span class="user-message">
-								You are logged in as <span class="username">{{userName}}</span>
+							<span class="user-message hidden-xs">
+								<span class="username">{{userName}}</span>
 							</span>
 							<a class="btn btn-default" data-ng-click="logOut()">
 								<span class="glyphicon glyphicon-log-out"></span> Log out
 							</a>
+							<span class="user-message visible-xs">
+								<span class="username">{{userName}}</span>
+							</span>
 						</span>
 						<div class="text-danger" data-ng-if="error">{{error}}</div>
 					</div>

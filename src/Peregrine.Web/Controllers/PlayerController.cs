@@ -39,6 +39,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
+		[Authorize]
 		public IHttpActionResult Put(Guid tournamentKey, string playerName)
 		{
 			using(var dataContext = new DataContext())
@@ -87,6 +88,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
+		[Authorize]
 		public IHttpActionResult Delete(Guid tournamentKey, string playerName)
 		{
 			using(var dataContext = new DataContext())

@@ -429,7 +429,7 @@ body {
 header {
   color: #fff;
   border-bottom: solid 2px #000;
-  text-align: left;
+  padding: 5px 0;
 }
 header a,
 header a:hover {
@@ -438,9 +438,6 @@ header a:hover {
 .logo-wrap a {
   display: inline-block;
   max-width: 100%;
-}
-.login-wrap {
-  padding: 5px 0;
 }
 footer {
   border-top: solid 2px #000;
@@ -469,8 +466,13 @@ footer a:hover {
 }
 .item-list .item {
   margin: 8px 0;
+}
+.item-list .item.box-item,
+.item-list .item.match-item {
   border: solid 2px #000;
   background: #fff;
+}
+.item-list .item.box-item {
   padding: 8px;
   line-height: 25px;
 }

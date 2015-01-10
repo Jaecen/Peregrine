@@ -26,6 +26,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route("{result:regex(^(draws|wins)$)}/{count}")]
+		[Authorize]
 		public IHttpActionResult Put(Guid tournamentKey, int roundNumber, string playerName, string result, int count)
 		{
 			using(var dataContext = new DataContext())

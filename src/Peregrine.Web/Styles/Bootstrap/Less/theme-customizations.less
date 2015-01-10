@@ -6,7 +6,7 @@ header {
 	
 	color: #fff;
 	border-bottom: solid 2px #000;
-	text-align: left;
+	padding: @padding-small-vertical 0;
 }
 
 	header a, header a:hover {
@@ -17,10 +17,6 @@ header {
 .logo-wrap a{
 	display: inline-block;
 	max-width: 100%;
-}
-
-.login-wrap {
-	padding: @padding-small-vertical 0;
 }
 
 footer {
@@ -50,12 +46,18 @@ footer {
 	list-style: none;
 }
 
-.item-list  .item {
+.item-list .item {
 	margin: 8px 0;
-	border: solid 2px #000;
-	background: #fff;
-	padding: 8px;
-	line-height: 25px;
+
+	&.box-item, 
+	&.match-item {
+		border: solid 2px #000;
+		background: #fff;
+	}
+	&.box-item {
+		padding: 8px;
+		line-height: 25px;
+	}
 }
 
 .action-bar .btn{

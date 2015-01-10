@@ -41,6 +41,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
+		[Authorize]
 		public IHttpActionResult Put(Guid tournamentKey, [FromBody] ActiveRoundRequest request)
 		{
 			using(var dataContext = new DataContext())

@@ -36,6 +36,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
+		[Authorize]
 		public IHttpActionResult Put(Guid tournamentKey, [FromBody] TournamentRequest requestBody)
 		{
 			if(requestBody == null)
@@ -57,6 +58,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
+		[Authorize]
 		public IHttpActionResult Delete(Guid tournamentKey)
 		{
 			using(var dataContext = new DataContext())

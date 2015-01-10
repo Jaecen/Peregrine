@@ -5,9 +5,9 @@
 <div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
 <div class="row tournament-item-list item-list" data-ng-if="tournaments">
 	<div class="col-md-6" data-ng-repeat-start="tournament in tournaments">
-		<div class="item clearfix">
+		<div class="item box-item clearfix">
 			<a href="#/tournamentedit/{{tournament.key}}">
-					{{ tournament.name || tournament.key }}
+				{{ tournament.name || tournament.key }}
 			</a>
 			<button class="btn btn-sm btn-danger pull-right" data-ng-click="deleteTournament(tournament.key)">Delete</button>
 		</div>
