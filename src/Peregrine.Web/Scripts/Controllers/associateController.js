@@ -6,7 +6,7 @@
 	$scope.message = "";
 
 	$scope.registerData = {
-		userName: authService.externalAuthData.userName,
+		userName: "",
 		provider: authService.externalAuthData.provider,
 		externalAccessToken: authService.externalAuthData.externalAccessToken
 	};
@@ -16,7 +16,7 @@
 		authService.registerExternal($scope.registerData)
 			.then(function (response) {
 				$scope.savedSuccessfully = true;
-				$scope.message = "Thanks, okay where were you...";
+				$scope.message = "Thanks! Okay where were you...";
 				afterLogin();
 			},
 			function (response) {
@@ -24,7 +24,12 @@
 				for(var key in response.ModelState) {
 					errors.push(response.ModelState[key]);
 				}
-				$scope.message = "Failed to register user due to: " + errors.join(' ');
+				if(errors.length > 0) {
+					$scope.message = "Failed to register user due to: " + errors.join(' ');
+				}
+				else {
+					$scope.message = response.Message;
+				}
 			});
 	};
 
