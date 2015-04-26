@@ -2,7 +2,7 @@
 using Microsoft.AspNet.Identity.Owin;
 using Peregrine.Data;
 
-namespace Peregrine.Web
+namespace Peregrine.Web.Services
 {
 	public class ApplicationUserManager : UserManager<User>
 	{

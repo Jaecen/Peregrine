@@ -9,7 +9,6 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
@@ -29,20 +28,14 @@ namespace Peregrine.Web.Controllers
 
 		readonly ApplicationUserManager UserManager;
 		readonly ISecureDataFormat<AuthenticationTicket> AccessTokenFormat;
-		readonly RandomNumberGenerator Rng;
 		readonly ExternalLoginContextProvider ExternalLoginContextProvider;
+		readonly RandomNumberGenerator Rng;
 
-		public AccountController()
-		{
-			UserManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-			Rng = new RNGCryptoServiceProvider();
-			ExternalLoginContextProvider = new ExternalLoginContextProvider();
-		}
-
-		public AccountController(ApplicationUserManager userManager, ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
+		public AccountController(ApplicationUserManager userManager, ISecureDataFormat<AuthenticationTicket> accessTokenFormat, ExternalLoginContextProvider externalLoginContextProvider)
 		{
 			UserManager = userManager;
 			AccessTokenFormat = accessTokenFormat;
+			ExternalLoginContextProvider = externalLoginContextProvider;
 			Rng = new RNGCryptoServiceProvider();
 		}
 

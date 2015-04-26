@@ -24,11 +24,11 @@ namespace Peregrine.Web
 			// Configure the application for OAuth based flow
 			var oAuthOptions = new OAuthAuthorizationServerOptions
 			{
-				TokenEndpointPath = new PathString("/Token"),
-				Provider = new ApplicationOAuthProvider(PublicClientId),
-				AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
+				TokenEndpointPath = new PathString("/api/authentication"),
+				//Provider = new ApplicationOAuthProvider(PublicClientId),
+				AuthorizeEndpointPath = new PathString("/api/account/externalLogin"),
 				AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
-				AllowInsecureHttp = true
+				AllowInsecureHttp = true,
 			};
 
 			// Enable the application to use bearer tokens to authenticate users

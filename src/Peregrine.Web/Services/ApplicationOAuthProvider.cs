@@ -1,29 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
+using Peregrine.Data;
 
 namespace Peregrine.Web.Services
 {
 	public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
 	{
-		private readonly string _publicClientId;
+		readonly UserManager<User> UserManager;
+		readonly string PublicClientId;
 
-		public ApplicationOAuthProvider(string publicClientId)
+		public ApplicationOAuthProvider(UserManager<User> userManager, string publicClientId)
 		{
 			if(publicClientId == null)
 				throw new ArgumentNullException("publicClientId");
 
-			_publicClientId = publicClientId;
+			UserManager = userManager;
+			PublicClientId = publicClientId;
 		}
 
 		public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
 		{
-			var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
-			var user = await userManager.FindAsync(context.UserName, context.Password);
+			if(String.IsNullOrEmpty(context.UserName))
+				throw new InvalidOperationException("Username cannot be blank");
+
+			if(String.IsNullOrEmpty(context.Password))
+				throw new InvalidOperationException("Password cannot be blank");
+
+			var user = await UserManager.FindAsync(context.UserName, context.Password);
 
 			if(user == null)
 			{
@@ -31,8 +39,8 @@ namespace Peregrine.Web.Services
 				return;
 			}
 
-			var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
-			var cookiesIdentity = await user.GenerateUserIdentityAsync(userManager, CookieAuthenticationDefaults.AuthenticationType);
+			var oAuthIdentity = await user.GenerateUserIdentityAsync(UserManager, OAuthDefaults.AuthenticationType);
+			var cookiesIdentity = await user.GenerateUserIdentityAsync(UserManager, CookieAuthenticationDefaults.AuthenticationType);
 
 			var authenticationProperties = CreateProperties(user.UserName);
 			var authenticationTicket = new AuthenticationTicket(oAuthIdentity, authenticationProperties);
@@ -59,7 +67,7 @@ namespace Peregrine.Web.Services
 
 		public override Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
 		{
-			if(context.ClientId != _publicClientId)
+			if(context.ClientId != PublicClientId)
 				return Task.FromResult<object>(null);
 
 			var expectedRootUri = new Uri(context.Request.Uri, "/");
