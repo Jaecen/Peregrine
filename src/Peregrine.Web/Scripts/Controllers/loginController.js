@@ -110,7 +110,7 @@ angular
 				//Obtain a local access token and redirect back to where they came frome
 				var externalData = { provider: provider, externalAccessToken: externalAccessToken };
 				authService.obtainAccessToken(externalData)
-					.then(function (response) {
+					.then(function(response) {
 						$scope.message = 'Okay if you\'re cool with ' + provider + ' you\'re cool with us.';
 						afterLogin();
 					},

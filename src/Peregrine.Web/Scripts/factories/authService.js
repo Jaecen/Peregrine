@@ -96,20 +96,20 @@ angular
 
 			var deferred = $q.defer();
 
-			$http.get(serviceBase + 'api/account/ObtainLocalAccessToken', { params: { provider: externalData.provider, externalAccessToken: externalData.externalAccessToken } }).success(function(response) {
+			$http
+				.get(serviceBase + 'api/account/ObtainLocalAccessToken', { params: { provider: externalData.provider, externalAccessToken: externalData.externalAccessToken } })
+				.success(function(response) {
+					sessionStorage.setItem('accessToken', response.access_token);
 
-				sessionStorage.setItem('authorizationData', { token: response.access_token, userName: response.userName, refreshToken: "", useRefreshTokens: false });
+					_authentication.isAuth = true;
+					_authentication.userName = response.userName;
+					_authentication.useRefreshTokens = false;
 
-				_authentication.isAuth = true;
-				_authentication.userName = response.userName;
-				_authentication.useRefreshTokens = false;
-
-				deferred.resolve(response);
-
-			}).error(function(err, status) {
-				_logOut();
-				deferred.reject(err);
-			});
+					deferred.resolve(response);
+				}).error(function(err, status) {
+					_logOut();
+					deferred.reject(err);
+				});
 
 			return deferred.promise;
 
