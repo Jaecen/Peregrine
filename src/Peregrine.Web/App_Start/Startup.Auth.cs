@@ -12,6 +12,7 @@ using Owin;
 using Peregrine.Web.Providers;
 using Peregrine.Web.Models;
 using System.Configuration;
+using Peregrine.Data;
 
 namespace Peregrine.Web
 {
@@ -25,7 +26,7 @@ namespace Peregrine.Web
 		public void ConfigureAuth(IAppBuilder app)
 		{
 			// Configure the db context and user manager to use a single instance per request
-			app.CreatePerOwinContext(ApplicationDbContext.Create);
+			app.CreatePerOwinContext(() => new DataContext());
 			app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
 
 			// Enable the application to use a cookie to store information for the signed in user
@@ -56,15 +57,18 @@ namespace Peregrine.Web
 			//    consumerKey: "",
 			//    consumerSecret: "");
 
-			app.UseFacebookAuthentication(
-				appId: ConfigurationManager.AppSettings["FacebookAppId"],
-				appSecret: ConfigurationManager.AppSettings["FacebookAppSecret"]);
+			app.UseFacebookAuthentication(new FacebookAuthenticationOptions()
+			{
+				AppId = ConfigurationManager.AppSettings["FacebookAppId"],
+				AppSecret = ConfigurationManager.AppSettings["FacebookAppSecret"],
+				Provider = new FacebookAuthProvider()
+			});
 
 			app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
 			{
-				
 				ClientId = ConfigurationManager.AppSettings["GoogleClientId"],
-				ClientSecret = ConfigurationManager.AppSettings["GoogleClientSecret"]
+				ClientSecret = ConfigurationManager.AppSettings["GoogleClientSecret"],
+				Provider = new GoogleAuthProvider()
 			});
 		}
 	}

@@ -16,6 +16,12 @@ using Microsoft.Owin.Security.OAuth;
 using Peregrine.Web.Models;
 using Peregrine.Web.Providers;
 using Peregrine.Web.Results;
+using System.Linq;
+using Newtonsoft.Json.Linq;
+using System.Configuration;
+using Peregrine.Data;
+using Microsoft.Owin.Security.DataProtection;
+using Microsoft.Owin.Security.DataHandler;
 
 namespace Peregrine.Web.Controllers
 {
@@ -25,16 +31,13 @@ namespace Peregrine.Web.Controllers
     {
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
+		private AuthRepository AuthRepo;
 
         public AccountController()
         {
-        }
-
-        public AccountController(ApplicationUserManager userManager,
-            ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
-        {
-            UserManager = userManager;
-            AccessTokenFormat = accessTokenFormat;
+			AuthRepo = new AuthRepository();
+			UserManager = new ApplicationUserManager(new UserStore<ApplicationUser>());
+			AccessTokenFormat = new TicketDataFormat(new DpapiDataProtectionProvider().Create());
         }
 
         public ApplicationUserManager UserManager
@@ -68,9 +71,11 @@ namespace Peregrine.Web.Controllers
 
         // POST api/Account/Logout
         [Route("Logout")]
+		[AllowAnonymous]
         public IHttpActionResult Logout()
         {
             Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+			Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             return Ok();
         }
 
@@ -255,26 +260,27 @@ namespace Peregrine.Web.Controllers
 
             bool hasRegistered = user != null;
 
-            if (hasRegistered)
-            {
-                Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                
-                 ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(UserManager,
-                    OAuthDefaults.AuthenticationType);
-                ClaimsIdentity cookieIdentity = await user.GenerateUserIdentityAsync(UserManager,
-                    CookieAuthenticationDefaults.AuthenticationType);
+			//var redirectUri =
+			//	Request.GetQueryNameValuePairs()
+			//	.Where(param => param.Key.Equals("redirect_uri", StringComparison.OrdinalIgnoreCase))
+			//	.FirstOrDefault()
+			//	.Value;
 
-                AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(user.UserName);
-                Authentication.SignIn(properties, oAuthIdentity, cookieIdentity);
-            }
-            else
-            {
-                IEnumerable<Claim> claims = externalLogin.GetClaims();
-                ClaimsIdentity identity = new ClaimsIdentity(claims, OAuthDefaults.AuthenticationType);
-                Authentication.SignIn(identity);
-            }
+			//if(String.IsNullOrEmpty(redirectUri))
+			//	redirectUri = String.Empty;
 
-            return Ok();
+
+
+			Uri expectedRootUri = new Uri(HttpContext.Current.Request.Url, "/");
+			
+			var redirectUri = string.Format("{0}#/login/?externalAccessToken={1}&provider={2}&hasLocalAccount={3}&externalUserName={4}",
+											expectedRootUri.AbsoluteUri,
+											externalLogin.ExternalAccessToken,
+											externalLogin.LoginProvider,
+											hasRegistered.ToString(),
+											externalLogin.UserName);
+
+			return Redirect(redirectUri);
         }
 
         // GET api/Account/ExternalLogins?returnUrl=%2F&generateState=true
@@ -340,38 +346,183 @@ namespace Peregrine.Web.Controllers
             return Ok();
         }
 
-        // POST api/Account/RegisterExternal
-        [OverrideAuthentication]
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-        [Route("RegisterExternal")]
-        public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+		// POST api/Account/RegisterExternal
+		[AllowAnonymous]
+		[Route("RegisterExternal")]
+		public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
+		{
 
-            var info = await Authentication.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                return InternalServerError();
-            }
+			if(!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+			var verifiedAccessToken = await VerifyExternalAccessToken(model.Provider, model.ExternalAccessToken);
+			if(verifiedAccessToken == null)
+			{
+				return BadRequest("Invalid Provider or External Access Token");
+			}
 
-            IdentityResult result = await UserManager.CreateAsync(user);
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+			//IdentityUser user = await AuthRepo.FindAsync(new UserLoginInfo(model.Provider, verifiedAccessToken.user_id));
+			IdentityUser user = AuthRepo.GetUser(new UserLoginInfo(model.Provider, verifiedAccessToken.user_id));
 
-            result = await UserManager.AddLoginAsync(user.Id, info.Login);
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result); 
-            }
-            return Ok();
-        }
+			bool hasRegistered = user != null;
+
+			if(hasRegistered)
+			{
+				return BadRequest("External user is already registered");
+			}
+
+			user = new IdentityUser() { UserName = model.UserName };
+
+			IdentityResult result = await AuthRepo.CreateAsync(user);
+			if(!result.Succeeded)
+			{
+				return GetErrorResult(result);
+			}
+
+			var info = new ExternalLoginInfo()
+			{
+				DefaultUserName = model.UserName,
+				Login = new UserLoginInfo(model.Provider, verifiedAccessToken.user_id)
+			};
+
+			result = await AuthRepo.AddLoginAsync(user.Id, info.Login);
+			if(!result.Succeeded)
+			{
+				return GetErrorResult(result);
+			}
+
+			//generate access token response
+			var accessTokenResponse = GenerateLocalAccessTokenResponse(model.UserName);
+
+			return Ok(accessTokenResponse);
+		}
+
+		private async Task<ParsedExternalAccessToken> VerifyExternalAccessToken(string provider, string accessToken)
+		{
+			ParsedExternalAccessToken parsedToken = null;
+
+			var verifyTokenEndPoint = "";
+
+			if(provider == "Facebook")
+			{
+				//You can get it from here: https://developers.facebook.com/tools/accesstoken/
+				//More about debug_tokn here: http://stackoverflow.com/questions/16641083/how-does-one-get-the-app-access-token-for-debug-token-inspection-on-facebook
+				var appToken = "xxxxxx";
+				verifyTokenEndPoint = string.Format("https://graph.facebook.com/debug_token?input_token={0}&access_token={1}", accessToken, appToken);
+			}
+			else if(provider == "Google")
+			{
+				verifyTokenEndPoint = string.Format("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={0}", accessToken);
+			}
+			else
+			{
+				return null;
+			}
+
+			var client = new HttpClient();
+			var uri = new Uri(verifyTokenEndPoint);
+			var response = await client.GetAsync(uri);
+
+			if(response.IsSuccessStatusCode)
+			{
+				var content = await response.Content.ReadAsStringAsync();
+
+				dynamic jObj = (JObject)Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+
+				parsedToken = new ParsedExternalAccessToken();
+
+				if(provider == "Facebook")
+				{
+					parsedToken.user_id = jObj["data"]["user_id"];
+					parsedToken.app_id = jObj["data"]["app_id"];
+
+					if(!string.Equals(ConfigurationManager.AppSettings["FacebookAppId"], parsedToken.app_id, StringComparison.OrdinalIgnoreCase))
+					{
+						return null;
+					}
+				}
+				else if(provider == "Google")
+				{
+					parsedToken.user_id = jObj["user_id"];
+					parsedToken.app_id = jObj["audience"];
+
+					if(!string.Equals(ConfigurationManager.AppSettings["GoogleClientId"], parsedToken.app_id, StringComparison.OrdinalIgnoreCase))
+					{
+						return null;
+					}
+
+				}
+
+			}
+
+			return parsedToken;
+		}
+
+		[AllowAnonymous]
+		[HttpGet]
+		[Route("ObtainLocalAccessToken")]
+		public async Task<IHttpActionResult> ObtainLocalAccessToken(string provider, string externalAccessToken)
+		{
+
+			if(string.IsNullOrWhiteSpace(provider) || string.IsNullOrWhiteSpace(externalAccessToken))
+			{
+				return BadRequest("Provider or external access token is not sent");
+			}
+
+			var info = await Authentication.GetExternalLoginInfoAsync();
+			if(info == null)
+			{
+				return InternalServerError();
+			}
+			IdentityUser user = await _userManager.FindAsync(info.Login);
+
+			bool hasRegistered = user != null;
+
+			if(!hasRegistered)
+			{
+				return BadRequest("External user is not registered");
+			}
+
+			//generate access token response
+			var accessTokenResponse = GenerateLocalAccessTokenResponse(user.UserName);
+
+			return Ok(accessTokenResponse);
+
+		}
+
+		private JObject GenerateLocalAccessTokenResponse(string userName)
+		{
+
+			var tokenExpiration = TimeSpan.FromDays(1);
+
+			ClaimsIdentity identity = new ClaimsIdentity(OAuthDefaults.AuthenticationType);
+
+			identity.AddClaim(new Claim(ClaimTypes.Name, userName));
+			identity.AddClaim(new Claim("role", "user"));
+
+			var props = new AuthenticationProperties()
+			{
+				IssuedUtc = DateTime.UtcNow,
+				ExpiresUtc = DateTime.UtcNow.Add(tokenExpiration),
+			};
+
+			var ticket = new AuthenticationTicket(identity, props);
+
+			var accessToken = AccessTokenFormat.Protect(ticket);
+
+			JObject tokenResponse = new JObject(
+										new JProperty("userName", userName),
+										new JProperty("access_token", accessToken),
+										new JProperty("token_type", "bearer"),
+										new JProperty("expires_in", tokenExpiration.TotalSeconds.ToString()),
+										new JProperty(".issued", ticket.Properties.IssuedUtc.ToString()),
+										new JProperty(".expires", ticket.Properties.ExpiresUtc.ToString())
+									);
+
+			return tokenResponse;
+		}
 
         protected override void Dispose(bool disposing)
         {
@@ -424,7 +575,8 @@ namespace Peregrine.Web.Controllers
         {
             public string LoginProvider { get; set; }
             public string ProviderKey { get; set; }
-            public string UserName { get; set; }
+			public string UserName { get; set; }
+			public string ExternalAccessToken { get; set; }
 
             public IList<Claim> GetClaims()
             {
@@ -463,7 +615,8 @@ namespace Peregrine.Web.Controllers
                 {
                     LoginProvider = providerKeyClaim.Issuer,
                     ProviderKey = providerKeyClaim.Value,
-                    UserName = identity.FindFirstValue(ClaimTypes.Name)
+                    UserName = identity.FindFirstValue(ClaimTypes.Name),
+					ExternalAccessToken = identity.FindFirstValue("ExternalAccessToken")
                 };
             }
         }

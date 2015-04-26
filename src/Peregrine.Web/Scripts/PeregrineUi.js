@@ -7,7 +7,12 @@ angular
 	'peregrineUi.directives',
 	'peregrineUi.factories',
 	'ui.bootstrap'
-]).config(function ($routeProvider, $locationProvider) {
+])
+	//add an interceptor to setup gobal auth token headers and global error handling
+.config(function ($httpProvider) {
+	$httpProvider.interceptors.push('authInterceptorService');
+})
+.config(function ($routeProvider, $locationProvider) {
 	$routeProvider
 		.when('/', {
 			controller: 'mainController',
@@ -45,12 +50,20 @@ angular
 			controller: 'loginController',
 			templateUrl: 'Partials/Login.html'
 		})
+		.when('/login?external_access_token=:externalAccessToken&provider=:provider&haslocalaccount=:hasLocalAccount&external_user_name=:externalUserName', {
+			controller: 'loginController',
+			templateUrl: 'Partials/Login.html'
+		})
+		.when('/associate', {
+			controller: 'associateController',
+			templateUrl: 'Partials/Associate.html'
+		})
 		.otherwise({ redirectTo: '/' });
-})
-//add an interceptor to setup gobal auth token headers and global error handling
-.config(function ($httpProvider) {
-	$httpProvider.interceptors.push('authInterceptorService');
+
+	//$locationProvider.html5Mode(true);
 });
+
+
 
 angular.module('peregrineUi.controllers', [
 	'peregrineUi.resources',

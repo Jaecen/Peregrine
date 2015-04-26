@@ -1,8 +1,8 @@
 ﻿angular
 .module('peregrineUi.controllers')
 .controller('loginController', [
-	'$scope', '$location', '$rootScope', '$timeout', 'authService', 'externalLoginResource',
-	function ($scope, $location, $rootScope, $timeout, authService, externalLoginResource) {
+	'$scope', '$location', '$rootScope', '$timeout', 'authService', 'externalLoginResource', '$routeParams',
+	function ($scope, $location, $rootScope, $timeout, authService, externalLoginResource, $routeParams) {
 		$scope.error = '';
 
 		$scope.registration = {
@@ -84,5 +84,41 @@
 			sessionStorage.removeItem('returnUrl');
 			$location.path(returnUrl);
 		}
+
+		var myParams = $routeParams;
+
+		//handle external login signins
+		if($routeParams.externalAccessToken) {
+			var hasLocalAccount = $routeParams.hasLocalAccount;
+			var provider = $routeParams.provider;
+			var userName = $routeParams.externalUserName;
+			var externalAccessToken = $routeParams.externalAccessToken;
+
+			if(hasLocalAccount == 'False') {
+				//This user has authed with Google but has no local account yet
+				authService.logOut();
+
+				authService.externalAuthData = {
+					provider: provider,
+					userName: userName,
+					externalAccessToken: externalAccessToken
+				};
+
+				$location.path('/associate');
+			}
+			else {
+				//Obtain a local access token and redirect back to where they came frome
+				var externalData = { provider: provider, externalAccessToken: externalAccessToken };
+				authService.obtainAccessToken(externalData)
+					.then(function (response) {
+						$scope.message = 'Okay if you\'re cool with ' + provider + ' you\'re cool with us.';
+						afterLogin();
+					},
+					function (error) {
+						$scope.message = error.error_description;
+					});
+			}
+		}
+
 	}
 ]);

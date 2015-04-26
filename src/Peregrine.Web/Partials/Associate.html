@@ -1,0 +1,16 @@
+﻿<h3>Associate your {{registerData.provider}} Account</h3>
+<p class="text-success">You have successfully autheticated with <strong>{{registerData.provider}} </strong>. Please enter a user name below for this site and click the Register button to log in.</p>
+
+<div class="row">
+	<div class="col-sm-4">
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="Username" data-ng-model="registerData.userName" required autofocus>
+			<button class="btn btn-sm btn-info btn-block" type="button" style="margin-top:10px;" data-ng-click="registerExternal()">Register</button>
+		</div>
+		<div data-ng-hide="message == ''" data-ng-class="(savedSuccessfully) ? 'alert alert-success' : 'alert alert-danger'">
+			{{message}}
+		</div>
+	</div>
+</div>
+	
+

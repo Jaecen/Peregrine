@@ -40,12 +40,18 @@ namespace Peregrine.Web.Models
         public string Password { get; set; }
     }
 
-    public class RegisterExternalBindingModel
-    {
-        [Required]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-    }
+	public class RegisterExternalBindingModel
+	{
+		[Required]
+		public string UserName { get; set; }
+
+		[Required]
+		public string Provider { get; set; }
+
+		[Required]
+		public string ExternalAccessToken { get; set; }
+
+	}
 
     public class RemoveLoginBindingModel
     {
@@ -71,4 +77,10 @@ namespace Peregrine.Web.Models
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
+
+	public class ParsedExternalAccessToken
+	{
+		public string user_id { get; set; }
+		public string app_id { get; set; }
+	}
 }
