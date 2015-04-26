@@ -21,10 +21,10 @@
 			},
 			function (response) {
 				var errors = [];
-				for(var key in response.modelState) {
-					errors.push(response.modelState[key]);
+				for(var key in response.ModelState) {
+					errors.push(response.ModelState[key]);
 				}
-				$scope.message = "Failed to register user due to:" + errors.join(' ');
+				$scope.message = "Failed to register user due to: " + errors.join(' ');
 			});
 	};
 
