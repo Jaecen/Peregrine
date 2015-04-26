@@ -305,6 +305,10 @@ namespace Peregrine.Web.Controllers
 			//generate access token response
 			var accessTokenResponse = GenerateLocalAccessTokenResponse(model.UserName);
 
+			Authentication.SignIn(new ClaimsIdentity(
+				claims: Authentication.User.Claims,
+				authenticationType: CookieAuthenticationDefaults.AuthenticationType));
+
 			return Ok(accessTokenResponse);
 		}
 
