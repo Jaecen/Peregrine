@@ -36,7 +36,7 @@ namespace Peregrine.Web.Controllers
         public AccountController()
         {
 			AuthRepo = new AuthRepository();
-			UserManager = new ApplicationUserManager(new UserStore<ApplicationUser>());
+			UserManager = new ApplicationUserManager(new UserStore<ApplicationUser>(new DataContext()));
 			AccessTokenFormat = new TicketDataFormat(new DpapiDataProtectionProvider().Create());
         }
 
