@@ -13,28 +13,33 @@
 
 	$scope.registerExternal = function () {
 
-		authService.registerExternal($scope.registerData).then(function (response) {
-
-			$scope.savedSuccessfully = true;
-			$scope.message = "User has been registered successfully, you will be redicted to orders page in 2 seconds.";
-			$rootScope.$emit('login');
-			startTimer();
-
-		},
-		function (response) {
-			var errors = [];
-			for(var key in response.modelState) {
-				errors.push(response.modelState[key]);
-			}
-			$scope.message = "Failed to register user due to:" + errors.join(' ');
-		});
+		authService.registerExternal($scope.registerData)
+			.then(function (response) {
+				$scope.savedSuccessfully = true;
+				$scope.message = "Thanks, okay where were you...";
+				afterLogin();
+			},
+			function (response) {
+				var errors = [];
+				for(var key in response.modelState) {
+					errors.push(response.modelState[key]);
+				}
+				$scope.message = "Failed to register user due to:" + errors.join(' ');
+			});
 	};
 
-	var startTimer = function () {
-		var timer = $timeout(function () {
-			$timeout.cancel(timer);
-			$location.path('/');
-		}, 2000);
+	var afterLogin = function () {
+		//tell the userlinks in the header to check for a login
+		$rootScope.$emit('login');
+		$timeout(function () {
+			redirect();
+		}, 2500);
+	}
+
+	var redirect = function () {
+		var returnUrl = sessionStorage.getItem('returnUrl') != null ? sessionStorage.getItem('returnUrl') : '/';
+		sessionStorage.removeItem('returnUrl');
+		$location.path(returnUrl);
 	}
 
 }]);
