@@ -44,7 +44,7 @@
 	var redirect = function () {
 		var returnUrl = sessionStorage.getItem('returnUrl') != null ? sessionStorage.getItem('returnUrl') : '/';
 		sessionStorage.removeItem('returnUrl');
-		$location.path(returnUrl);
+		$location.url(returnUrl);
 	}
 
 }]);

@@ -283,7 +283,7 @@ namespace Peregrine.Web.Controllers
 			if(existingUser != null)
 				return BadRequest("External user is already registered");
 
-			var newUser = new IdentityUser
+			var newUser = new ApplicationUser
 				{
 					UserName = model.UserName
 				};
