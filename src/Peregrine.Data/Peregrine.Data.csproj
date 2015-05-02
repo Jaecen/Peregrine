@@ -96,10 +96,6 @@
     <Compile Include="Migrations\201503240206510_Add_Clients_And_RefreshTokens.Designer.cs">
       <DependentUpon>201503240206510_Add_Clients_And_RefreshTokens.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201504261748489_Add_Application_Users.cs" />
-    <Compile Include="Migrations\201504261748489_Add_Application_Users.Designer.cs">
-      <DependentUpon>201504261748489_Add_Application_Users.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="RefreshToken.cs" />
     <Compile Include="Tournament.cs" />
@@ -127,9 +123,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201503240206510_Add_Clients_And_RefreshTokens.resx">
       <DependentUpon>201503240206510_Add_Clients_And_RefreshTokens.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201504261748489_Add_Application_Users.resx">
-      <DependentUpon>201504261748489_Add_Application_Users.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

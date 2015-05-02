@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Models;
-using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
@@ -22,8 +22,10 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
+		[Authorize]
 		public IHttpActionResult Get()
 		{
+
 			using(var dataContext = new DataContext())
 			{
 				var tournaments = dataContext
@@ -37,7 +39,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
-		[Authorize]
+		[HostAuthentication("Bearer")]
 		public IHttpActionResult Post([FromBody]TournamentRequest requestBody)
 		{
 			var rng = new Random();

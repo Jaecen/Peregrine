@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 using Peregrine.Data;
 using Peregrine.Web.Models;
 using Peregrine.Web.Results;
+using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
@@ -190,7 +191,8 @@ namespace Peregrine.Web.Controllers
 			if(!User.Identity.IsAuthenticated)
 				return new ChallengeResult(provider, this);
 
-			var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
+			var userIdentity = (ClaimsIdentity)User.Identity;
+			var externalLogin = ExternalLoginData.FromIdentity(userIdentity);
 			if(externalLogin == null)
 				return InternalServerError();
 
@@ -235,7 +237,7 @@ namespace Peregrine.Web.Controllers
 						{
 							provider = description.AuthenticationType,
 							response_type = "token",
-							client_id = Startup.PublicClientId,
+							client_id = PeregrineApp.PublicClientId,
 							redirect_uri = new Uri(Request.RequestUri, returnUrl).AbsoluteUri,
 							state = state
 						}),
@@ -302,13 +304,7 @@ namespace Peregrine.Web.Controllers
 			if(!addLoginResult.Succeeded)
 				return GetErrorResult(addLoginResult);
 
-			//generate access token response
 			var accessTokenResponse = GenerateLocalAccessTokenResponse(model.UserName);
-
-			Authentication.SignIn(new ClaimsIdentity(
-				claims: Authentication.User.Claims,
-				authenticationType: CookieAuthenticationDefaults.AuthenticationType));
-
 			return Ok(accessTokenResponse);
 		}
 
@@ -387,9 +383,7 @@ namespace Peregrine.Web.Controllers
 			if(!hasRegistered)
 				return BadRequest("External user is not registered");
 
-			//generate access token response
 			var accessTokenResponse = GenerateLocalAccessTokenResponse(user.UserName);
-
 			return Ok(accessTokenResponse);
 		}
 
@@ -401,7 +395,7 @@ namespace Peregrine.Web.Controllers
 				claims: new[] 
 					{
 						new Claim(ClaimTypes.Name, userName),
-						new Claim("role", "user"),
+						new Claim(ClaimTypes.Role, "user"),
 					},
 				authenticationType: OAuthDefaults.AuthenticationType);
 
