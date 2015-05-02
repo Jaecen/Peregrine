@@ -22,10 +22,8 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
-		[Authorize]
 		public IHttpActionResult Get()
-		{
-
+			{
 			using(var dataContext = new DataContext())
 			{
 				var tournaments = dataContext
@@ -39,7 +37,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
-		[HostAuthentication("Bearer")]
+		[Authorize]
 		public IHttpActionResult Post([FromBody]TournamentRequest requestBody)
 		{
 			var rng = new Random();

@@ -31,18 +31,16 @@ namespace Peregrine.Web.Controllers
 	{
 		const string LocalLoginProvider = "Local";
 
-		readonly AuthRepository AuthRepo;
 		readonly ApplicationUserManager UserManager;
 		readonly ISecureDataFormat<AuthenticationTicket> AccessTokenFormat;
 
 		IAuthenticationManager Authentication
 		{ get { return Request.GetOwinContext().Authentication; } }
 
-		public AccountController()
+		public AccountController(ApplicationUserManager userManager, ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
 		{
-			AuthRepo = new AuthRepository();
-			UserManager = new ApplicationUserManager(new UserStore<ApplicationUser>(new DataContext()));
-			AccessTokenFormat = new TicketDataFormat(new DpapiDataProtectionProvider().Create());
+			UserManager = userManager; // new ApplicationUserManager(new UserStore<ApplicationUser>(new DataContext()));
+			AccessTokenFormat = accessTokenFormat; 
 		}
 
 		// GET api/account/UserInfo
@@ -281,7 +279,7 @@ namespace Peregrine.Web.Controllers
 			if(verifiedAccessToken == null)
 				return BadRequest("Invalid Provider or External Access Token");
 
-			var existingUser = AuthRepo.GetUser(new UserLoginInfo(model.Provider, verifiedAccessToken.user_id));
+			var existingUser = UserManager.Find(new UserLoginInfo(model.Provider, verifiedAccessToken.user_id));
 			if(existingUser != null)
 				return BadRequest("External user is already registered");
 
@@ -290,7 +288,7 @@ namespace Peregrine.Web.Controllers
 					UserName = model.UserName
 				};
 
-			var createResult = await AuthRepo.CreateAsync(newUser);
+			var createResult = await UserManager.CreateAsync(newUser);
 			if(!createResult.Succeeded)
 				return GetErrorResult(createResult);
 
@@ -300,7 +298,7 @@ namespace Peregrine.Web.Controllers
 					Login = new UserLoginInfo(model.Provider, verifiedAccessToken.user_id)
 				};
 
-			var addLoginResult = await AuthRepo.AddLoginAsync(newUser.Id, info.Login);
+			var addLoginResult = await UserManager.AddLoginAsync(newUser.Id, info.Login);
 			if(!addLoginResult.Succeeded)
 				return GetErrorResult(addLoginResult);
 

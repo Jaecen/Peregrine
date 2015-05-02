@@ -75,7 +75,6 @@
   <ItemGroup>
     <Compile Include="ApplicationTypes.cs" />
     <Compile Include="ApplicationUser.cs" />
-    <Compile Include="AuthRepository.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="Extensions.cs" />
@@ -91,6 +90,10 @@
     <Compile Include="Migrations\201404050712008_Add_Active_Round_Number.cs" />
     <Compile Include="Migrations\201404050712008_Add_Active_Round_Number.Designer.cs">
       <DependentUpon>201404050712008_Add_Active_Round_Number.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503221731520_Add_External_auth.cs" />
+    <Compile Include="Migrations\201503221731520_Add_External_auth.Designer.cs">
+      <DependentUpon>201503221731520_Add_External_auth.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201503240206510_Add_Clients_And_RefreshTokens.cs" />
     <Compile Include="Migrations\201503240206510_Add_Clients_And_RefreshTokens.Designer.cs">
@@ -120,6 +123,9 @@
     <EmbeddedResource Include="Migrations\201404050712008_Add_Active_Round_Number.resx">
       <DependentUpon>201404050712008_Add_Active_Round_Number.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503221731520_Add_External_auth.resx">
+      <DependentUpon>201503221731520_Add_External_auth.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201503240206510_Add_Clients_And_RefreshTokens.resx">
       <DependentUpon>201503240206510_Add_Clients_And_RefreshTokens.cs</DependentUpon>

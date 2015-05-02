@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Configuration;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
@@ -8,6 +8,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.DataHandler;
+using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.Facebook;
 using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.OAuth;
@@ -49,25 +51,25 @@ namespace Peregrine.Web
 			app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
 			// Enable the application to use bearer tokens to authenticate users
-			app.UseOAuthBearerTokens(new OAuthAuthorizationServerOptions
-			{
-				AuthenticationMode = Microsoft.Owin.Security.AuthenticationMode.Passive,
-				TokenEndpointPath = new PathString("/Token"),
-				Provider = new ApplicationOAuthProvider(PublicClientId),
-				AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
-				AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
-				AllowInsecureHttp = true
-			});
-
 			app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions
 			{
 				AuthenticationMode = AuthenticationMode.Active,
 				Provider = new OAuthBearerAuthenticationProvider
 				{
-					//OnApplyChallenge = async c => { },
-					OnRequestToken = async c => { },
-					OnValidateIdentity = async c => { },
-				}
+					OnValidateIdentity = async c => { c.Validated(); }
+				},
+				AccessTokenFormat = container.Resolve<ISecureDataFormat<AuthenticationTicket>>(),
+			});
+
+			app.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
+			{
+				AuthenticationMode = AuthenticationMode.Passive,
+				TokenEndpointPath = new PathString("/Token"),
+				Provider = new ApplicationOAuthProvider(PublicClientId, container.Resolve<Func<ApplicationUserManager>>()),
+				AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
+				AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
+				AllowInsecureHttp = true,
+				AccessTokenFormat = container.Resolve<ISecureDataFormat<AuthenticationTicket>>(),
 			});
 
 			// Uncomment the following lines to enable logging in with third party login providers
@@ -126,6 +128,22 @@ namespace Peregrine.Web
 				.Register(c => new ApplicationUserManager(
 					store: c.Resolve<IUserStore<ApplicationUser>>()))
 				.AsSelf();
+
+			builder
+				.Register(c => new DpapiDataProtectionProvider().Create())
+				.As<IDataProtector>();
+
+			// These need to be explicitly named, otherwise auth tickets won't decrypt between instances
+			var dataProtectionProvider = new DpapiDataProtectionProvider("Peregrine");
+			var authTicketDataProtector = dataProtectionProvider.Create("Auth Ticket");
+
+			builder
+				.RegisterInstance(authTicketDataProtector)
+				.Named<IDataProtector>("Auth Ticket");
+
+			builder
+				.Register(c => new TicketDataFormat(c.ResolveNamed<IDataProtector>("Auth Ticket")))
+				.As<ISecureDataFormat<AuthenticationTicket>>();
 
 			return builder;
 		}

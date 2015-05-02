@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
-using Peregrine.Data;
 using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Providers
@@ -14,18 +12,20 @@ namespace Peregrine.Web.Providers
 	public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
 	{
 		readonly string PublicClientId;
+		readonly Func<ApplicationUserManager> UserManagerFactory;
 
-		public ApplicationOAuthProvider(string publicClientId)
+		public ApplicationOAuthProvider(string publicClientId, Func<ApplicationUserManager> userManagerFactory)
 		{
 			if(publicClientId == null)
 				throw new ArgumentNullException("publicClientId");
 
 			PublicClientId = publicClientId;
+			UserManagerFactory = userManagerFactory;
 		}
-
+		
 		public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
 		{
-			var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+			var userManager = UserManagerFactory();
 
 			var user = await userManager.FindAsync(context.UserName, context.Password);
 			if(user == null)
