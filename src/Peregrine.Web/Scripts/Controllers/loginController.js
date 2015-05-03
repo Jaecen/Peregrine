@@ -1,4 +1,4 @@
-﻿angular
+angular
 .module('peregrineUi.controllers')
 .controller('loginController', [
 	'$scope', '$location', '$rootScope', '$timeout', 'authService', 'externalLoginResource', '$routeParams',
@@ -82,7 +82,7 @@
 		var redirect = function () {
 			var returnUrl = sessionStorage.getItem('returnUrl') != null ? sessionStorage.getItem('returnUrl') : '/';
 			sessionStorage.removeItem('returnUrl');
-			$location.path(returnUrl);
+			$location.url(returnUrl);
 		}
 
 		var myParams = $routeParams;
@@ -104,13 +104,13 @@
 					externalAccessToken: externalAccessToken
 				};
 
-				$location.path('/associate');
+				$location.url('/associate');
 			}
 			else {
 				//Obtain a local access token and redirect back to where they came frome
 				var externalData = { provider: provider, externalAccessToken: externalAccessToken };
 				authService.obtainAccessToken(externalData)
-					.then(function (response) {
+					.then(function(response) {
 						$scope.message = 'Okay if you\'re cool with ' + provider + ' you\'re cool with us.';
 						afterLogin();
 					},
