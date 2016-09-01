@@ -8,7 +8,9 @@
 	$scope.registerData = {
 		userName: "",
 		provider: authService.externalAuthData.provider,
-		externalAccessToken: authService.externalAuthData.externalAccessToken
+		externalAccessToken: authService.externalAuthData.externalAccessToken,
+		email: authService.externalAuthData.email
+
 	};
 
 	$scope.registerExternal = function () {

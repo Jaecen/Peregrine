@@ -24,7 +24,7 @@ namespace Peregrine.Web.Controllers
 		[Route]
 		public IHttpActionResult Get()
 			{
-			using(var dataContext = new DataContext())
+			using(var dataContext = new Peregrine.Data.DataContext())
 			{
 				var tournaments = dataContext
 					.Tournaments

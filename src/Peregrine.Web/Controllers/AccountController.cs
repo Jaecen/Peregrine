@@ -194,7 +194,7 @@ namespace Peregrine.Web.Controllers
 			if(externalLogin == null)
 				return InternalServerError();
 
-			if(externalLogin.LoginProvider != provider)
+			if (externalLogin.LoginProvider != provider)
 			{
 				Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
 				return new ChallengeResult(provider, this);
@@ -205,12 +205,13 @@ namespace Peregrine.Web.Controllers
 			var expectedRootUri = new Uri(HttpContext.Current.Request.Url, "/");
 			
 			var redirectUri = string.Format(
-				"{0}#/login/?externalAccessToken={1}&provider={2}&hasLocalAccount={3}&externalUserName={4}",
+				"{0}#/login/?externalAccessToken={1}&provider={2}&hasLocalAccount={3}&externalUserName={4}&email={5}",
 				expectedRootUri.AbsoluteUri,
 				externalLogin.ExternalAccessToken,
 				externalLogin.LoginProvider,
 				hasRegistered.ToString(),
-				externalLogin.UserName);
+				externalLogin.UserName,
+				externalLogin.Email);
 
 			return Redirect(redirectUri);
 		}
@@ -284,9 +285,10 @@ namespace Peregrine.Web.Controllers
 				return BadRequest("External user is already registered");
 
 			var newUser = new ApplicationUser
-				{
-					UserName = model.UserName
-				};
+			{
+				UserName = model.UserName,
+				Email = model.Email
+			};
 
 			var createResult = await UserManager.CreateAsync(newUser);
 			if(!createResult.Succeeded)
@@ -313,7 +315,7 @@ namespace Peregrine.Web.Controllers
 			{
 				//You can get it from here: https://developers.facebook.com/tools/accesstoken/
 				//More about debug_tokn here: http://stackoverflow.com/questions/16641083/how-does-one-get-the-app-access-token-for-debug-token-inspection-on-facebook
-				var appToken = "xxxxxx";
+				var appToken = ConfigurationManager.AppSettings["FacebookAppAccessToken"];
 				verifyTokenEndPoint = string.Format("https://graph.facebook.com/debug_token?input_token={0}&access_token={1}", accessToken, appToken);
 			}
 			else if(provider == "Google")
@@ -450,13 +452,15 @@ namespace Peregrine.Web.Controllers
 			public readonly string ProviderKey;
 			public readonly string UserName;
 			public readonly string ExternalAccessToken;
+			public readonly string Email;
 
-			public ExternalLoginData(string loginProvider, string providerKey, string userName, string externalAccessToken)
+			public ExternalLoginData(string loginProvider, string providerKey, string userName, string externalAccessToken, string email)
 			{
 				LoginProvider = loginProvider;
 				ProviderKey = providerKey;
 				UserName = userName;
 				ExternalAccessToken = externalAccessToken;
+				Email = email;
 			}
 
 			public IList<Claim> GetClaims()
@@ -493,7 +497,8 @@ namespace Peregrine.Web.Controllers
 					loginProvider: providerKeyClaim.Issuer,
 					providerKey: providerKeyClaim.Value,
 					userName: identity.FindFirstValue(ClaimTypes.Name),
-					externalAccessToken: identity.FindFirstValue("ExternalAccessToken"));
+					externalAccessToken: identity.FindFirstValue("ExternalAccessToken"),
+					email: identity.FindFirstValue(ClaimTypes.Email));
 			}
 		}
 

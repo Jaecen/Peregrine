@@ -11,6 +11,10 @@ namespace Peregrine.Data
 {
 	public class DataContext : IdentityDbContext<ApplicationUser>
 	{
+		public DataContext()
+			:base("Peregrine.Data.DataContext")
+		{ }
+
 		public virtual IDbSet<Tournament> Tournaments { get; set; }
 		public virtual IDbSet<Game> Games { get; set; }
 		public virtual IDbSet<Player> Players { get; set; }

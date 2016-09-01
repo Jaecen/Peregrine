@@ -80,20 +80,22 @@ namespace Peregrine.Web
 			//app.UseTwitterAuthentication(
 			//    consumerKey: "",
 			//    consumerSecret: "");
-
-			app.UseFacebookAuthentication(new FacebookAuthenticationOptions()
+			var facebookAuthenticationOptions = new FacebookAuthenticationOptions()
 			{
 				AppId = ConfigurationManager.AppSettings["FacebookAppId"],
 				AppSecret = ConfigurationManager.AppSettings["FacebookAppSecret"],
 				Provider = new FacebookAuthProvider()
-			});
+			};
+			app.UseFacebookAuthentication(facebookAuthenticationOptions);
 
-			app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+			var googleAuthenticationOptions = new GoogleOAuth2AuthenticationOptions()
 			{
 				ClientId = ConfigurationManager.AppSettings["GoogleClientId"],
 				ClientSecret = ConfigurationManager.AppSettings["GoogleClientSecret"],
 				Provider = new GoogleAuthProvider()
-			});
+			};
+			googleAuthenticationOptions.Scope.Add("email");
+			app.UseGoogleAuthentication(googleAuthenticationOptions);
 
 			app.UseWebApi(config);
 		}
