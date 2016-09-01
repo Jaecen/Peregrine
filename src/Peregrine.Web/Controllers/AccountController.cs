@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -8,20 +7,18 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.DataHandler;
-using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Linq;
 using Peregrine.Data;
 using Peregrine.Web.Models;
 using Peregrine.Web.Results;
 using Peregrine.Web.Services;
+using System.Web.Configuration;
 
 namespace Peregrine.Web.Controllers
 {
@@ -194,7 +191,7 @@ namespace Peregrine.Web.Controllers
 			if(externalLogin == null)
 				return InternalServerError();
 
-			if (externalLogin.LoginProvider != provider)
+			if(externalLogin.LoginProvider != provider)
 			{
 				Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
 				return new ChallengeResult(provider, this);
@@ -315,7 +312,7 @@ namespace Peregrine.Web.Controllers
 			{
 				//You can get it from here: https://developers.facebook.com/tools/accesstoken/
 				//More about debug_tokn here: http://stackoverflow.com/questions/16641083/how-does-one-get-the-app-access-token-for-debug-token-inspection-on-facebook
-				var appToken = ConfigurationManager.AppSettings["FacebookAppAccessToken"];
+				var appToken = WebConfigurationManager.AppSettings["FacebookAppAccessToken"];
 				verifyTokenEndPoint = string.Format("https://graph.facebook.com/debug_token?input_token={0}&access_token={1}", accessToken, appToken);
 			}
 			else if(provider == "Google")
@@ -338,7 +335,7 @@ namespace Peregrine.Web.Controllers
 				var userId = (string)jObj.SelectToken("data.user_id");
 				var appId = (string)jObj.SelectToken("data.app_id");
 
-				if(!string.Equals(ConfigurationManager.AppSettings["FacebookAppId"], appId, StringComparison.OrdinalIgnoreCase))
+				if(!string.Equals(WebConfigurationManager.AppSettings["FacebookAppId"], appId, StringComparison.OrdinalIgnoreCase))
 					return null;
 
 				return new ParsedExternalAccessToken
@@ -352,7 +349,7 @@ namespace Peregrine.Web.Controllers
 				var userId = (string)jObj["user_id"];
 				var appId = (string)jObj["audience"];
 
-				if(!string.Equals(ConfigurationManager.AppSettings["GoogleClientId"], appId, StringComparison.OrdinalIgnoreCase))
+				if(!string.Equals(WebConfigurationManager.AppSettings["GoogleClientId"], appId, StringComparison.OrdinalIgnoreCase))
 					return null;
 
 				return new ParsedExternalAccessToken

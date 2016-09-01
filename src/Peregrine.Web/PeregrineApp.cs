@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Configuration;
-using System.Threading.Tasks;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
@@ -18,6 +16,7 @@ using Peregrine.Data;
 using Peregrine.Web.Models;
 using Peregrine.Web.Providers;
 using Peregrine.Web.Services;
+using System.Web.Configuration;
 
 #pragma warning disable 1998
 
@@ -53,7 +52,7 @@ namespace Peregrine.Web
 			// Enable the application to use bearer tokens to authenticate users
 			app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions
 			{
-				AuthenticationMode = AuthenticationMode.Active,
+				AuthenticationMode = Microsoft.Owin.Security.AuthenticationMode.Active,
 				Provider = new OAuthBearerAuthenticationProvider
 				{
 					OnValidateIdentity = async c => { c.Validated(); }
@@ -63,7 +62,7 @@ namespace Peregrine.Web
 
 			app.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
 			{
-				AuthenticationMode = AuthenticationMode.Passive,
+				AuthenticationMode = Microsoft.Owin.Security.AuthenticationMode.Passive,
 				TokenEndpointPath = new PathString("/Token"),
 				Provider = new ApplicationOAuthProvider(PublicClientId, container.Resolve<Func<ApplicationUserManager>>()),
 				AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
@@ -82,16 +81,16 @@ namespace Peregrine.Web
 			//    consumerSecret: "");
 			var facebookAuthenticationOptions = new FacebookAuthenticationOptions()
 			{
-				AppId = ConfigurationManager.AppSettings["FacebookAppId"],
-				AppSecret = ConfigurationManager.AppSettings["FacebookAppSecret"],
+				AppId = WebConfigurationManager.AppSettings["FacebookAppId"],
+				AppSecret = WebConfigurationManager.AppSettings["FacebookAppSecret"],
 				Provider = new FacebookAuthProvider()
 			};
 			app.UseFacebookAuthentication(facebookAuthenticationOptions);
 
 			var googleAuthenticationOptions = new GoogleOAuth2AuthenticationOptions()
 			{
-				ClientId = ConfigurationManager.AppSettings["GoogleClientId"],
-				ClientSecret = ConfigurationManager.AppSettings["GoogleClientSecret"],
+				ClientId = WebConfigurationManager.AppSettings["GoogleClientId"],
+				ClientSecret = WebConfigurationManager.AppSettings["GoogleClientSecret"],
 				Provider = new GoogleAuthProvider()
 			};
 			googleAuthenticationOptions.Scope.Add("email");
