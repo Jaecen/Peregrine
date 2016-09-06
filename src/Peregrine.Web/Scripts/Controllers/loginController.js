@@ -93,6 +93,7 @@ angular
 			var provider = $routeParams.provider;
 			var userName = $routeParams.externalUserName;
 			var externalAccessToken = $routeParams.externalAccessToken;
+			var email = $routeParams.email;
 
 			if(hasLocalAccount == 'False') {
 				//This user has authed with Google but has no local account yet
@@ -101,7 +102,8 @@ angular
 				authService.externalAuthData = {
 					provider: provider,
 					userName: userName,
-					externalAccessToken: externalAccessToken
+					externalAccessToken: externalAccessToken,
+					email: email
 				};
 
 				$location.url('/associate');

@@ -15,7 +15,8 @@ angular
 		var _externalAuthData = {
 			provider: "",
 			userName: "",
-			externalAccessToken: ""
+			externalAccessToken: "",
+			email: ""
 		};
 
 		var _saveRegistration = function(registration) {

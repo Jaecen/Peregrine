@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Models;
@@ -23,7 +22,7 @@ namespace Peregrine.Web.Controllers
 
 		[Route]
 		public IHttpActionResult Get()
-			{
+		{
 			using(var dataContext = new DataContext())
 			{
 				var tournaments = dataContext
