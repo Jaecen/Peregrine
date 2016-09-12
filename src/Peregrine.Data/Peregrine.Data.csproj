@@ -95,6 +95,10 @@
     <Compile Include="Migrations\201503240206510_Add_Clients_And_RefreshTokens.Designer.cs">
       <DependentUpon>201503240206510_Add_Clients_And_RefreshTokens.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609111852386_Add_Tournament_Organizers.cs" />
+    <Compile Include="Migrations\201609111852386_Add_Tournament_Organizers.Designer.cs">
+      <DependentUpon>201609111852386_Add_Tournament_Organizers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="RefreshToken.cs" />
     <Compile Include="Tournament.cs" />
@@ -123,7 +127,11 @@
     <EmbeddedResource Include="Migrations\201503240206510_Add_Clients_And_RefreshTokens.resx">
       <DependentUpon>201503240206510_Add_Clients_And_RefreshTokens.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609111852386_Add_Tournament_Organizers.resx">
+      <DependentUpon>201609111852386_Add_Tournament_Organizers.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

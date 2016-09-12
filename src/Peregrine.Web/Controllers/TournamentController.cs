@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Models;
-using Peregrine.Web.Services;
 
 namespace Peregrine.Web.Controllers
 {
@@ -50,7 +48,6 @@ namespace Peregrine.Web.Controllers
 					return NotFound();
 
 				tournament.Name = requestBody.name;
-				
 				dataContext.SaveChanges();
 
 				return Ok(TournamentResponseProvider.Create(tournament));

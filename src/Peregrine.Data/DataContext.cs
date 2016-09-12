@@ -26,12 +26,22 @@ namespace Peregrine.Data
 		{
 			modelBuilder.Entity<Match>()
 				.HasMany(c => c.Players)
-				.WithMany()                 // Note the empty WithMany()
+				.WithMany()
 				.Map(x =>
 				{
 					x.MapLeftKey("MatchId");
 					x.MapRightKey("PlayerId");
 					x.ToTable("Match_Players");
+				});
+
+			modelBuilder.Entity<ApplicationUser>()
+				.HasMany(u => u.OrganizedTournaments)
+				.WithMany(u => u.Organizers)
+				.Map(x =>
+				{
+					x.MapLeftKey("UserId");
+					x.MapRightKey("TournamentId");
+					x.ToTable("Organizer_Tournament");
 				});
 
 			base.OnModelCreating(modelBuilder);

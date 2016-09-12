@@ -6,6 +6,9 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using Peregrine.Web.Services;
+using System.Security.Claims;
+using Peregrine.Data;
+using System.Linq;
 
 namespace Peregrine.Web.Providers
 {
