@@ -6,6 +6,7 @@ using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Models;
 using Peregrine.Web.Services;
+using Peregrine.Web.Filters;
 
 namespace Peregrine.Web.Controllers
 {
@@ -40,6 +41,7 @@ namespace Peregrine.Web.Controllers
 
 		[Route]
 		[Authorize]
+		[TournamentAuthorize]
 		public IHttpActionResult Put(Guid tournamentKey, string playerName)
 		{
 			using(var dataContext = new DataContext())
@@ -89,6 +91,7 @@ namespace Peregrine.Web.Controllers
 
 		[Route]
 		[Authorize]
+		[TournamentAuthorize]
 		public IHttpActionResult Delete(Guid tournamentKey, string playerName)
 		{
 			using(var dataContext = new DataContext())
