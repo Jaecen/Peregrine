@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Filters;
 using System.Web.Http.Controllers;
+using System.Security.Claims;
 
 namespace Peregrine.Web.Filters
 {
@@ -21,16 +22,19 @@ namespace Peregrine.Web.Filters
 		public override void OnActionExecuting(HttpActionContext actionContext)
 		{
 			var tournamentKey = actionContext.ActionArguments[TournamentKeyName];
-			var identity = actionContext.RequestContext.Principal.Identity;
+			var user = actionContext.RequestContext.Principal;
 
-			if(tournamentKey == null || identity == null)
+			if(tournamentKey == null || user == null)
 				throw new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
+
+			if(user.IsInRole("Admin"))
+				return;
 
 			using(var dataContext = new DataContext())
 			{
 				var userOwnsTournament = dataContext
 					.Users
-					.Where(u => u.UserName == identity.Name)
+					.Where(u => u.UserName == user.Identity.Name)
 					.FirstOrDefault()
 					?.OrganizedTournaments
 					.Select(t => t.Key.ToString())
@@ -40,8 +44,6 @@ namespace Peregrine.Web.Filters
 				if(!userOwnsTournament)
 					throw new HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
 			}
-
-			base.OnActionExecuting(actionContext);
 		}
 
 	}

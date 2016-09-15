@@ -1,6 +1,6 @@
-using System;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -13,12 +13,91 @@ namespace Peregrine.Data.Migrations
 			AutomaticMigrationsEnabled = false;
 		}
 
-		protected override void Seed(Peregrine.Data.DataContext context)
+		protected override void Seed(DataContext context)
+		{
+			AddAdminRole(context);
+			AddJason(context);
+			AddScott(context);
+			AddNonAdmin(context);
+			AddDefaultClients(context);
+		}
+		void AddAdminRole(DataContext context)
+		{
+			if(context.Roles.Where(r => r.Name == "Admin").Any())
+				return;
+
+			var store = new RoleStore<IdentityRole>(context);
+			var manager = new RoleManager<IdentityRole>(store);
+			var role = new IdentityRole
+			{
+				Name = "Admin"
+			};
+
+			manager.Create(role);
+		}
+
+		void AddScott(DataContext context)
+		{
+			if(context.Users.Any(u => u.UserName == "friendscottn@gmail.com"))
+				return;
+
+			var store = new UserStore<ApplicationUser>(context);
+			var manager = new UserManager<ApplicationUser>(store);
+			var user = new ApplicationUser
+			{
+				UserName = "friendscottn@gmail.com",
+				Email = "friendscottn@gmail.com"
+			};
+
+			manager.Create(
+				user: user,
+				password: "ChangeIt!1");
+
+			manager.AddToRole(user.Id, "Admin");
+		}
+
+		void AddNonAdmin(DataContext context)
+		{
+			if(context.Users.Any(u => u.UserName == "nonadmin@magictourney.com"))
+				return;
+
+			var store = new UserStore<ApplicationUser>(context);
+			var manager = new UserManager<ApplicationUser>(store);
+			var user = new ApplicationUser
+			{
+				UserName = "nonadmin@magictourney.com",
+				Email = "nonadmin@magictourney.com"
+			};
+
+			manager.Create(
+				user: user,
+				password: "ChangeIt!1");
+		}
+
+		void AddJason(DataContext context)
+		{
+			if(context.Users.Any(u => u.UserName == "jaecen@gmail.com"))
+				return;
+
+			var store = new UserStore<ApplicationUser>(context);
+			var manager = new UserManager<ApplicationUser>(store);
+			var user = new ApplicationUser
+			{
+				UserName = "jaecen@gmail.com",
+				Email = "jaecen@gmail.com"
+			};
+
+			manager.Create(
+				user: user,
+				password: "ChangeIt!1");
+
+			manager.AddToRole(user.Id, "Admin");
+		}
+
+		void AddDefaultClients(DataContext context)
 		{
 			if(context.Clients.Count() > 0)
-			{
 				return;
-			}
 
 			context.Clients.AddRange(BuildClientsList());
 			context.SaveChanges();
@@ -26,7 +105,6 @@ namespace Peregrine.Data.Migrations
 
 		private static List<Client> BuildClientsList()
 		{
-
 			List<Client> ClientsList = new List<Client> 
             {
                 new Client
