@@ -101,7 +101,7 @@ angular
 				.get(serviceBase + 'api/account/ObtainLocalAccessToken', { params: { provider: externalData.provider, externalAccessToken: externalData.externalAccessToken } })
 				.success(function(response) {
 					sessionStorage.setItem('accessToken', response.access_token);
-
+					sessionStorage.setItem('userName', response.userName);
 					_authentication.isAuth = true;
 					_authentication.userName = response.userName;
 					_authentication.useRefreshTokens = false;

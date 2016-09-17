@@ -30,15 +30,12 @@
 							<span>Log in</span>
 						</a>
 						<span data-ng-if="loggedIn" class="user-message-wrap">
-							<span class="user-message hidden-xs">
+							<span class="user-message">
 								<span class="username">{{userName}}</span>
 							</span>
 							<a class="btn btn-default" data-ng-click="logOut()">
 								<span class="glyphicon glyphicon-log-out"></span> Log out
 							</a>
-							<span class="user-message visible-xs">
-								<span class="username">{{userName}}</span>
-							</span>
 						</span>
 						<div class="text-danger" data-ng-if="error">{{error}}</div>
 					</div>

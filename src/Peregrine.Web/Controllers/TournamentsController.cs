@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Models;
+using System.Security.Claims;
 
 namespace Peregrine.Web.Controllers
 {
@@ -44,6 +45,12 @@ namespace Peregrine.Web.Controllers
 
 			using(var dataContext = new DataContext())
 			{
+				var userName = User.Identity.Name;
+				var user = dataContext
+					.Users
+					.Where(u => u.UserName == userName)
+					.FirstOrDefault();
+
 				var tournament = dataContext
 					.Tournaments
 					.Add(new Tournament
@@ -52,6 +59,7 @@ namespace Peregrine.Web.Controllers
 						Name = details.name,
 						Seed = rng.Next(),
 						Players = new List<Player>(),
+						Organizers = new[] { user },
 					});
 
 				dataContext.SaveChanges();

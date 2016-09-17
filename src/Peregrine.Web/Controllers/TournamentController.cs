@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Models;
-using Peregrine.Web.Services;
+using Peregrine.Web.Filters;
 
 namespace Peregrine.Web.Controllers
 {
@@ -37,6 +36,7 @@ namespace Peregrine.Web.Controllers
 
 		[Route]
 		[Authorize]
+		[TournamentAuthorize]
 		public IHttpActionResult Put(Guid tournamentKey, [FromBody] TournamentRequest requestBody)
 		{
 			if(requestBody == null)
@@ -50,7 +50,6 @@ namespace Peregrine.Web.Controllers
 					return NotFound();
 
 				tournament.Name = requestBody.name;
-				
 				dataContext.SaveChanges();
 
 				return Ok(TournamentResponseProvider.Create(tournament));
@@ -59,6 +58,7 @@ namespace Peregrine.Web.Controllers
 
 		[Route]
 		[Authorize]
+		[TournamentAuthorize]
 		public IHttpActionResult Delete(Guid tournamentKey)
 		{
 			using(var dataContext = new DataContext())

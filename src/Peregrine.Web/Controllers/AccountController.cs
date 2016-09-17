@@ -200,7 +200,7 @@ namespace Peregrine.Web.Controllers
 			var user = await UserManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey));
 			var hasRegistered = user != null;
 			var expectedRootUri = new Uri(HttpContext.Current.Request.Url, "/");
-			
+
 			var redirectUri = string.Format(
 				"{0}#/login/?externalAccessToken={1}&provider={2}&hasLocalAccount={3}&externalUserName={4}&email={5}",
 				expectedRootUri.AbsoluteUri,
@@ -292,16 +292,17 @@ namespace Peregrine.Web.Controllers
 				return GetErrorResult(createResult);
 
 			var info = new ExternalLoginInfo
-				{
-					DefaultUserName = model.UserName,
-					Login = new UserLoginInfo(model.Provider, verifiedAccessToken.user_id)
-				};
+			{
+				DefaultUserName = model.UserName,
+				Login = new UserLoginInfo(model.Provider, verifiedAccessToken.user_id)
+			};
 
 			var addLoginResult = await UserManager.AddLoginAsync(newUser.Id, info.Login);
 			if(!addLoginResult.Succeeded)
 				return GetErrorResult(addLoginResult);
 
-			var accessTokenResponse = GenerateLocalAccessTokenResponse(model.UserName);
+			var identity = await newUser.GenerateUserIdentityAsync(UserManager, OAuthDefaults.AuthenticationType);
+			var accessTokenResponse = GenerateLocalAccessTokenResponse(identity);
 			return Ok(accessTokenResponse);
 		}
 
@@ -376,37 +377,29 @@ namespace Peregrine.Web.Controllers
 
 			var user = await UserManager.FindAsync(info.Login);
 
-			var hasRegistered = user != null;
-			if(!hasRegistered)
+			if(user == null)
 				return BadRequest("External user is not registered");
 
-			var accessTokenResponse = GenerateLocalAccessTokenResponse(user.UserName);
+			var identity = await user.GenerateUserIdentityAsync(UserManager, OAuthDefaults.AuthenticationType);
+			var accessTokenResponse = GenerateLocalAccessTokenResponse(identity);
 			return Ok(accessTokenResponse);
 		}
 
-		JObject GenerateLocalAccessTokenResponse(string userName)
+		JObject GenerateLocalAccessTokenResponse(ClaimsIdentity identity)
 		{
 			var tokenExpiration = TimeSpan.FromDays(1);
 
-			var identity = new ClaimsIdentity(
-				claims: new[] 
-					{
-						new Claim(ClaimTypes.Name, userName),
-						new Claim(ClaimTypes.Role, "user"),
-					},
-				authenticationType: OAuthDefaults.AuthenticationType);
-
 			var props = new AuthenticationProperties()
-				{
-					IssuedUtc = DateTime.UtcNow,
-					ExpiresUtc = DateTime.UtcNow.Add(tokenExpiration),
-				};
+			{
+				IssuedUtc = DateTime.UtcNow,
+				ExpiresUtc = DateTime.UtcNow.Add(tokenExpiration),
+			};
 
 			var ticket = new AuthenticationTicket(identity, props);
 
 			var accessToken = AccessTokenFormat.Protect(ticket);
 			var tokenResponse = new JObject(
-				new JProperty("userName", userName),
+				new JProperty("userName", identity.Name),
 				new JProperty("access_token", accessToken),
 				new JProperty("token_type", "bearer"),
 				new JProperty("expires_in", tokenExpiration.TotalSeconds.ToString()),

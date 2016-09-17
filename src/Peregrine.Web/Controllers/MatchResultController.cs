@@ -4,6 +4,7 @@ using System.Web.Http;
 using Peregrine.Data;
 using Peregrine.Web.Models;
 using Peregrine.Web.Services;
+using Peregrine.Web.Filters;
 
 namespace Peregrine.Web.Controllers
 {
@@ -27,6 +28,7 @@ namespace Peregrine.Web.Controllers
 
 		[Route("{result:regex(^(draws|wins)$)}/{count}")]
 		[Authorize]
+		[TournamentAuthorize]
 		public IHttpActionResult Put(Guid tournamentKey, int roundNumber, string playerName, string result, int count)
 		{
 			using(var dataContext = new DataContext())
