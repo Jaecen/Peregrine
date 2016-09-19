@@ -183,6 +183,10 @@
   <ItemGroup>
     <Content Include="authComplete.html" />
     <Content Include="ConnectionStrings.config" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="manifest.json" />
     <Content Include="DirectiveTemplates\upDown.html" />
     <Content Include="Partials\Associate.html" />

@@ -50,10 +50,16 @@
 	</div>
 	<footer>
 		<div class="container-fluid">
-			<small>&copy; 2014. All rights reserved.</small>
+			<small>&copy; 2016 - <a class="js-email-link" href="#">Email the developers</a></small>
 		</div>
 	</footer>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
+	<script>
+		(function ($) {
+			var mail = 'mailto://' + 'friend' + 'scott' + 'n' + '@gmail.com';
+			$('.js-email-link').attr('href', mail);
+		})(jQuery);
+	</script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular-route.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular-resource.js"></script>

@@ -57,7 +57,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
-		[Authorize(Roles = "Admin")]
+		[TournamentAuthorize]
 		public IHttpActionResult Delete(Guid tournamentKey)
 		{
 			using(var dataContext = new DataContext())

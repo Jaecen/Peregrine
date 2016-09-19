@@ -24,10 +24,21 @@ namespace Peregrine.Web.Controllers
 		[Route]
 		public IHttpActionResult Get()
 		{
+			var userName = User.Identity.Name;
+			if(string.IsNullOrEmpty(userName))
+				return Ok();
+
+			var userIsAdmin = User.IsInRole("Admin");
+
 			using(var dataContext = new DataContext())
 			{
 				var tournaments = dataContext
 					.Tournaments
+					.Where(t => userIsAdmin
+						|| t
+						.Organizers
+						.Where(o => o.UserName == userName)
+						.FirstOrDefault() != null)
 					.ToArray()
 					.Select(tournament => TournamentResponseProvider.Create(tournament))
 					.ToArray();

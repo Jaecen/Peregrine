@@ -1,4 +1,7 @@
-﻿<p>
+﻿<div ng-if="error.length > 0" class="alert alert-danger">
+	{{error}}
+</div>
+<p>
 	Use Magic Tourney to setup your Magic the Gathering tournament.
 </p>
 <div class="row">
@@ -8,38 +11,27 @@
 			<a href="#/tournamentedit" class="btn btn-success btn-lg">Get Started</a>
 		</p>
 	</div>
+</div>
+<div data-ng-if="loggedIn" class="row">
 	<div class="col-md-6">
-		<h3>Find a tournament code</h3>
-		<form data-ng-submit="goToTournament()">
-			<div class="input-group input-group-lg">
-				<input type="text" data-ng-model="searchTournamentCode" class="form-control">
-				<span class="input-group-btn">
-					<button type="submit" class="btn btn-success">Go</button>
-				</span>
-			</div>
-		</form>
+		<h3>Tournaments</h3>
+		<div data-ng-show="loading" class="alert alert-info">loading...</div>
+		<div data-ng-hide="loading || tournaments" class="alert alert-info">No tournaments available</div>
+		<table class="tournament-item-table table table-hover" data-ng-if="tournaments">
+			<tbody>
+				<tr data-ng-repeat="tournament in tournaments">
+					<td>
+						<a href="#/tournamentedit/{{tournament.key}}/">
+							{{ tournament.name || tournament.key }}
+						</a>
+					</td>
+					<td>
+						<a class="btn btn-default pull-right" href="#/dash/tournament/{{tournament.key}}">
+							Standings
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </div>
-
-<h3>Tournaments</h3>
-<div ng-if="error.length > 0" class="alert alert-danger">
-	{{error}}
-</div>
-<div data-ng-hide="tournaments" class="alert alert-info">loading...</div>
-<table class="tournament-item-table table table-hover" data-ng-if="tournaments">
-	<tbody>
-		<tr data-ng-repeat="tournament in tournaments">
-			<td>
-				<a href="#/tournamentedit/{{tournament.key}}/">
-					{{ tournament.name || tournament.key }}
-				</a>
-			</td>
-			<td>
-				<a class="btn btn-default pull-right" href="#/dash/tournament/{{tournament.key}}">
-					Standings
-				</a>
-			</td>
-		</tr>
-	</tbody>
-</table>
-

@@ -138,9 +138,14 @@ angular
 			return deferred.promise;
 		};
 
+		var _isLoggedIn = function () {
+			return sessionStorage.getItem('accessToken') != null && sessionStorage.getItem('accessToken').length > 0;
+		};
+
 		authServiceFactory.saveRegistration = _saveRegistration;
 		authServiceFactory.login = _login;
 		authServiceFactory.logOut = _logOut;
+		authServiceFactory.isLoggedIn = _isLoggedIn;
 		authServiceFactory.fillAuthData = _fillAuthData;
 		authServiceFactory.authentication = _authentication;
 
