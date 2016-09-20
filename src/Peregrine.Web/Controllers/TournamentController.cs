@@ -57,6 +57,7 @@ namespace Peregrine.Web.Controllers
 		}
 
 		[Route]
+		[Authorize]
 		[TournamentAuthorize]
 		public IHttpActionResult Delete(Guid tournamentKey)
 		{
