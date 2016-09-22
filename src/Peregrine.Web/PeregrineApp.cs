@@ -30,7 +30,7 @@ namespace Peregrine.Web
 
 		public void Configuration(IAppBuilder app)
 		{
-			var builder = RegisterComponents();
+			var builder = RegisterComponents(app);
 			var container = builder.Build();
 
 			var config = new HttpConfiguration();
@@ -97,7 +97,7 @@ namespace Peregrine.Web
 			app.UseWebApi(config);
 		}
 
-		ContainerBuilder RegisterComponents()
+		ContainerBuilder RegisterComponents(IAppBuilder app)
 		{
 			var builder = new ContainerBuilder();
 
@@ -125,7 +125,8 @@ namespace Peregrine.Web
 
 			builder
 				.Register(c => new ApplicationUserManager(
-					store: c.Resolve<IUserStore<ApplicationUser>>()))
+					store: c.Resolve<IUserStore<ApplicationUser>>(),
+					dataProtector: c.Resolve<IDataProtector>()))
 				.AsSelf();
 
 			builder
@@ -133,7 +134,7 @@ namespace Peregrine.Web
 				.As<IDataProtector>();
 
 			// These need to be explicitly named, otherwise auth tickets won't decrypt between instances
-			var dataProtectionProvider = new DpapiDataProtectionProvider("Peregrine");
+			var dataProtectionProvider = app.GetDataProtectionProvider();
 			var authTicketDataProtector = dataProtectionProvider.Create("Auth Ticket");
 
 			builder

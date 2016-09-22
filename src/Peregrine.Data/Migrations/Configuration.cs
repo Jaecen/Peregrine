@@ -1,6 +1,6 @@
-using System;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 
@@ -13,43 +13,23 @@ namespace Peregrine.Data.Migrations
 			AutomaticMigrationsEnabled = false;
 		}
 
-		protected override void Seed(Peregrine.Data.DataContext context)
+		protected override void Seed(DataContext context)
 		{
-			if(context.Clients.Count() > 0)
-			{
-				return;
-			}
-
-			context.Clients.AddRange(BuildClientsList());
-			context.SaveChanges();
+			AddAdminRole(context);
 		}
-
-		private static List<Client> BuildClientsList()
+		void AddAdminRole(DataContext context)
 		{
+			if(context.Roles.Where(r => r.Name == "Admin").Any())
+				return;
 
-			List<Client> ClientsList = new List<Client> 
-            {
-                new Client
-                { Id = "ngAuthApp", 
-                    Secret= Helper.GetHash("abc@123"), 
-                    Name="AngularJS front-end Application", 
-                    ApplicationType =  ApplicationTypes.JavaScript, 
-                    Active = true, 
-                    RefreshTokenLifeTime = 7200, 
-                    AllowedOrigin = "http://ngauthenticationweb.azurewebsites.net"
-                },
-                new Client
-                { Id = "consoleApp", 
-                    Secret=Helper.GetHash("123@abc"), 
-                    Name="Console Application", 
-                    ApplicationType = ApplicationTypes.NativeConfidential, 
-                    Active = true, 
-                    RefreshTokenLifeTime = 14400, 
-                    AllowedOrigin = "*"
-                }
-            };
+			var store = new RoleStore<IdentityRole>(context);
+			var manager = new RoleManager<IdentityRole>(store);
+			var role = new IdentityRole
+			{
+				Name = "Admin"
+			};
 
-			return ClientsList;
+			manager.Create(role);
 		}
 	}
 }

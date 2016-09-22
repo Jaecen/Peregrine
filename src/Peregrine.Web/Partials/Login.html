@@ -7,7 +7,6 @@
 <div class="row">
 	<div class="col-sm-6">
 		<h3>Login</h3>
-		<h4>External Logins</h4>
 		<div class="external-logins">
 			<span class="external-login" data-ng-repeat="login in externalLogins">
 				<a href="{{login.Url}}" target="_self" class="btn btn-default">
@@ -15,36 +14,5 @@
 				</a>
 			</span>
 		</div>
-		<h4>Magic Tourney</h4>
-		<form data-ng-submit="loginClick()">
-			<div class="form-group">
-				<label for="login-email">Email:</label>
-				<input type="email" class="form-control" id="login-email" name="login-email" data-ng-model="loginData.userName" value="" />
-			</div>
-			<div class="form-group">
-				<label for="login-password">Password:</label>
-				<input type="password" class="form-control" id="login-password" name="login-password" data-ng-model="loginData.password" value="" />
-			</div>
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary">Login</button>
-			</div>
-		</form>
-		
-	</div>
-	<div class="col-sm-6">
-		<h3>Register</h3>
-		<form data-ng-submit="registerClick()">
-			<div class="form-group">
-				<label for="register-email">Email:</label>
-				<input type="email" class="form-control" id="register-email" name="register-email" data-ng-model="registration.email" value="" />
-			</div>
-			<div class="form-group">
-				<label for="register-password">Password:</label>
-				<input type="password" class="form-control" id="register-password" name="register-password" data-ng-model="registration.password" value="" />
-			</div>
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary">Register</button>
-			</div>
-		</form>
 	</div>
 </div>
